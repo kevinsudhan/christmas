@@ -470,6 +470,12 @@ const Navbar: React.FC = () => {
         label: <Link to="/home-loan/nbfc-partners">Non-Banking Financial Company Partners</Link>,
       },
     ],
+    goldLoan: [
+      {
+        key: 'gold-loan-banking',
+        label: <Link to="/gold-loan/banking-partners">Banking Partners</Link>,
+      },
+    ],
   };
 
   const loansDropdownMenu = (
@@ -494,9 +500,11 @@ const Navbar: React.FC = () => {
           <Menu.Item key={item.key}>{item.label}</Menu.Item>
         ))}
       </Menu.SubMenu>
-      <Menu.Item key="gold-loan">
-        <Link to="/gold-loan">Gold Loan</Link>
-      </Menu.Item>
+      <Menu.SubMenu key="gold-loan" title="Gold Loan">
+        {loansMenu.goldLoan.map(item => (
+          <Menu.Item key={item.key}>{item.label}</Menu.Item>
+        ))}
+      </Menu.SubMenu>
     </DropdownMenu>
   );
 

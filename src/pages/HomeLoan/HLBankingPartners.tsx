@@ -1084,7 +1084,7 @@ const HLBankingPartners: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            Personal Loans Made Simple
+            Home Loans Made Simple
           </HeroTitle>
           <HeroSubtitle
             initial={{ opacity: 0, y: 20 }}
@@ -1165,7 +1165,7 @@ const HLBankingPartners: React.FC = () => {
           <b></b>
           <b></b>
           <SectionTitle>
-            Personal Loans - Banking Partners
+            Home Loans - Banking Partners
           </SectionTitle>
 
           {personalLoans.map((loan: Loan) => (

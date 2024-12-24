@@ -25,14 +25,9 @@ import jsPDF from 'jspdf';
 
 // Bank logos from public directory
 const bankLogos = {
-  aditya: "/images/partners/aditya.png",
-  iciciHF: "/images/nbfc partners/icici-hf.png",
-  indiabulls: "/images/nbfc partners/indiabulls-housing-finance6471.jpng.jpg",
-  jmFinance: "/images/nbfc partners/jm-financial.png",
-  mahindra: "/images/nbfc partners/mahindra-home.png",
-  piramal: "/images/nbfc partners/PIRAMAL.png",
-  vastu: "/images/nbfc partners/vastu-housing.PNG",
-  axisFinance: "/images/nbfc partners/axisfinance.png"
+    hdfc: "/images/partners/hdfc.jpg",
+    icici: "/images/partners/icici.jpg",
+    dbs: "/images/partners/dbs.jpg",
 };
 
 interface Loan {
@@ -67,304 +62,119 @@ const { Title, Text } = Typography;
 const personalLoans: Loan[] = [
     {
         id: 1,
-        name: "Aditya Birla Home Finance",
-        bankName: "Aditya Birla Capital",
-        bankLogo: bankLogos.aditya,
-        interestRate: "8.75% - 11.50% p.a.",
-        processingFee: "Up to 1% + GST",
-        maxAmount: "₹5 Crore",
-        minAmount: "₹5,00,000",
-        tenure: "Up to 30 years",
-        rating: 4.5,
-        suitedFor: ["Salaried", "Self-Employed", "NRI"],
-        benefit: "Digital loan processing",
-        benefitIcon: LaptopOutlined
-    },
-    {
-        id: 2,
-        name: "ICICI Home Finance",
-        bankName: "ICICI HFC",
-        bankLogo: bankLogos.iciciHF,
-        interestRate: "8.70% - 11.25% p.a.",
-        processingFee: "0.50% - 1% + GST",
-        maxAmount: "₹5 Crore",
-        minAmount: "₹3,00,000",
-        tenure: "Up to 30 years",
-        rating: 4.6,
-        suitedFor: ["Salaried", "Self-Employed"],
-        benefit: "Quick approval process",
+        name: "HDFC Gold Loan",
+        bankName: "HDFC Bank",
+        bankLogo: bankLogos.hdfc,
+        interestRate: "10.50% - 11.25% p.a.",
+        processingFee: "0.50% + GST",
+        maxAmount: "₹50,00,000",
+        minAmount: "₹25,000",
+        tenure: "Up to 24 months",
+        rating: 4.8,
+        suitedFor: ["Salaried", "Self-Employed", "Business Owners"],
+        benefit: "Same day disbursement",
         benefitIcon: ClockCircleOutlined
     },
     {
-        id: 3,
-        name: "Indiabulls Home Loan",
-        bankName: "Indiabulls HFC",
-        bankLogo: bankLogos.indiabulls,
-        interestRate: "8.65% - 11.00% p.a.",
-        processingFee: "Up to 1% + GST",
-        maxAmount: "₹5 Crore",
-        minAmount: "₹5,00,000",
-        tenure: "Up to 25 years",
-        rating: 4.4,
-        suitedFor: ["Salaried", "Self-Employed"],
-        benefit: "Doorstep service",
-        benefitIcon: HomeOutlined
-    },
-    {
-        id: 4,
-        name: "JM Financial Home Loan",
-        bankName: "JM Financial",
-        bankLogo: bankLogos.jmFinance,
-        interestRate: "8.95% - 11.75% p.a.",
-        processingFee: "Up to 1% + GST",
-        maxAmount: "₹3 Crore",
-        minAmount: "₹5,00,000",
-        tenure: "Up to 20 years",
-        rating: 4.2,
-        suitedFor: ["Salaried", "Self-Employed"],
-        benefit: "Minimal documentation",
-        benefitIcon: FileOutlined
-    },
-    {
-        id: 5,
-        name: "Mahindra Home Finance",
-        bankName: "Mahindra HF",
-        bankLogo: bankLogos.mahindra,
-        interestRate: "9.00% - 12.00% p.a.",
-        processingFee: "Up to 1% + GST",
-        maxAmount: "₹2 Crore",
-        minAmount: "₹3,00,000",
-        tenure: "Up to 20 years",
-        rating: 4.3,
-        suitedFor: ["Salaried", "Self-Employed"],
-        benefit: "Easy documentation",
-        benefitIcon: FileProtectOutlined
-    },
-    {
-        id: 6,
-        name: "Piramal Home Finance",
-        bankName: "Piramal Capital",
-        bankLogo: bankLogos.piramal,
-        interestRate: "8.85% - 11.50% p.a.",
-        processingFee: "Up to 1% + GST",
-        maxAmount: "₹4 Crore",
-        minAmount: "₹5,00,000",
-        tenure: "Up to 25 years",
-        rating: 4.4,
-        suitedFor: ["Salaried", "Self-Employed"],
-        benefit: "Flexible repayment options",
-        benefitIcon: DollarOutlined
-    },
-    {
-        id: 7,
-        name: "Vastu Housing Finance",
-        bankName: "Vastu HFC",
-        bankLogo: bankLogos.vastu,
-        interestRate: "9.25% - 12.50% p.a.",
-        processingFee: "Up to 1% + GST",
-        maxAmount: "₹2 Crore",
-        minAmount: "₹3,00,000",
-        tenure: "Up to 25 years",
-        rating: 4.2,
-        suitedFor: ["Salaried", "Self-Employed"],
-        benefit: "Special rural focus",
-        benefitIcon: HomeOutlined
-    },
-    {
-        id: 8,
-        name: "Axis Finance Home Loan",
-        bankName: "Axis Finance",
-        bankLogo: bankLogos.axisFinance,
-        interestRate: "8.80% - 11.25% p.a.",
-        processingFee: "Up to 1% + GST",
-        maxAmount: "₹4 Crore",
-        minAmount: "₹5,00,000",
-        tenure: "Up to 30 years",
-        rating: 4.5,
-        suitedFor: ["Salaried", "Self-Employed", "NRI"],
-        benefit: "Digital processing",
+        id: 2,
+        name: "ICICI Bank Gold Loan",
+        bankName: "ICICI Bank",
+        bankLogo: bankLogos.icici,
+        interestRate: "10.75% - 11.50% p.a.",
+        processingFee: "0.50% - 1% + GST",
+        maxAmount: "₹40,00,000",
+        minAmount: "₹20,000",
+        tenure: "Up to 36 months",
+        rating: 4.7,
+        suitedFor: ["Salaried", "Self-Employed", "Farmers"],
+        benefit: "Online gold loan management",
         benefitIcon: LaptopOutlined
+    },
+    {
+        id: 3,
+        name: "DBS Gold Loan",
+        bankName: "DBS Bank",
+        bankLogo: bankLogos.dbs,
+        interestRate: "10.90% - 11.75% p.a.",
+        processingFee: "Up to 1% + GST",
+        maxAmount: "₹35,00,000",
+        minAmount: "₹30,000",
+        tenure: "Up to 24 months",
+        rating: 4.6,
+        suitedFor: ["Salaried", "Self-Employed"],
+        benefit: "Digital valuation process",
+        benefitIcon: SafetyCertificateOutlined
     }
 ];
 
 const loanDetails: LoanDetailsMap = {
-    "Aditya Birla Home Finance": {
-        overview: "Aditya Birla Capital offers home loans with competitive interest rates starting from 8.75% p.a. and flexible repayment options.",
+    "HDFC Gold Loan": {
+        overview: "HDFC Bank offers competitive gold loan interest rates starting from 10.50% p.a. with flexible repayment options up to 24 months. Get instant liquidity against your gold jewelry.",
         eligibility: [
             "Age: 21-65 years",
-            "Minimum income: ₹30,000 per month",
-            "Employment: Salaried, Self-employed, NRI",
-            "CIBIL Score: 700+"
+            "Any individual with gold jewelry",
+            "Clean credit history",
+            "Valid ID and address proof"
+        ],
+        documents: [
+            "Identity Proof (PAN Card, Aadhaar)",
+            "Address Proof (Passport, Utility Bills)",
+            "Recent passport size photograph",
+            "Original gold jewelry",
+            "Gold purchase invoice (if available)"
+        ],
+        features: [
+            "Same day disbursement",
+            "No prepayment charges",
+            "Transparent valuation process",
+            "Secure gold storage"
+        ]
+    },
+    "ICICI Bank Gold Loan": {
+        overview: "ICICI Bank provides gold loans at attractive interest rates starting from 10.75% p.a. with online loan management and quick approval process.",
+        eligibility: [
+            "Age: 23-65 years",
+            "Resident Indian citizens",
+            "Gold jewelry owner",
+            "Valid KYC documents"
         ],
         documents: [
             "KYC Documents",
-            "Income Documents",
-            "Property Documents",
-            "Bank Statements (6 months)",
-            "Employment Proof"
+            "Latest photograph",
+            "Gold jewelry",
+            "Gold ownership proof",
+            "Bank account details"
         ],
         features: [
-            "Digital loan processing",
-            "Flexible repayment options",
-            "Balance transfer facility",
-            "Top-up loan facility"
-        ]
-    },
-    "ICICI Home Finance": {
-        overview: "ICICI Home Finance provides home loans at attractive rates starting from 8.70% p.a. with quick processing and approval.",
-        eligibility: [
-            "Age: 21-65 years",
-            "Minimum income: ₹25,000 per month",
-            "Employment: Salaried & Self-employed",
-            "CIBIL Score: 675+"
-        ],
-        documents: [
-            "Identity & Address Proof",
-            "Income Documents",
-            "Property Papers",
-            "Bank Statements",
-            "Employment Proof"
-        ],
-        features: [
-            "Quick approval process",
-            "Doorstep service",
             "Online loan management",
-            "Special schemes for women"
+            "Multiple repayment options",
+            "Doorstep service available",
+            "High value assessment"
         ]
     },
-    "Indiabulls Home Loan": {
-        overview: "Indiabulls offers home loans starting at 8.65% p.a. with minimal documentation and quick processing.",
+    "DBS Gold Loan": {
+        overview: "DBS Bank offers gold loans starting at 10.90% p.a. with digital valuation process and quick disbursement facilities.",
         eligibility: [
             "Age: 21-70 years",
-            "Minimum income: ₹25,000 per month",
-            "Employment: Salaried & Self-employed",
-            "CIBIL Score: 700+"
-        ],
-        documents: [
-            "KYC Documents",
-            "Income Proof",
-            "Property Documents",
-            "Bank Statements",
-            "Employment Proof"
-        ],
-        features: [
-            "Doorstep service",
-            "Quick disbursement",
-            "Flexible EMI options",
-            "Balance transfer facility"
-        ]
-    },
-    "JM Financial Home Loan": {
-        overview: "JM Financial provides customized home loan solutions with interest rates starting from 8.95% p.a.",
-        eligibility: [
-            "Age: 21-65 years",
-            "Minimum income: ₹30,000 per month",
-            "Employment: Salaried & Self-employed",
-            "CIBIL Score: 675+"
-        ],
-        documents: [
-            "Identity Proof",
-            "Address Proof",
-            "Income Documents",
-            "Property Papers",
-            "Bank Statements"
-        ],
-        features: [
-            "Minimal documentation",
-            "Flexible tenure options",
-            "Quick processing",
-            "Dedicated support"
-        ]
-    },
-    "Mahindra Home Finance": {
-        overview: "Mahindra Home Finance offers affordable housing finance solutions with rates starting from 9.00% p.a.",
-        eligibility: [
-            "Age: 21-65 years",
-            "Minimum income: ₹20,000 per month",
-            "Employment: Salaried & Self-employed",
-            "CIBIL Score: 650+"
-        ],
-        documents: [
-            "KYC Documents",
-            "Income Proof",
-            "Property Documents",
-            "Bank Statements",
-            "Employment Details"
-        ],
-        features: [
-            "Easy documentation",
-            "Flexible repayment",
-            "Rural focus",
-            "Quick processing"
-        ]
-    },
-    "Piramal Home Finance": {
-        overview: "Piramal Capital offers innovative home loan solutions with interest rates starting from 8.85% p.a.",
-        eligibility: [
-            "Age: 21-65 years",
-            "Minimum income: ₹30,000 per month",
-            "Employment: Salaried & Self-employed",
-            "CIBIL Score: 700+"
+            "Indian residents",
+            "Ownership of gold jewelry",
+            "Basic KYC compliance"
         ],
         documents: [
             "Identity & Address Proof",
-            "Income Documents",
-            "Property Papers",
-            "Bank Statements",
-            "Business Proof (if applicable)"
+            "Recent photographs",
+            "Gold jewelry",
+            "Proof of gold ownership",
+            "Bank statement"
         ],
         features: [
+            "Digital valuation process",
+            "Quick disbursement",
             "Flexible repayment options",
-            "Quick approval",
-            "Digital process",
-            "Customized solutions"
-        ]
-    },
-    "Vastu Housing Finance": {
-        overview: "Vastu Housing Finance specializes in providing home loans to underserved segments with rates from 9.25% p.a.",
-        eligibility: [
-            "Age: 21-65 years",
-            "Minimum income: ₹15,000 per month",
-            "Employment: Salaried & Self-employed",
-            "CIBIL Score: 650+"
-        ],
-        documents: [
-            "KYC Documents",
-            "Income Proof",
-            "Property Documents",
-            "Bank Statements",
-            "Business Documents"
-        ],
-        features: [
-            "Special rural focus",
-            "Flexible documentation",
-            "Quick processing",
-            "Customized EMI options"
-        ]
-    },
-    "Axis Finance Home Loan": {
-        overview: "Axis Finance provides comprehensive home loan solutions with interest rates starting from 8.80% p.a.",
-        eligibility: [
-            "Age: 21-65 years",
-            "Minimum income: ₹25,000 per month",
-            "Employment: Salaried, Self-employed, NRI",
-            "CIBIL Score: 700+"
-        ],
-        documents: [
-            "KYC Documents",
-            "Income Documents",
-            "Property Papers",
-            "Bank Statements",
-            "Employment Proof"
-        ],
-        features: [
-            "Digital processing",
-            "Quick approval",
-            "Flexible tenure",
-            "Balance transfer option"
+            "Safe vault storage"
         ]
     }
-  };
+};
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -896,7 +706,7 @@ const DownloadButton = styled(Button)`
   gap: 8px;
 `;
 
-const HLNBFCPartners: React.FC = () => {
+const HLBankingPartners: React.FC = () => {
   const navigate = useNavigate();
   const [selectedLoan, setSelectedLoan] = useState<string | null>(null);
   const [selectedLoans, setSelectedLoans] = useState<string[]>([]);
@@ -970,7 +780,7 @@ const HLNBFCPartners: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            Home Loans Made Simple
+            Gold Loans Made Simple
           </HeroTitle>
           <HeroSubtitle
             initial={{ opacity: 0, y: 20 }}
@@ -1004,11 +814,11 @@ const HLNBFCPartners: React.FC = () => {
             transition={{ duration: 0.6, delay: 0.6 }}
           >
             <StatItem>
-              <StatValue>₹25L+</StatValue>
+              <StatValue>₹50L+</StatValue>
               <StatLabel>Maximum Loan Amount</StatLabel>
             </StatItem>
             <StatItem>
-              <StatValue>8.99%</StatValue>
+              <StatValue>10.50%</StatValue>
               <StatLabel>Interest Rate Starting</StatLabel>
             </StatItem>
             <StatItem>
@@ -1051,7 +861,7 @@ const HLNBFCPartners: React.FC = () => {
           <b></b>
           <b></b>
           <SectionTitle>
-            Home Loans - Non-Financial Banking Company Partners
+            Gold Loans - Banking Partners
           </SectionTitle>
 
           {personalLoans.map((loan: Loan) => (
@@ -1221,7 +1031,7 @@ const HLNBFCPartners: React.FC = () => {
         onCancel={handleCloseCompareModal}
         footer={null}
         width={1000}
-        title="Compare Personal Loans"
+        title="Compare Gold Loans"
         closeIcon={<CloseOutlined />}
       >
         <DownloadButton type="primary" onClick={handleDownloadPDF} icon={<DownloadOutlined />}>
@@ -1323,4 +1133,4 @@ const HLNBFCPartners: React.FC = () => {
   );
 };
 
-export default HLNBFCPartners;
+export default HLBankingPartners;
