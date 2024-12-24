@@ -18,6 +18,11 @@ const MetricsWrapper = styled.div`
   max-width: 1200px;
   z-index: 10;
   margin-top: -150px;
+
+  @media (max-width: 768px) {
+    width: calc(100% - 32px);
+    margin-top: -100px;
+  }
 `;
 
 const Home: React.FC = () => {

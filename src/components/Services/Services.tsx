@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Radio, RadioChangeEvent } from 'antd';
 import { Link } from 'react-router-dom';
@@ -376,18 +376,57 @@ const services: Service[] = [
 
 const Services: React.FC = () => {
   const [filter, setFilter] = useState<ServiceType>('all');
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [ref, inView] = useInView({
     threshold: 0.1,
     triggerOnce: true
   });
 
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const handleFilterChange = (e: RadioChangeEvent) => {
     setFilter(e.target.value);
   };
 
+  const mainCategories = [
+    {
+      id: 'main-1',
+      title: 'Loans',
+      description: 'Explore our comprehensive range of loan options tailored to meet your financial needs',
+      image: personalLoanImg,
+      type: ['loans'],
+      link: '/loans'
+    },
+    {
+      id: 'main-2',
+      title: 'Credit Cards',
+      description: 'Premium credit cards with exclusive rewards and lifestyle benefits',
+      image: creditCardImg,
+      type: ['cards'],
+      link: '/credit-cards'
+    },
+    {
+      id: 'main-3',
+      title: 'Insurance',
+      description: 'Protect what matters most with our diverse insurance solutions',
+      image: healthInsuranceImg,
+      type: ['insurance'],
+      link: '/insurance'
+    }
+  ];
+
   const filteredServices = filter === 'all'
     ? services
     : services.filter(service => service.type.includes(filter));
+
+  const displayServices = windowWidth <= 768 ? mainCategories : filteredServices;
 
   return (
     <ServicesSection
@@ -406,23 +445,28 @@ const Services: React.FC = () => {
           </Subtitle>
         </SectionHeader>
 
-        <FilterContainer variants={fadeInVariants}>
-          <Radio.Group
-            value={filter}
-            onChange={handleFilterChange}
-            buttonStyle="solid"
-            size="large"
-          >
-            <Radio.Button value="all">All Services</Radio.Button>
-            <Radio.Button value="loans">Loans</Radio.Button>
-            <Radio.Button value="cards">Cards</Radio.Button>
-            <Radio.Button value="insurance">Insurance</Radio.Button>
-          </Radio.Group>
-        </FilterContainer>
+        {windowWidth > 768 && (
+          <FilterContainer variants={fadeInVariants}>
+            <Radio.Group
+              value={filter}
+              onChange={handleFilterChange}
+              buttonStyle="solid"
+              size="large"
+            >
+              <Radio.Button value="all">All Services</Radio.Button>
+              <Radio.Button value="loans">Loans</Radio.Button>
+              <Radio.Button value="cards">Cards</Radio.Button>
+              <Radio.Button value="insurance">Insurance</Radio.Button>
+            </Radio.Group>
+          </FilterContainer>
+        )}
 
         <CardsGrid variants={containerVariants}>
-          {filteredServices.map((service) => (
-            <ServiceLink key={service.id} to={`/services/${service.title.toLowerCase().replace(/\s+/g, '-')}`}>
+          {displayServices.map((service) => (
+            <ServiceLink 
+              key={service.id} 
+              to={windowWidth <= 768 ? service.link : `/services/${service.title.toLowerCase().replace(/\s+/g, '-')}`}
+            >
               <ServiceCard variants={slideVariants}>
                 <CardImage
                   $backgroundImage={service.image}

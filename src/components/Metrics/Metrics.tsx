@@ -20,12 +20,25 @@ const MetricsCard = styled.div`
   margin: 0 auto;
   transition: all 0.3s ease;
 
+  @media (max-width: 768px) {
+    padding: 10px;
+    border-radius: 16px;
+    box-shadow: 
+      0 8px 20px rgba(0, 0, 0, 0.08),
+      0 15px 40px rgba(0, 119, 182, 0.08),
+      0 0 80px rgba(2, 62, 138, 0.08);
+  }
+
   &:hover {
     box-shadow: 
       0 15px 40px rgba(0, 0, 0, 0.15),
       0 25px 70px rgba(0, 119, 182, 0.15),
       0 0 140px rgba(2, 62, 138, 0.15);
     transform: translateY(-5px);
+
+    @media (max-width: 768px) {
+      transform: translateY(-3px);
+    }
   }
 `;
 
@@ -38,8 +51,8 @@ const MetricsGrid = styled.div`
   width: 100%;
   
   @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 10px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
   }
 `;
 
@@ -64,15 +77,13 @@ const MetricItem = styled.div`
   }
   
   @media (max-width: 768px) {
-    border-right: none;
-    min-height: 100px;
+    min-height: 70px;
+    padding: 8px 4px;
     
     &:not(:last-child)::after {
-      right: 10%;
-      top: auto;
-      bottom: 0;
-      width: 80%;
-      height: 1px;
+      top: 15%;
+      height: 70%;
+      width: 1px;
     }
   }
 `;
@@ -88,6 +99,12 @@ const MetricNumber = styled.div`
   text-shadow: none;
   text-align: center;
   width: 100%;
+  white-space: nowrap;
+
+  @media (max-width: 768px) {
+    font-size: 1.25rem;
+    margin-bottom: 4px;
+  }
 `;
 
 const MetricTitle = styled.div`
@@ -101,6 +118,16 @@ const MetricTitle = styled.div`
   letter-spacing: 1px;
   text-align: center;
   width: 100%;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    font-size: 0.7rem;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+  }
 `;
 
 const Metrics: React.FC = () => {
@@ -123,7 +150,7 @@ const Metrics: React.FC = () => {
               />
             )}
           </MetricNumber>
-          <MetricTitle className="cities-title">Cities</MetricTitle>
+          <MetricTitle>Cities</MetricTitle>
         </MetricItem>
         <MetricItem>
           <MetricNumber>
@@ -145,11 +172,11 @@ const Metrics: React.FC = () => {
                 start={0}
                 end={1000}
                 duration={2.5}
-                suffix="Cr +"
+                suffix="Cr+"
               />
             )}
           </MetricNumber>
-          <MetricTitle>Loans Disbursed</MetricTitle>
+          <MetricTitle>Loans{'\n'}Disbursed</MetricTitle>
         </MetricItem>
       </MetricsGrid>
     </MetricsCard>

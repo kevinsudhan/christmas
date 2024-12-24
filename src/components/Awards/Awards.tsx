@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, TouchEvent } from 'react';
 import styled from 'styled-components';
 import goldenLaurel from '../../assets/images/golden laurel.png';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
@@ -65,15 +65,11 @@ const CarouselWrapper = styled.div`
     justify-content: center;
     align-items: center;
     perspective: 1000px;
-    
-    li {
-      position: absolute;
-      width: 340px;
-      transition: all 0.5s ease;
-      
-      &.active {
-        z-index: 2;
-      }
+
+    @media (max-width: 1100px) {
+      height: 340px;
+      overflow-x: hidden;
+      touch-action: pan-x;
     }
   }
 `;
@@ -84,7 +80,7 @@ const AwardCard = styled.div`
   border-radius: 20px;
   padding: 25px;
   width: 340px;
-  height: 340px;
+  height: 380px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   border: 1px solid rgba(0, 0, 0, 0.05);
   display: flex;
@@ -102,15 +98,24 @@ const AwardCard = styled.div`
   @media (max-width: 480px) {
     min-width: 300px;
     width: 300px;
-    height: 300px;
+    height: 340px;
     padding: 20px;
+    box-shadow: none;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    backdrop-filter: none;
+
+    &:hover {
+      transform: none;
+      box-shadow: none;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
   }
 `;
 
 const ImageContainer = styled.div`
   width: 160px;
   height: 160px;
-  margin: 10px 0 20px;
+  margin: 0 0 15px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -130,27 +135,41 @@ const ImageContainer = styled.div`
   @media (max-width: 480px) {
     width: 140px;
     height: 140px;
-    margin: 10px 0 15px;
+    margin: 0 0 12px;
+
+    img {
+      filter: none;
+    }
+
+    ${AwardCard}:hover & img {
+      transform: none;
+    }
   }
 `;
 
 const AwardTitle = styled.h3`
   font-size: 1.1rem;
   color: #1a1a1a;
-  margin-bottom: 10px;
+  margin: 0 0 8px;
   font-weight: 700;
   line-height: 1.4;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   flex-shrink: 0;
+  padding: 0 10px;
 `;
 
 const AwardDescription = styled.p`
   font-size: 0.9rem;
   color: #666666;
-  line-height: 1.5;
+  line-height: 1.6;
   margin: 0;
-  max-width: 90%;
+  padding: 0 15px;
+  flex-grow: 1;
+  width: 100%;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
 `;
 
 const ButtonContainer = styled.div`
@@ -190,10 +209,32 @@ const CarouselButton = styled.button<{ direction: 'left' | 'right' }>`
   }
 `;
 
+const MobileIndicators = styled.div`
+  display: none;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 50px;
+
+  @media (max-width: 1100px) {
+    display: flex;
+  }
+`;
+
+const Indicator = styled.div<{ active: boolean }>`
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: ${props => props.active ? '#1a1a1a' : '#cccccc'};
+  transition: background 0.3s ease;
+`;
+
 const Awards: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const cardsRef = useRef<HTMLUListElement>(null);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const isMobileView = window.innerWidth <= 1100;
 
   useEffect(() => {
     if (!cardsRef.current) return;
@@ -203,9 +244,19 @@ const Awards: React.FC = () => {
 
     // Show initial cards
     updateCardsVisibility(currentIndex);
+
+    const handleResize = () => {
+      const newIsMobileView = window.innerWidth <= 1100;
+      if (newIsMobileView !== isMobileView) {
+        window.location.reload();
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const updateCardsVisibility = (index: number) => {
+  const updateCardsVisibility = (index: number, direction: 'left' | 'right' | null = null) => {
     if (!cardsRef.current) return;
     setIsAnimating(true);
 
@@ -214,70 +265,168 @@ const Awards: React.FC = () => {
       onComplete: () => setIsAnimating(false),
       defaults: {
         duration: 0.5,
-        ease: "sine.inOut"
+        ease: "power2.inOut"
       }
     });
 
-    timeline.set(cards, { zIndex: -1 }, 0);
-
-    cards.forEach((card, i) => {
-      const position = (i - index + awards.length) % awards.length;
+    if (window.innerWidth <= 1100) {
+      // Mobile animation
+      timeline.set(cards, { zIndex: 1 });
       
-      if (position >= 0 && position <= 2) {
-        const rotation = position === 1 ? 0 : position === 0 ? -25 : 25;
-        const xOffset = position === 1 ? 0 : position === 0 ? -100 : 100;
-        const scale = position === 1 ? 1 : 0.8;
-        
-        timeline.to(card, {
-          xPercent: xOffset,
-          opacity: position === 1 ? 1 : 0.7,
-          scale: scale,
-          rotateY: rotation,
-          zIndex: position === 1 ? 2 : 1,
-          ease: "power3.out",
-          immediateRender: false
-        }, 0);
-
-        if (position === 1) {
-          timeline.to(card, {
-            scale: 1.05,
-            duration: 0.2,
-            ease: "elastic.out(1, 0.5)"
-          }, 0.3).to(card, {
-            scale: 1,
-            duration: 0.2,
-            ease: "power2.inOut"
-          }, 0.5);
+      // First, set initial positions for all cards
+      cards.forEach((card, i) => {
+        const position = (i - index + awards.length) % awards.length;
+        if (direction) {
+          const initialX = direction === 'left' ? 100 : -100;
+          if (position === 0) {
+            timeline.set(card, {
+              xPercent: initialX,
+              opacity: 0,
+              scale: 0.8,
+              rotateY: direction === 'left' ? 15 : -15,
+              zIndex: 2
+            });
+          } else {
+            timeline.set(card, {
+              xPercent: position * 100,
+              opacity: position === 1 ? 0.5 : 0,
+              scale: 0.8,
+              rotateY: 0,
+              zIndex: 1
+            });
+          }
         }
-      } else {
-        const isLeft = position < 0;
-        timeline.set(card, {
-          opacity: 0,
-          immediateRender: true
-        }, 0);
-        timeline.to(card, {
-          xPercent: isLeft ? -400 : 400,
-          scale: 0.5,
-          rotateY: isLeft ? -45 : 45,
-          zIndex: -1,
-          immediateRender: false
-        }, 0);
-      }
-    });
+      });
+
+      // Then animate all cards to their new positions
+      cards.forEach((card, i) => {
+        const position = (i - index + awards.length) % awards.length;
+        
+        if (position === 0) {
+          // Animate the active card
+          timeline.to(card, {
+            xPercent: 0,
+            opacity: 1,
+            scale: 1,
+            rotateY: 0,
+            zIndex: 2,
+            duration: 0.4,
+            ease: "power2.out"
+          }, direction ? 0.1 : 0);
+        } else {
+          // Animate other cards
+          timeline.to(card, {
+            xPercent: position * 100,
+            opacity: Math.abs(position) === 1 ? 0.5 : 0,
+            scale: 0.8,
+            rotateY: 0,
+            zIndex: 1,
+            duration: 0.4
+          }, direction ? 0.1 : 0);
+        }
+
+        // Handle the card that's moving out
+        if (direction) {
+          const outgoingPosition = direction === 'left' ? -1 : 1;
+          if ((position + (direction === 'left' ? 1 : -1) + awards.length) % awards.length === 0) {
+            timeline.to(card, {
+              xPercent: direction === 'left' ? -100 : 100,
+              opacity: 0,
+              scale: 0.8,
+              rotateY: direction === 'left' ? -15 : 15,
+              duration: 0.4,
+              ease: "power2.in"
+            }, 0);
+          }
+        }
+      });
+    } else {
+      // Desktop animation (unchanged)
+      timeline.set(cards, { zIndex: -1 }, 0);
+      cards.forEach((card, i) => {
+        const position = (i - index + awards.length) % awards.length;
+        
+        if (position >= 0 && position <= 2) {
+          const rotation = position === 1 ? 0 : position === 0 ? -25 : 25;
+          const xOffset = position === 1 ? 0 : position === 0 ? -100 : 100;
+          const scale = position === 1 ? 1 : 0.8;
+          
+          timeline.to(card, {
+            xPercent: xOffset,
+            opacity: position === 1 ? 1 : 0.7,
+            scale: scale,
+            rotateY: rotation,
+            zIndex: position === 1 ? 2 : 1,
+            ease: "power3.out",
+            immediateRender: false
+          }, 0);
+
+          if (position === 1) {
+            timeline.to(card, {
+              scale: 1.05,
+              duration: 0.2,
+              ease: "elastic.out(1, 0.5)"
+            }, 0.3).to(card, {
+              scale: 1,
+              duration: 0.2,
+              ease: "power2.inOut"
+            }, 0.5);
+          }
+        } else {
+          const isLeft = position < 0;
+          timeline.set(card, {
+            opacity: 0,
+            immediateRender: true
+          }, 0);
+          timeline.to(card, {
+            xPercent: isLeft ? -400 : 400,
+            scale: 0.5,
+            rotateY: isLeft ? -45 : 45,
+            zIndex: -1,
+            immediateRender: false
+          }, 0);
+        }
+      });
+    }
+  };
+
+  const handleTouchStart = (e: TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe && !isAnimating) {
+      handleNextClick();
+    }
+
+    if (isRightSwipe && !isAnimating) {
+      handlePrevClick();
+    }
   };
 
   const handlePrevClick = () => {
     if (isAnimating) return;
     const newIndex = (currentIndex - 1 + awards.length) % awards.length;
     setCurrentIndex(newIndex);
-    updateCardsVisibility(newIndex);
+    updateCardsVisibility(newIndex, 'right');
   };
 
   const handleNextClick = () => {
     if (isAnimating) return;
     const newIndex = (currentIndex + 1) % awards.length;
     setCurrentIndex(newIndex);
-    updateCardsVisibility(newIndex);
+    updateCardsVisibility(newIndex, 'left');
   };
 
   const awards = [
@@ -291,7 +440,7 @@ const Awards: React.FC = () => {
     },
     {
       title: "Certificate of Appreciation",
-      description: "In Acknowledgment of Exceptional Contribution to Personal Loan Services in 2023 by Bandhan Bank"
+      description: "Exceptional Contribution to Personal Loan Services in 2023 - Bandhan Bank"
     },
     {
       title: "Valued Partnership Recognition",
@@ -299,7 +448,7 @@ const Awards: React.FC = () => {
     },
     {
       title: "Exemplary Support Award",
-      description: "For Outstanding Contribution to Personal Loan Business in FY 2023-24 from IndusInd Bank"
+      description: "Outstanding Contribution to Personal Loan Business in FY 23-24 - IndusInd Bank"
     },
     {
       title: "Growth Contribution Token",
@@ -339,7 +488,7 @@ const Awards: React.FC = () => {
     },
     {
       title: "Gratitude Certificate",
-      description: "In Appreciation of Valuable Contribution to SME Business in FY 2023-24 for Ask Loans, Awarded by Bajaj Finance"
+      description: "In Appreciation of Valuable Contribution to SME Business in FY 2023-24 for Ask Loans- Bajaj Finance"
     },
     {
       title: "Strategic Partnership Recognition",
@@ -353,7 +502,13 @@ const Awards: React.FC = () => {
         <Title>Our Achievements</Title>
         <CarouselContainer>
           <CarouselWrapper>
-            <ul className="cards" ref={cardsRef}>
+            <ul 
+              className="cards" 
+              ref={cardsRef}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+            >
               {awards.map((award, index) => (
                 <li key={index}>
                   <AwardCard>
@@ -374,6 +529,11 @@ const Awards: React.FC = () => {
                 <RightOutlined />
               </CarouselButton>
             </ButtonContainer>
+            <MobileIndicators>
+              {awards.map((_, index) => (
+                <Indicator key={index} active={index === currentIndex} />
+              ))}
+            </MobileIndicators>
           </CarouselWrapper>
         </CarouselContainer>
       </Container>

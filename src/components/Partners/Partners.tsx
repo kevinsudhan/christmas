@@ -70,11 +70,21 @@ const LogoContainer = styled.div`
   &::before {
     left: 0;
     background: linear-gradient(to right, rgba(0, 119, 182, 1), rgba(0, 119, 182, 0));
+
+    @media (max-width: 768px) {
+      width: 100px;
+      opacity: 0;
+    }
   }
 
   &::after {
     right: 0;
     background: linear-gradient(to left, rgba(0, 119, 182, 1), rgba(0, 119, 182, 0));
+
+    @media (max-width: 768px) {
+      width: 100px;
+      opacity: 0;
+    }
   }
 `;
 

@@ -27,6 +27,19 @@ const HeroSection = styled.section`
   padding-top: 100px;
   overflow: hidden;
 
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url(${loanHeroImage}) no-repeat center center;
+    background-size: cover;
+    opacity: 0.1;
+    z-index: 0;
+  }
+
   &::after {
     content: '';
     position: absolute;
@@ -37,6 +50,48 @@ const HeroSection = styled.section`
     background: linear-gradient(135deg, #0077b6 0%, #023e8a 100%);
     opacity: 0.85;
     z-index: 1;
+  }
+  
+   /* Modern geometric shapes */
+  .shape-1, .shape-2, .shape-3, .shape-4 {
+    position: absolute;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+    backdrop-filter: blur(5px);
+    z-index: 2;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .shape-1 {
+    width: 300px;
+    height: 300px;
+    top: -100px;
+    right: -50px;
+    animation: float 15s ease-in-out infinite;
+  }
+
+  .shape-2 {
+    width: 200px;
+    height: 200px;
+    bottom: -50px;
+    left: -50px;
+    animation: float 20s ease-in-out infinite reverse;
+  }
+
+  .shape-3 {
+    width: 150px;
+    height: 150px;
+    top: 50%;
+    left: 15%;
+    animation: float 18s ease-in-out infinite 1s;
+  }
+
+  .shape-4 {
+    width: 100px;
+    height: 100px;
+    bottom: 20%;
+    right: 15%;
+    animation: float 12s ease-in-out infinite 0.5s;
   }
 
   /* Animated lines */
@@ -84,37 +139,7 @@ const HeroSection = styled.section`
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
 
-  .shape-1 {
-    width: 300px;
-    height: 300px;
-    top: -100px;
-    right: -50px;
-    animation: float 15s ease-in-out infinite;
-  }
-
-  .shape-2 {
-    width: 200px;
-    height: 200px;
-    bottom: -50px;
-    left: -50px;
-    animation: float 20s ease-in-out infinite reverse;
-  }
-
-  .shape-3 {
-    width: 150px;
-    height: 150px;
-    top: 50%;
-    left: 15%;
-    animation: float 18s ease-in-out infinite 1s;
-  }
-
-  .shape-4 {
-    width: 100px;
-    height: 100px;
-    bottom: 20%;
-    right: 15%;
-    animation: float 12s ease-in-out infinite 0.5s;
-  }
+  
 
   @keyframes float {
     0%, 100% {
@@ -132,6 +157,10 @@ const HeroSection = styled.section`
     100% {
       transform: translateX(100%) rotate(-45deg);
     }
+      @media (max-width: 1024px) {
+    flex-direction: column;
+    gap: 30px;
+    padding: 100px 5% 40px;
   }
 `;
 
