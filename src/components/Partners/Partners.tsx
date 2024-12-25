@@ -39,6 +39,10 @@ const Title = styled.h2`
   margin-bottom: 80px;
   font-weight: 600;
   position: relative;
+
+  @media(max-width: 968px){
+    font-size: 35px;
+  }
 `;
 
 const scroll = keyframes`

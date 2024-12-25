@@ -204,8 +204,13 @@ const ServiceCard = styled(HoverCard)`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
 
+  @media (max-width: 968px) {
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
   @media (max-width: 480px) {
-    max-width: 100%;
+    max-width: 260px;
     margin: 0 auto;
   }
 
@@ -213,6 +218,7 @@ const ServiceCard = styled(HoverCard)`
     transform: translateY(-4px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
   }
+
 `;
 
 const CardImage = styled(motion.div)<{ $backgroundImage: string }>`
@@ -224,12 +230,12 @@ const CardImage = styled(motion.div)<{ $backgroundImage: string }>`
   position: relative;
   overflow: hidden;
 
-  @media (max-width: 768px) {
+@media (max-width: 968px) {
     height: 160px;
   }
 
   @media (max-width: 480px) {
-    height: 200px;
+    height: 140px;
   }
 
   &::before {
@@ -256,9 +262,14 @@ const CardContent = styled(motion.div)`
   flex-direction: column;
   position: relative;
 
-  @media (max-width: 768px) {
+ @media (max-width: 968px) {
     padding: 16px;
   }
+
+  @media (max-width: 480px) {
+    padding: 12px;
+  }
+
 
   &::before {
     content: '';
@@ -284,6 +295,16 @@ const CardTitle = styled(motion.h3)`
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+
+   @media (max-width: 968px) {
+    font-size: 1rem;
+    margin-bottom: 6px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+  }
 `;
 
 const CardDescription = styled(motion.p)`
@@ -296,6 +317,14 @@ const CardDescription = styled(motion.p)`
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+
+  @media (max-width: 968px) {
+    font-size: 1rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.82rem;
+  }
 `;
 
 const ServiceLink = styled(Link)`
@@ -399,7 +428,7 @@ const Services: React.FC = () => {
     {
       id: 'main-1',
       title: 'Loans',
-      description: 'Explore our comprehensive range of loan options tailored to meet your financial needs',
+      description: 'Explore our range of loan options tailored to meet your financial needs.',
       image: personalLoanImg,
       type: ['loans'],
       link: '/loans'

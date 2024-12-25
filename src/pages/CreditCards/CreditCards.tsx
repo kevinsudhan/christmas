@@ -4,7 +4,7 @@ import { Form, Input, Select, Button, Tag, Typography } from 'antd';
 import { CreditCardOutlined, CheckCircleFilled, StarFilled } from '@ant-design/icons';
 import creditCardImg from '../../assets/images/services/credit-card.jpg';
 import creditCardHeroImg from '../../assets/images/hero/creditcard.png';
-import auCard from '../../assets/images/cards/AU.png';
+
 import axisCard from '../../assets/images/cards/AXIS.png';
 import hdfcCard from '../../assets/images/cards/HDFC.png';
 import iciciCard from '../../assets/images/cards/ICICI.png';
@@ -818,7 +818,7 @@ const CreditCards: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const cards = [
-    { src: auCard, alt: "AU Bank Credit Card" },
+
     { src: axisCard, alt: "Axis Bank Credit Card" },
     { src: hdfcCard, alt: "HDFC Bank Credit Card" },
     { src: iciciCard, alt: "ICICI Bank Credit Card" },
@@ -1011,7 +1011,6 @@ const CreditCards: React.FC = () => {
 
         <section>
           <CardScroller images={[
-            auCard,
             axisCard,
             hdfcCard,
             iciciCard,

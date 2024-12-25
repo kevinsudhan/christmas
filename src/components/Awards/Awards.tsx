@@ -38,6 +38,10 @@ const Title = styled.h2`
     height: 3px;
     background: linear-gradient(90deg, #0094d9, #0077b6);
   }
+
+  @media(max-width: 968px){
+    font-size: 22px;
+  }
 `;
 
 const CarouselContainer = styled.div`

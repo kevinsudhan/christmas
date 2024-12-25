@@ -9,6 +9,15 @@ const FooterContainer = styled.footer`
   position: relative;
   overflow: hidden;
 
+  
+  @media (max-width: 968px) {
+    padding: 60px 0 30px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 40px 0 20px;
+  }
+
   &::before {
     content: '';
     position: absolute;
@@ -26,6 +35,11 @@ const FooterContent = styled.div`
   padding: 0 20px;
   position: relative;
   z-index: 1;
+
+  
+  @media (max-width: 480px) {
+    padding: 0 16px;
+  }
 `;
 
 const FooterGrid = styled.div`
@@ -36,10 +50,14 @@ const FooterGrid = styled.div`
 
   @media (max-width: 968px) {
     grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    margin-bottom: 40px;
   }
 
   @media (max-width: 576px) {
     grid-template-columns: 1fr;
+    gap: 24px;
+    margin-bottom: 30px;
   }
 `;
 
@@ -49,6 +67,16 @@ const FooterSection = styled.div`
     font-size: 1.5rem;
     margin-bottom: 20px;
     font-weight: 600;
+
+    @media (max-width: 968px) {
+      font-size: 1.3rem;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 1.2rem;
+      margin-bottom: 12px;
+    }
   }
 
   ul {
@@ -59,16 +87,42 @@ const FooterSection = styled.div`
 
   li {
     margin-bottom: 12px;
+
+    @media (max-width: 480px) {
+      margin-bottom: 10px;
+    }
   }
 
   a {
     color: rgba(255, 255, 255, 0.8);
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
     font-size: 1rem;
+    display: inline-block;
+    position: relative;
+
+    @media (max-width: 480px) {
+      font-size: 0.95rem;
+    }
 
     &:hover {
       color: #ffffff;
+      transform: translateX(5px);
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: #ffffff;
+      transition: width 0.3s ease;
+    }
+
+    &:hover::after {
+      width: 100%;
     }
   }
 `;
@@ -81,6 +135,16 @@ const ContactInfo = styled.div`
     display: flex;
     align-items: center;
     gap: 8px;
+
+    @media (max-width: 480px) {
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+    }
+
+    svg {
+      font-size: 1.2rem;
+      color: #ffffff;
+    }
   }
 `;
 
@@ -88,12 +152,26 @@ const Divider = styled.hr`
   border: none;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   margin: 40px 0;
+
+  @media (max-width: 968px) {
+    margin: 30px 0;
+  }
+
+  @media (max-width: 480px) {
+    margin: 20px 0;
+  }
 `;
 
 const Copyright = styled.div`
   text-align: center;
   color: rgba(255, 255, 255, 0.6);
   font-size: 0.9rem;
+  padding: 0 20px;
+
+  @media (max-width: 480px) {
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
 `;
 
 const Footer: React.FC = () => {

@@ -269,12 +269,12 @@ const MobileMenu = styled.div<{ isOpen: boolean }>`
   right: 0;
   bottom: 0;
   background: white;
-  padding: 16px;
+  padding: 20px;
   transform: translateX(${props => props.isOpen ? '0' : '100%'});
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow-y: auto;
   z-index: 999;
-  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
   @media (max-width: 768px) {
     display: block;
@@ -284,7 +284,7 @@ const MobileMenu = styled.div<{ isOpen: boolean }>`
 const MobileNavLinks = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 `;
 
 const MobileNavLink = styled(Link)<{ $active?: boolean }>`
@@ -292,7 +292,7 @@ const MobileNavLink = styled(Link)<{ $active?: boolean }>`
   font-size: 15px;
   font-weight: 500;
   text-decoration: none;
-  padding: 14px 16px;
+  padding: 12px 16px;
   border-radius: 8px;
   transition: all 0.2s ease;
   background: ${props => props.$active ? '#f8f9fa' : 'transparent'};
@@ -307,31 +307,14 @@ const MobileNavLink = styled(Link)<{ $active?: boolean }>`
   }
 `;
 
-const MobileActionButtons = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 24px;
-  padding: 0 16px;
-`;
-
-const MobileSubMenu = styled.div<{ isOpen?: boolean }>`
-  margin: 4px 0 4px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  overflow: hidden;
-  max-height: ${props => props.isOpen ? '1000px' : '0'};
-  opacity: ${props => props.isOpen ? '1' : '0'};
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-`;
-
 const MobileMenuSection = styled.div`
   border-bottom: 1px solid #eee;
-  margin-bottom: 8px;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
   
   &:last-child {
     border-bottom: none;
+    margin-bottom: 0;
   }
 `;
 
@@ -339,7 +322,7 @@ const MobileMenuHeader = styled.div<{ $active?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 16px;
+  padding: 12px 16px;
   color: ${props => props.$active ? '#111' : '#666'};
   font-size: 15px;
   font-weight: 500;
@@ -356,6 +339,25 @@ const MobileMenuHeader = styled.div<{ $active?: boolean }>`
   &:active {
     background: #f0f1f2;
   }
+`;
+
+const MobileSubMenu = styled.div<{ isOpen?: boolean }>`
+  margin: 4px 0 4px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: hidden;
+  max-height: ${props => props.isOpen ? '1000px' : '0'};
+  opacity: ${props => props.isOpen ? '1' : '0'};
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+`;
+
+const MobileActionButtons = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+  padding: 0 16px;
 `;
 
 const RotatingIcon = styled(DownOutlined)<{ $isOpen?: boolean }>`
@@ -695,12 +697,23 @@ const Navbar: React.FC = () => {
                   </MobileSubMenu>
                 </MobileMenuSection>
 
-                <MobileNavLink 
-                  to="/gold-loan"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Gold Loan
-                </MobileNavLink>
+                <MobileMenuSection>
+                  <MobileMenuHeader onClick={() => toggleSubMenu('gold-loan')}>
+                    <span>Gold Loan</span>
+                    <RotatingIcon $isOpen={openSubMenus.includes('gold-loan')} />
+                  </MobileMenuHeader>
+                  <MobileSubMenu isOpen={openSubMenus.includes('gold-loan')}>
+                    {loansMenu.goldLoan.map(item => (
+                      <MobileNavLink 
+                        key={item.key} 
+                        to={item.key}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        {item.label}
+                      </MobileNavLink>
+                    ))}
+                  </MobileSubMenu>
+                </MobileMenuSection>
               </MobileSubMenu>
             </MobileMenuSection>
 

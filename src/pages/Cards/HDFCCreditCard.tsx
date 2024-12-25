@@ -323,6 +323,10 @@ const PageContainer = styled.div`
 const BreadcrumbContainer = styled.div`
   padding: 24px 0;
   background: transparent;
+
+  @media (max-width: 768px) {
+    padding: 16px 8px;
+  }
 `;
 
 const Breadcrumb = styled.div`
@@ -332,7 +336,14 @@ const Breadcrumb = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
+
+   @media (max-width: 768px) {
+    font-size: 13px;
+    gap: 8px;
+  
+  }
 `;
+
 
 const BreadcrumbLink = styled(Link)`
   color: #666;
@@ -377,6 +388,12 @@ const HeroSection = styled.section`
   margin-bottom: 32px;
   border-radius: 16px;
   overflow: hidden;
+
+   @media (max-width: 768px) {
+
+    padding: 24px 0;
+    margin-bottom: 24px;
+  }
 `;
 
 const HeroGrid = styled.div`
@@ -387,11 +404,30 @@ const HeroGrid = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 48px;
   align-items: center;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 0 16px;
+    text-align: center;
+  }
 `;
 
 const CardImages = styled.div`
   position: relative;
   height: 250px;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  
+  @media (max-width: 768px) {
+    width: 280px;
+    height: 180px;
+    margin: 0 auto;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 `;
 
 const CardImage = styled.img`
@@ -416,12 +452,40 @@ const CardImage = styled.img`
       transform: rotate(0);
     }
   }
+
+   @media (max-width: 768px) {
+    width: 250px;
+    height: 150px;
+
+    &.rotated-left {
+    position: absolute;
+    transform: rotate(-6deg);
+    &:hover {
+      transform: rotate(0);
+    }
+  }
 `;
 
 const HeroContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+
+    @media (max-width: 768px) {
+      font-size: 1.75rem;
+      margin-bottom: 12px;
+    }
+  }
+
+  .ant-typography {
+    @media (max-width: 768px) {
+      font-size: 14px;
+      line-height: 1.5;
+    }
+  }
 `;
 
 const CardsSection = styled.div`

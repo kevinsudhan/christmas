@@ -6,7 +6,6 @@ import { motion } from 'framer-motion';
 import loginBg from '../../assets/login-bg.jpg';
 import { GlassCard, ShimmerButton, PulseCircle, FloatingElement } from '../../components/Animations/AnimatedComponents';
 
-
 const shimmer = keyframes`
   0% {
     background-position: -1000px 0;
@@ -34,6 +33,10 @@ const LoginContainer = styled.div`
   background: #f5f7fa;
   position: relative;
   overflow: hidden;
+
+  @media (max-width: 968px) {
+    flex-direction: column;
+  }
 `;
 
 const LeftSection = styled(motion.section)`
@@ -45,6 +48,17 @@ const LeftSection = styled(motion.section)`
   justify-content: center;
   padding: 60px;
   overflow: hidden;
+
+  @media (max-width: 968px) {
+    padding: 40px 20px;
+    min-height: 300px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 70px 24px;
+    min-height: 250px;
+  
+  }
 
   &::before {
     content: '';
@@ -85,6 +99,14 @@ const RightSection = styled(GlassCard)`
   border: none;
   border-radius: 0;
 
+  @media (max-width: 968px) {
+    padding: 40px 20px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 30px 16px;
+  }
+
   &::before {
     content: '';
     position: absolute;
@@ -103,6 +125,11 @@ const ContentWrapper = styled(motion.div)`
   z-index: 1;
   width: 100%;
   max-width: 400px;
+
+  @media (max-width: 968px) {
+    max-width: 100%;
+    padding: 0 20px;
+  }
 `;
 
 const HeroContent = styled(motion.div)`
@@ -164,6 +191,16 @@ const FormTitle = styled(motion.h2)`
     height: 3px;
     background: linear-gradient(90deg, #0077b6, transparent);
   }
+
+  @media (max-width: 968px) {
+    font-size: 1.75rem;
+    margin-bottom: 30px;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.5rem;
+    margin-bottom: 24px;
+  }
 `;
 
 const InputWrapper = styled(motion.div)`
@@ -199,11 +236,16 @@ const StyledInput = styled(Input)`
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(5px);
   transition: all 0.3s ease;
-  
+
   &:hover, &:focus {
     border-color: #0077b6;
     box-shadow: 0 0 0 2px rgba(0, 119, 182, 0.1);
     transform: translateY(-2px);
+  }
+
+  @media (max-width: 968px) {
+    height: 45px;
+    font-size: 0.95rem;
   }
 `;
 
@@ -215,11 +257,16 @@ const StyledPasswordInput = styled(Input.Password)`
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(5px);
   transition: all 0.3s ease;
-  
+
   &:hover, &:focus {
     border-color: #0077b6;
     box-shadow: 0 0 0 2px rgba(0, 119, 182, 0.1);
     transform: translateY(-2px);
+  }
+
+  @media (max-width: 968px) {
+    height: 45px;
+    font-size: 0.95rem;
   }
 `;
 
@@ -232,7 +279,7 @@ const LoginButton = styled(ShimmerButton)`
   margin-top: 20px;
   position: relative;
   overflow: hidden;
-  
+
   &::before {
     content: '';
     position: absolute;
@@ -248,6 +295,11 @@ const LoginButton = styled(ShimmerButton)`
     );
     animation: ${shimmer} 2s infinite;
   }
+
+  @media (max-width: 968px) {
+    height: 45px;
+    padding: 0 16px;
+  }
 `;
 
 const ForgotPassword = styled(motion.a)`
@@ -257,7 +309,7 @@ const ForgotPassword = styled(motion.a)`
   margin-top: 16px;
   font-size: 0.9rem;
   transition: all 0.3s ease;
-  
+
   &:hover {
     color: #023e8a;
     transform: translateX(5px);

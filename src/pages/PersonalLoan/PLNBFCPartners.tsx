@@ -1609,6 +1609,11 @@ const HeroSection = styled.section`
     background: radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
     z-index: 1;
   }
+
+   @media (max-width: 968px) {
+    padding: 20px 0;
+    text-align: center;
+  }
 `;
 
 const HeroContent = styled.div`
@@ -1622,15 +1627,42 @@ const HeroContent = styled.div`
   gap: 60px;
   align-items: center;
 
-  @media (max-width: 968px) {
+   @media (max-width: 968px) {
     grid-template-columns: 1fr;
-    text-align: center;
-    gap: 40px;
+    gap: 24px;
+    padding: 20px 12px;
   }
 `;
 
+
 const HeroText = styled.div`
-  color: white;
+  h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+    line-height: 1.2;
+
+    @media (max-width: 968px) {
+      font-size: 2.5rem;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 2rem;
+    }
+  }
+
+  p {
+    font-size: 1.2rem;
+    margin-bottom: 32px;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.6;
+
+    @media (max-width: 968px) {
+      font-size: 1rem;
+      margin-bottom: 24px;
+    }
+  }
 `;
 
 const HeroTitle = styled(motion.h1)`
@@ -1707,6 +1739,13 @@ const FloatingCard = styled(motion.div)<{ index: number }>`
   justify-content: space-between;
   transform-origin: center;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+
+  
+  @media (max-width: 968px) {
+    width: 220px;
+    height: 130px;
+    padding: 16px;
+}
   
 
   ${({ index }) => {
