@@ -7,17 +7,21 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Footer from '../../components/Footer/Footer';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { useNavigate } from 'react-router-dom';
+
 // Import images
-import yesHeroImage from '../../assets/images/cards/YESBANK.png';
-import marqueCard from '../../assets/images/cards/yes-bank/marquee.png';
-import reservCard from '../../assets/images/cards/yes-bank/reserv.png';
-import elitePlusCard from '../../assets/images/cards/yes-bank/elite.png';
-import selectCard from '../../assets/images/cards/yes-bank/select.png';
-import aceCard from '../../assets/images/cards/yes-bank/ace.png';
-import byocCard from '../../assets/images/cards/yes-bank/byoc.png';
-import wellnessCard from '../../assets/images/cards/yes-bank/welness.png';
-import emiCard from '../../assets/images/cards/yes-bank/emi.png';
+import indusindHeroImage from '../../assets/images/cards/INDUSIND.png';
+
+// Import card images
+import platinumRupayImg from '../../assets/images/cards/indusind-bank/platinum-rupay.png';
+import eazyDinerImg from '../../assets/images/cards/indusind-bank/eazydiner.png';
+import nexxtImg from '../../assets/images/cards/indusind-bank/nexxt.png';
+import sammanImg from '../../assets/images/cards/indusind-bank/samman.png';
+import eazyDinerPlatinumImg from '../../assets/images/cards/indusind-bank/eazydiner-platinum.png';
+import legendImg from '../../assets/images/cards/indusind-bank/legend.png';
+import pinnacleImg from '../../assets/images/cards/indusind-bank/pinnacle.png';
+import tigerImg from '../../assets/images/cards/indusind-bank/tiger.png';
+import platinumAuraImg from '../../assets/images/cards/indusind-bank/platinum-aura.png';
+import aviosInfiniteImg from '../../assets/images/cards/indusind-bank/avios.png';
 
 interface Card {
   id: number;
@@ -52,282 +56,330 @@ interface CardDetailsMap {
 const { Title, Text } = Typography;
 
 const creditCards: Card[] = [
-  {
-    id: 1,
-    name: "Yes MARQUÉE Credit Card",
-    image: marqueCard,
-    joiningFee: "₹12,000 + GST",
-    rating: 4.9,
-    suitedFor: ["Super Premium", "Lifestyle", "Travel"],
-    benefit: "Unlimited lounge access & golf privileges",
-    benefitIcon: SafetyCertificateOutlined,
-    creditLimit: "₹5,00,000+",
-    interestRate: "3.49% per month"
-  },
-  {
-    id: 2,
-    name: "Yes RESERV Credit Card",
-    image: reservCard,
-    joiningFee: "₹5,000 + GST",
-    rating: 4.8,
-    suitedFor: ["Premium", "Travel", "Dining"],
-    benefit: "8X reward points on dining & travel",
-    benefitIcon: GiftOutlined,
-    creditLimit: "₹3,00,000 - ₹15,00,000",
-    interestRate: "3.49% per month"
-  },
-  {
-    id: 3,
-    name: "Yes ELITE+ Credit Card",
-    image: elitePlusCard,
-    joiningFee: "₹2,999 + GST",
-    rating: 4.7,
-    suitedFor: ["Travel", "Shopping", "Entertainment"],
-    benefit: "6X reward points on all spends",
-    benefitIcon: StarFilled,
-    creditLimit: "₹2,00,000 - ₹10,00,000",
-    interestRate: "3.49% per month"
-  },
-  {
-    id: 4,
-    name: "Yes SELECT Credit Card",
-    image: selectCard,
-    joiningFee: "₹1,499 + GST",
-    rating: 4.6,
-    suitedFor: ["Shopping", "Entertainment", "Movies"],
-    benefit: "Buy 1 Get 1 on movie tickets & dining",
-    benefitIcon: GiftOutlined,
-    creditLimit: "₹1,50,000 - ₹7,00,000",
-    interestRate: "3.49% per month"
-  },
-  {
-    id: 5,
-    name: "Yes ACE Credit Card",
-    image: aceCard,
-    joiningFee: "₹999 + GST",
-    rating: 4.5,
-    suitedFor: ["Fuel", "Shopping", "Everyday"],
-    benefit: "1% fuel surcharge waiver & 4X rewards",
-    benefitIcon: PercentageOutlined,
-    creditLimit: "₹1,00,000 - ₹5,00,000",
-    interestRate: "3.49% per month"
-  },
-  {
-    id: 6,
-    name: "Yes BYOC Credit Card",
-    image: byocCard,
-    joiningFee: "₹499 + GST",
-    rating: 4.4,
-    suitedFor: ["Customizable", "Rewards", "Lifestyle"],
-    benefit: "Choose your own rewards categories",
-    benefitIcon: StarFilled,
-    creditLimit: "₹75,000 - ₹3,00,000",
-    interestRate: "3.49% per month"
-  },
-  {
-    id: 7,
-    name: "Yes Wellness Plus Credit Card",
-    image: wellnessCard,
-    joiningFee: "₹749 + GST",
-    rating: 4.5,
-    suitedFor: ["Healthcare", "Wellness", "Insurance"],
-    benefit: "5X rewards on health & wellness",
-    benefitIcon: SafetyCertificateOutlined,
-    creditLimit: "₹1,00,000 - ₹4,00,000",
-    interestRate: "3.49% per month"
-  },
-  {
-    id: 8,
-    name: "Yes EMI Credit Card",
-    image: emiCard,
-    joiningFee: "₹499 + GST",
-    rating: 4.3,
-    suitedFor: ["EMI", "Shopping", "Electronics"],
-    benefit: "No-cost EMI & low interest rates",
-    benefitIcon: PercentageOutlined,
-    creditLimit: "₹50,000 - ₹2,00,000",
-    interestRate: "3.49% per month"
-  }
-];
+    {
+      id: 1,
+      name: "Platinum RuPay Credit Card",
+      image: platinumRupayImg,
+      joiningFee: "₹1,000 + GST",
+      rating: 4.5,
+      suitedFor: ["Lifestyle", "Rewards"],
+      benefit: "2X rewards on everyday spends",
+      benefitIcon: StarFilled,
+      creditLimit: "₹50,000 - ₹5,00,000",
+      interestRate: "3.49% per month"
+    },
+    {
+      id: 2,
+      name: "EazyDiner Credit Card",
+      image: eazyDinerImg,
+      joiningFee: "₹2,500 + GST",
+      rating: 4.7,
+      suitedFor: ["Dining", "Lifestyle"],
+      benefit: "Up to 25% savings at partner restaurants",
+      benefitIcon: PercentageOutlined,
+      creditLimit: "₹1,00,000 - ₹7,00,000",
+      interestRate: "3.49% per month"
+    },
+    {
+      id: 3,
+      name: "Nexxt Credit Card",
+      image: nexxtImg,
+      joiningFee: "₹3,500 + GST",
+      rating: 4.8,
+      suitedFor: ["Premium", "Lifestyle"],
+      benefit: "5X rewards on chosen category",
+      benefitIcon: StarFilled,
+      creditLimit: "₹2,00,000 - ₹10,00,000",
+      interestRate: "3.49% per month"
+    },
+    {
+      id: 4,
+      name: "Samman Credit Card",
+      image: sammanImg,
+      joiningFee: "NIL",
+      rating: 4.3,
+      suitedFor: ["Government Employees", "Basic"],
+      benefit: "Zero joining and annual fee",
+      benefitIcon: SafetyCertificateOutlined,
+      creditLimit: "₹50,000 - ₹3,00,000",
+      interestRate: "3.49% per month"
+    },
+    {
+      id: 5,
+      name: "EazyDiner Platinum Credit Card",
+      image: eazyDinerPlatinumImg,
+      joiningFee: "₹5,000 + GST",
+      rating: 4.8,
+      suitedFor: ["Premium Dining", "Lifestyle"],
+      benefit: "15X reward points on dining",
+      benefitIcon: GiftOutlined,
+      creditLimit: "₹3,00,000 - ₹15,00,000",
+      interestRate: "3.49% per month"
+    },
+    {
+      id: 6,
+      name: "Legend Credit Card",
+      image: legendImg,
+      joiningFee: "₹25,000 + GST",
+      rating: 4.9,
+      suitedFor: ["Super Premium", "Luxury"],
+      benefit: "Unlimited airport lounge access worldwide",
+      benefitIcon: StarFilled,
+      creditLimit: "₹10,00,000+",
+      interestRate: "3.49% per month"
+    },
+    {
+      id: 7,
+      name: "Pinnacle Credit Card",
+      image: pinnacleImg,
+      joiningFee: "By invitation only",
+      rating: 5.0,
+      suitedFor: ["Ultra Premium", "Exclusive"],
+      benefit: "Customized luxury privileges",
+      benefitIcon: StarFilled,
+      creditLimit: "No preset limit",
+      interestRate: "3.49% per month"
+    },
+    {
+      id: 8,
+      name: "Tiger Credit Card",
+      image: tigerImg,
+      joiningFee: "₹500 + GST",
+      rating: 4.2,
+      suitedFor: ["Basic", "Rewards"],
+      benefit: "1 reward point per ₹100 spent",
+      benefitIcon: GiftOutlined,
+      creditLimit: "₹25,000 - ₹2,00,000",
+      interestRate: "3.49% per month"
+    },
+    {
+      id: 9,
+      name: "Platinum Aura Edge Credit Card",
+      image: platinumAuraImg,
+      joiningFee: "₹3,000 + GST",
+      rating: 4.6,
+      suitedFor: ["Lifestyle", "Entertainment"],
+      benefit: "5X rewards on weekend spends",
+      benefitIcon: PercentageOutlined,
+      creditLimit: "₹1,50,000 - ₹8,00,000",
+      interestRate: "3.49% per month"
+    },
+    {
+      id: 10,
+      name: "Avios Visa Infinite Credit Card",
+      image: aviosInfiniteImg,
+      joiningFee: "₹10,000 + GST",
+      rating: 4.8,
+      suitedFor: ["Premium Travel", "Luxury"],
+      benefit: "4 Avios points per ₹100 spent",
+      benefitIcon: StarFilled,
+      creditLimit: "₹5,00,000 - ₹20,00,000",
+      interestRate: "3.49% per month"
+    }
+  ];
 
-const cardDetailsMap: CardDetailsMap = {
-  "Yes MARQUÉE Credit Card": {
-    features: [
-      "Unlimited domestic & international airport lounge access",
-      "8 complimentary golf rounds per year",
-      "24/7 concierge services worldwide",
-      "Premium hotel memberships & upgrades",
-      "Comprehensive travel insurance up to ₹1 Crore"
-    ],
-    rewards: [
-      "10X reward points on travel & dining",
-      "5X reward points on other spends",
-      "Welcome bonus of 75,000 points",
-      "Milestone benefits up to 1,00,000 points"
-    ],
-    fees: {
-      joining: "₹12,000 + GST",
-      annual: "₹12,000 + GST",
-      renewal: "₹12,000 + GST"
+  const cardDetailsMap: CardDetailsMap = {
+    "Platinum RuPay Credit Card": {
+      features: [
+        "Complimentary airport lounge access",
+        "Fuel surcharge waiver up to ₹250 per month",
+        "Zero liability protection",
+        "Personal accident insurance cover"
+      ],
+      rewards: [
+        "Welcome bonus of 2,000 reward points",
+        "2 reward points per ₹100 spent",
+        "2X rewards on weekend dining"
+      ],
+      fees: {
+        joining: "₹1,000 + GST",
+        annual: "₹1,000 + GST",
+        renewal: "₹1,000 + GST"
+      },
+      creditLimit: "₹50,000 - ₹5,00,000",
+      interestRate: "3.49% per month"
     },
-    creditLimit: "₹5,00,000+",
-    interestRate: "3.49% per month"
-  },
-  "Yes RESERV Credit Card": {
-    features: [
-      "8 complimentary airport lounge visits per quarter",
-      "Premium dining privileges at 1000+ restaurants",
-      "Travel insurance up to ₹50 Lakhs",
-      "Hotel booking benefits & room upgrades",
-      "Priority customer service"
-    ],
-    rewards: [
-      "8X reward points on dining & travel",
-      "4X reward points on other spends",
-      "Welcome bonus of 40,000 points",
-      "Quarterly milestone benefits"
-    ],
-    fees: {
-      joining: "₹5,000 + GST",
-      annual: "₹5,000 + GST",
-      renewal: "₹5,000 + GST"
+    "EazyDiner Credit Card": {
+      features: [
+        "Up to 25% savings at partner restaurants",
+        "Complimentary EazyDiner Prime membership",
+        "No convenience fee on movie tickets",
+        "24/7 concierge services"
+      ],
+      rewards: [
+        "10X reward points on dining",
+        "Welcome dining vouchers worth ₹2,000",
+        "Birthday bonus points"
+      ],
+      fees: {
+        joining: "₹2,500 + GST",
+        annual: "₹2,500 + GST",
+        renewal: "₹2,500 + GST"
+      },
+      creditLimit: "₹1,00,000 - ₹7,00,000",
+      interestRate: "3.49% per month"
     },
-    creditLimit: "₹3,00,000 - ₹15,00,000",
-    interestRate: "3.49% per month"
-  },
-  "Yes ELITE+ Credit Card": {
-    features: [
-      "6 complimentary airport lounge visits per quarter",
-      "Buy 1 Get 1 movie tickets at all major chains",
-      "Travel insurance up to ₹30 Lakhs",
-      "Dining discounts up to 25%",
-      "Fuel surcharge waiver"
-    ],
-    rewards: [
-      "6X reward points on all spends",
-      "Welcome bonus of 25,000 points",
-      "2X rewards on weekend spends",
-      "Annual milestone benefits"
-    ],
-    fees: {
-      joining: "₹2,999 + GST",
-      annual: "₹2,999 + GST",
-      renewal: "₹2,999 + GST"
+    "Nexxt Credit Card": {
+      features: [
+        "Customizable reward categories",
+        "Movie ticket BOGO offers",
+        "Complimentary golf sessions",
+        "Travel insurance coverage"
+      ],
+      rewards: [
+        "5X rewards on your chosen category",
+        "Welcome bonus points",
+        "Milestone bonus rewards"
+      ],
+      fees: {
+        joining: "₹3,500 + GST",
+        annual: "₹3,500 + GST",
+        renewal: "₹3,500 + GST"
+      },
+      creditLimit: "₹2,00,000 - ₹10,00,000",
+      interestRate: "3.49% per month"
     },
-    creditLimit: "₹2,00,000 - ₹10,00,000",
-    interestRate: "3.49% per month"
-  },
-  "Yes SELECT Credit Card": {
-    features: [
-      "Buy 1 Get 1 on movie tickets (up to 2 per month)",
-      "Buy 1 Get 1 on dining (up to ₹500 per bill)",
-      "4 domestic airport lounge visits per year",
-      "Travel insurance up to ₹20 Lakhs",
-      "Fuel surcharge waiver"
-    ],
-    rewards: [
-      "4X reward points on dining & movies",
-      "2X reward points on other spends",
-      "Welcome bonus of 15,000 points",
-      "Birthday month double rewards"
-    ],
-    fees: {
-      joining: "₹1,499 + GST",
-      annual: "₹1,499 + GST",
-      renewal: "₹1,499 + GST"
+    "Samman Credit Card": {
+      features: [
+        "Special interest rates",
+        "Complimentary personal accident insurance",
+        "Emergency card replacement service",
+        "Zero fraud liability"
+      ],
+      rewards: [
+        "2X rewards on utility bills",
+        "Special government employee benefits",
+        "Fuel surcharge waiver"
+      ],
+      fees: {
+        joining: "NIL",
+        annual: "NIL",
+        renewal: "NIL"
+      },
+      creditLimit: "₹50,000 - ₹3,00,000",
+      interestRate: "3.49% per month"
     },
-    creditLimit: "₹1,50,000 - ₹7,00,000",
-    interestRate: "3.49% per month"
-  },
-  "Yes ACE Credit Card": {
-    features: [
-      "1% fuel surcharge waiver at all fuel stations",
-      "4X rewards on utility bill payments",
-      "2 domestic airport lounge visits per year",
-      "Movie ticket discounts",
-      "Shopping offers"
-    ],
-    rewards: [
-      "4X reward points on utilities & fuel",
-      "2X reward points on other spends",
-      "Welcome bonus of 10,000 points",
-      "Quarterly milestone rewards"
-    ],
-    fees: {
-      joining: "₹999 + GST",
-      annual: "₹999 + GST",
-      renewal: "₹999 + GST"
+    "EazyDiner Platinum Credit Card": {
+      features: [
+        "Up to 40% savings at luxury restaurants",
+        "Premium EazyDiner Prime membership",
+        "Concierge services",
+        "Priority restaurant reservations"
+      ],
+      rewards: [
+        "15X reward points on dining",
+        "Quarterly dining vouchers worth ₹5,000",
+        "Anniversary bonus points"
+      ],
+      fees: {
+        joining: "₹5,000 + GST",
+        annual: "₹5,000 + GST",
+        renewal: "₹5,000 + GST"
+      },
+      creditLimit: "₹3,00,000 - ₹15,00,000",
+      interestRate: "3.49% per month"
     },
-    creditLimit: "₹1,00,000 - ₹5,00,000",
-    interestRate: "3.49% per month"
-  },
-  "Yes BYOC Credit Card": {
-    features: [
-      "Choose 3 reward categories",
-      "2 domestic airport lounge visits per year",
-      "Movie ticket discounts",
-      "Dining offers",
-      "Fuel surcharge waiver"
-    ],
-    rewards: [
-      "5X rewards on chosen categories",
-      "2X rewards on other spends",
-      "Welcome bonus of 5,000 points",
-      "Category change option quarterly"
-    ],
-    fees: {
-      joining: "₹499 + GST",
-      annual: "₹499 + GST",
-      renewal: "₹499 + GST"
+    "Legend Credit Card": {
+      features: [
+        "Unlimited airport lounge access worldwide",
+        "Personal relationship manager",
+        "Complimentary hotel night stays",
+        "Premium golf access worldwide"
+      ],
+      rewards: [
+        "20X reward points on luxury shopping",
+        "Unlimited reward points",
+        "Special luxury brand privileges"
+      ],
+      fees: {
+        joining: "₹25,000 + GST",
+        annual: "₹25,000 + GST",
+        renewal: "₹25,000 + GST"
+      },
+      creditLimit: "₹10,00,000+",
+      interestRate: "3.49% per month"
     },
-    creditLimit: "₹75,000 - ₹3,00,000",
-    interestRate: "3.49% per month"
-  },
-  "Yes Wellness Plus Credit Card": {
-    features: [
-      "5X rewards on health & wellness spends",
-      "Complimentary health check-up",
-      "Pharmacy discounts up to 20%",
-      "Teleconsultation benefits",
-      "Insurance coverage"
-    ],
-    rewards: [
-      "5X rewards on healthcare spends",
-      "2X rewards on other spends",
-      "Welcome bonus of 7,500 points",
-      "Annual health benefits"
-    ],
-    fees: {
-      joining: "₹749 + GST",
-      annual: "₹749 + GST",
-      renewal: "₹749 + GST"
+    "Pinnacle Credit Card": {
+      features: [
+        "Private jet booking services",
+        "Luxury hotel upgrades",
+        "Dedicated concierge service",
+        "Exclusive event access"
+      ],
+      rewards: [
+        "Unlimited reward points",
+        "Special luxury experiences",
+        "Customized rewards program"
+      ],
+      fees: {
+        joining: "By invitation only",
+        annual: "By invitation only",
+        renewal: "By invitation only"
+      },
+      creditLimit: "No preset limit",
+      interestRate: "3.49% per month"
     },
-    creditLimit: "₹1,00,000 - ₹4,00,000",
-    interestRate: "3.49% per month"
-  },
-  "Yes EMI Credit Card": {
-    features: [
-      "No-cost EMI on all purchases above ₹2,500",
-      "Low interest rate on EMI conversion",
-      "Flexible tenure options (3-24 months)",
-      "Pre-approved loan facility",
-      "Easy EMI conversion"
-    ],
-    rewards: [
-      "2X rewards on EMI transactions",
-      "1X rewards on other spends",
-      "Welcome bonus of 2,500 points",
-      "EMI waiver on milestone achievement"
-    ],
-    fees: {
-      joining: "₹499 + GST",
-      annual: "₹499 + GST",
-      renewal: "₹499 + GST"
+    "Tiger Credit Card": {
+      features: [
+        "Fuel surcharge waiver",
+        "Movie ticket discounts",
+        "EMI conversion facility",
+        "Zero liability protection"
+      ],
+      rewards: [
+        "Welcome bonus of 1,000 reward points",
+        "1 reward point per ₹100 spent",
+        "Special first purchase offers"
+      ],
+      fees: {
+        joining: "₹500 + GST",
+        annual: "₹500 + GST",
+        renewal: "₹500 + GST"
+      },
+      creditLimit: "₹25,000 - ₹2,00,000",
+      interestRate: "3.49% per month"
     },
-    creditLimit: "₹50,000 - ₹2,00,000",
-    interestRate: "3.49% per month"
-  }
-};
+    "Platinum Aura Edge Credit Card": {
+      features: [
+        "Monthly movie ticket BOGO",
+        "Dining privileges at select restaurants",
+        "Complimentary airport transfers",
+        "Shopping protection insurance"
+      ],
+      rewards: [
+        "5X rewards on weekend spends",
+        "Special shopping season bonuses",
+        "Entertainment reward points"
+      ],
+      fees: {
+        joining: "₹3,000 + GST",
+        annual: "₹3,000 + GST",
+        renewal: "₹3,000 + GST"
+      },
+      creditLimit: "₹1,50,000 - ₹8,00,000",
+      interestRate: "3.49% per month"
+    },
+    "Avios Visa Infinite Credit Card": {
+      features: [
+        "Complimentary British Airways Silver status",
+        "Travel insurance coverage up to ₹1 crore",
+        "Priority Pass membership",
+        "Global airport lounge access"
+      ],
+      rewards: [
+        "Welcome bonus of 10,000 Avios points",
+        "4 Avios points per ₹100 spent",
+        "Travel milestone bonuses"
+      ],
+      fees: {
+        joining: "₹10,000 + GST",
+        annual: "₹10,000 + GST",
+        renewal: "₹10,000 + GST"
+      },
+      creditLimit: "₹5,00,000 - ₹20,00,000",
+      interestRate: "3.49% per month"
+    }
+  };
 
 const PageContainer = styled.div`
   min-height: 100vh;
@@ -360,8 +412,6 @@ const Breadcrumb = styled.div`
   
   }
 `;
-
-
 
 
 const BreadcrumbLink = styled(Link)`
@@ -515,6 +565,8 @@ const HeroContent = styled.div`
     }
   }
 `;
+
+
 
 const CardsSection = styled.div`
   display: flex;
@@ -947,8 +999,7 @@ const DownloadButton = styled(Button)`
   gap: 8px;
 `;
 
-const YesCreditCard: React.FC = () => {
-  const navigate = useNavigate();
+const IDFCCreditCard: React.FC = () => {
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
   const [isCompareModalVisible, setIsCompareModalVisible] = useState(false);
@@ -1012,36 +1063,31 @@ const YesCreditCard: React.FC = () => {
             <BreadcrumbSeparator>&gt;</BreadcrumbSeparator>
             <BreadcrumbLink to="/credit-cards">Cards</BreadcrumbLink>
             <BreadcrumbSeparator>&gt;</BreadcrumbSeparator>
-            <BreadcrumbCurrent>Yes Bank Credit Cards</BreadcrumbCurrent>
+            <BreadcrumbCurrent>IndusInd Bank Credit Cards</BreadcrumbCurrent>
           </Breadcrumb>
         </BreadcrumbContainer>
         <Container>
           <HeroSection>
             <HeroGrid>
               <CardImages>
-                <CardImage src={yesHeroImage} alt="Yes Bank Credit Card" className="rotated-left" />
-                <CardImage src={yesHeroImage} alt="Yes Bank Credit Card" className="rotated-right" />
+                <CardImage src={indusindHeroImage} alt="IndusInd Bank Credit Card" className="rotated-left" />
+                <CardImage src={indusindHeroImage} alt="IndusInd Bank Credit Card" className="rotated-right" />
               </CardImages>
               <HeroContent>
                 <Title level={1} style={{ color: 'white', margin: 0 }}>
-                  Yes Bank Credit Cards
+                  IndusInd Bank Credit Cards
                 </Title>
                 <Text style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '18px' }}>
-                  Yes Bank Credit Cards offer a range of benefits tailored to different lifestyles. 
+                IndusInd Bank Credit Cards offer a range of benefits tailored to different lifestyles. 
                   From rewards on daily spends to exclusive lifestyle privileges, these cards are designed 
                   to enhance your banking experience.
                 </Text>
                 <div>
-                <Button 
-    type="default" 
-    size="large" 
-    style={{ marginRight: '16px' }}
-    onClick={() => navigate('/apply')}
-  >
-    Apply Now
-  </Button>
+                  <Button type="default" size="large" style={{ marginRight: '16px' }}>
+                    Apply Now
+                  </Button>
                   <Text type="secondary" style={{ fontSize: '14px' }}>
-                    On Yes Bank website
+                    On IndusInd Bank website
                   </Text>
                 </div>
               </HeroContent>
@@ -1050,7 +1096,7 @@ const YesCreditCard: React.FC = () => {
 
           <CardsSection>
             <SectionTitle>
-              Yes Bank Credit Cards
+              IndusInd Bank Credit Cards
             </SectionTitle>
 
             {creditCards.map((card: Card) => (
@@ -1106,9 +1152,9 @@ const YesCreditCard: React.FC = () => {
                       </Text>
                     </RatingContainer>
                     <Button onClick={() => handleViewDetails(card.name)}>View Details</Button>
-                    <Button type="primary" block onClick={() => navigate('/apply')}>Apply</Button>
+                    <Button type="primary">Apply</Button>
                     <Text type="secondary" style={{ fontSize: '12px', textAlign: 'center' }}>
-                      On Yes Bank Website
+                      On IndusInd Bank Website
                     </Text>
                   </div>
                 </CardGrid>
@@ -1324,4 +1370,4 @@ const YesCreditCard: React.FC = () => {
   );
 };
 
-export default YesCreditCard;
+export default IDFCCreditCard;

@@ -29,7 +29,7 @@ import AxisCreditCard from './pages/Cards/AxisCreditCard';
 import HDFCCreditCard from './pages/Cards/HDFCCreditCard';
 import ICICICreditCard from './pages/Cards/ICICICreditCard';
 import IDFCCreditCard from './pages/Cards/IDFCCreditCard';
-import YesBankCreditCard from './pages/Cards/YesBankCreditCard';
+import IndusIndCreditCard from './pages/Cards/IndusIndCreditCard';
 
 // Personal Loan Partner Pages
 import PLBankingPartners from './pages/PersonalLoan/PLBankingPartners';
@@ -73,7 +73,7 @@ const App: React.FC = () => {
             <Route path="/cards/hdfc-bank" element={<HDFCCreditCard />} />
             <Route path="/cards/icici-bank" element={<ICICICreditCard />} />
             <Route path="/cards/idfc-bank" element={<IDFCCreditCard />} />
-            <Route path="/cards/yes-bank" element={<YesBankCreditCard />} />
+            <Route path="/cards/indusind-bank" element={<IndusIndCreditCard />} />
             
             {/* Loan Routes */}
             <Route path="/loans" element={<Loans />} />
