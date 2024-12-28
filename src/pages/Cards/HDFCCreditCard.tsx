@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Footer from '../../components/Footer/Footer';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { useNavigate } from 'react-router-dom';
 
 // Import images
 import hdfcHeroImage from '../../assets/images/cards/HDFC.png';
@@ -668,6 +669,8 @@ const StyledModal = styled(Modal)`
   }
 `;
 
+
+
 const CompareGrid = styled.div<{ cards: number }>`
   display: grid;
   grid-template-columns: repeat(${props => props.cards}, 1fr);
@@ -922,6 +925,7 @@ const DownloadButton = styled(Button)`
 `;
 
 const HDFCCreditCard: React.FC = () => {
+  const navigate = useNavigate();
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
   const [isCompareModalVisible, setIsCompareModalVisible] = useState(false);
@@ -1004,8 +1008,13 @@ const HDFCCreditCard: React.FC = () => {
                   to enhance your banking experience.
                 </Text>
                 <div>
-                  <Button type="default" size="large" style={{ marginRight: '16px' }}>
-                    Apply Now
+                  <Button   
+                  type="default" 
+                  size="large" 
+                  style={{ marginRight: '16px' }}
+                  onClick={() => navigate('/apply')}
+                  >
+                  Apply Now
                   </Button>
                   <Text type="secondary" style={{ fontSize: '14px' }}>
                     On HDFC Bank website
@@ -1073,7 +1082,7 @@ const HDFCCreditCard: React.FC = () => {
                       </Text>
                     </RatingContainer>
                     <Button onClick={() => handleViewDetails(card.name)}>View Details</Button>
-                    <Button type="primary">Apply</Button>
+                    <Button type="primary" block onClick={() => navigate('/apply')}>Apply</Button>
                     <Text type="secondary" style={{ fontSize: '12px', textAlign: 'center' }}>
                       On HDFC Bank Website
                     </Text>

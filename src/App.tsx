@@ -22,6 +22,7 @@ import AboutUs from './pages/AboutUs/AboutUs';
 import Insurance from './pages/Insurance/Insurance';
 import Loans from './pages/Loans/Loans';
 import Login from './pages/login/Login';
+import Apply from './pages/Apply/Apply';
 
 // Card Pages
 import AxisCreditCard from './pages/Cards/AxisCreditCard';
@@ -107,6 +108,7 @@ const App: React.FC = () => {
             <Route path="/general-insurance" element={<GeneralInsurance />} />
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/apply" element={<Apply />} />
           </Routes>
         </MainContent>
       </AppContainer>
