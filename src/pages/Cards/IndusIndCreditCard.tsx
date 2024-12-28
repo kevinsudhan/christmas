@@ -7,6 +7,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Footer from '../../components/Footer/Footer';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { useNavigate } from 'react-router-dom';
+
 
 // Import images
 import indusindHeroImage from '../../assets/images/cards/INDUSIND.png';
@@ -1000,6 +1002,7 @@ const DownloadButton = styled(Button)`
 `;
 
 const IDFCCreditCard: React.FC = () => {
+  const navigate = useNavigate();
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
   const [isCompareModalVisible, setIsCompareModalVisible] = useState(false);
@@ -1083,9 +1086,14 @@ const IDFCCreditCard: React.FC = () => {
                   to enhance your banking experience.
                 </Text>
                 <div>
-                  <Button type="default" size="large" style={{ marginRight: '16px' }}>
-                    Apply Now
-                  </Button>
+                <Button 
+    type="default" 
+    size="large" 
+    style={{ marginRight: '16px' }}
+    onClick={() => navigate('/apply')}
+  >
+    Apply Now
+  </Button>
                   <Text type="secondary" style={{ fontSize: '14px' }}>
                     On IndusInd Bank website
                   </Text>
@@ -1152,7 +1160,7 @@ const IDFCCreditCard: React.FC = () => {
                       </Text>
                     </RatingContainer>
                     <Button onClick={() => handleViewDetails(card.name)}>View Details</Button>
-                    <Button type="primary">Apply</Button>
+                    <Button type="primary" block onClick={() => navigate('/apply')}>Apply</Button>
                     <Text type="secondary" style={{ fontSize: '12px', textAlign: 'center' }}>
                       On IndusInd Bank Website
                     </Text>
