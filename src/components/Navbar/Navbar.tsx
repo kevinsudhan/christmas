@@ -422,8 +422,8 @@ const Navbar: React.FC = () => {
       label: <Link to="/cards/idfc-bank">IDFC Bank Credit Cards</Link>,
     },
     {
-      key: 'yes-bank',
-      label: <Link to="/cards/yes-bank">Yes Bank Credit Cards</Link>,
+      key: 'indusind-bank',
+      label: <Link to="/cards/indusind-bank">IndusInd Bank Credit Cards</Link>,
     },
   ];
 
