@@ -654,7 +654,7 @@ const Apply: React.FC = () => {
             ease: "easeInOut"
           }}
         />
-
+        
         <HeroContent>
           <MainTitle
             initial={{ y: -20, opacity: 0 }}
