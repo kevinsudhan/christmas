@@ -668,7 +668,7 @@ const Apply: React.FC = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3 }}
           >
-            Complete your application in minutes
+            Curious about our loan options? Reach out today to connect with our experts and discover the perfect solution for your needs
           </Tagline>
           <LoginForm onFinish={handleSubmit}>
             <Form.Item
