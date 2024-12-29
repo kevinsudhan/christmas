@@ -23,6 +23,7 @@ import Insurance from './pages/Insurance/Insurance';
 import Loans from './pages/Loans/Loans';
 import Login from './pages/login/Login';
 import Apply from './pages/Apply/Apply';
+import EmployeeLogin from './pages/EmployeeLogin/EmployeeLogin';
 import EmployeeDashboard from './pages/EmployeeDashboard/EmployeeDashboard';
 import EmployeeLoans from './pages/EmployeeDashboard/EmployeeLoans';
 import EmployeeInsurance from './pages/EmployeeDashboard/EmployeeInsurance';
@@ -115,6 +116,7 @@ const App: React.FC = () => {
             <Route path="/apply" element={<Apply />} />
             
             {/* Employee Dashboard Routes */}
+            <Route path="/employee-login" element={<EmployeeLogin />} />
             <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
             <Route path="/employee/loans" element={<EmployeeLoans />} />
             <Route path="/employee/insurance" element={<EmployeeInsurance />} />

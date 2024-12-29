@@ -183,7 +183,7 @@ const Footer: React.FC = () => {
             <h3>About Us</h3>
             <ul>
               <li><Link to="/about">About Us</Link></li>
-              <li><Link to="/employee-dashboard">Employee Login</Link></li>
+              <li><Link to="/employee-login">Employee Login</Link></li>
               <li><Link to="/contact">Contact</Link></li>
               <li><Link to="/careers">Careers</Link></li>
               <li><Link to="/blog">Blog</Link></li>
