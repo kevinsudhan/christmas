@@ -6,6 +6,7 @@ import Awards from '../../components/Awards/Awards';
 import Partners from '../../components/Partners/Partners';
 import Metrics from '../../components/Metrics/Metrics';
 
+
 const HomeContainer = styled.div`
   position: relative;
 `;
@@ -35,6 +36,7 @@ const Home: React.FC = () => {
       <Services />
       <Awards />
       <Partners />
+
     </HomeContainer>
   );
 };

@@ -9,7 +9,7 @@ const FooterContainer = styled.footer`
   position: relative;
   overflow: hidden;
 
-  
+  /* Media Queries */
   @media (max-width: 968px) {
     padding: 60px 0 30px;
   }
@@ -36,7 +36,7 @@ const FooterContent = styled.div`
   position: relative;
   z-index: 1;
 
-  
+  /* Media Queries */
   @media (max-width: 480px) {
     padding: 0 16px;
   }
@@ -180,9 +180,10 @@ const Footer: React.FC = () => {
       <FooterContent>
         <FooterGrid>
           <FooterSection>
-            <h3>Quick Links</h3>
+            <h3>About Us</h3>
             <ul>
               <li><Link to="/about">About Us</Link></li>
+              <li><Link to="/employee-dashboard">Employee Login</Link></li>
               <li><Link to="/contact">Contact</Link></li>
               <li><Link to="/careers">Careers</Link></li>
               <li><Link to="/blog">Blog</Link></li>
@@ -238,7 +239,7 @@ const Footer: React.FC = () => {
 
         <Divider />
         <Copyright>
-          © 2024 EBS. All rights reserved.
+          2024 EBS. All rights reserved.
         </Copyright>
       </FooterContent>
     </FooterContainer>
