@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { Input, Form } from 'antd';
-import { UserOutlined, LockOutlined, MailOutlined, MobileOutlined, BankOutlined, DollarOutlined, HomeOutlined } from '@ant-design/icons';
+import { Input, Form, notification, Select, message } from 'antd';
+import { UserOutlined, LockOutlined, MailOutlined, MobileOutlined, BankOutlined, DollarOutlined, HomeOutlined, AppstoreOutlined } from '@ant-design/icons';
 import { motion } from 'framer-motion';
 import loginBg from '../../assets/login-bg.jpg';
 import { GlassCard, ShimmerButton, PulseCircle, FloatingElement } from '../../components/Animations/AnimatedComponents';
+import { submitApplication } from '@/services/applicationService';
 
 const shimmer = keyframes`
   0% {
@@ -46,6 +47,7 @@ const LeftSection = styled(motion.section)`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   padding: 60px;
   overflow: hidden;
 
@@ -57,31 +59,6 @@ const LeftSection = styled(motion.section)`
   @media (max-width: 480px) {
     padding: 70px 24px;
     min-height: 250px;
-  
-  }
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url(${loginBg}) no-repeat center center;
-    background-size: cover;
-    opacity: 0.1;
-    z-index: 0;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 150px;
-    background: linear-gradient(180deg, transparent, rgba(2, 62, 138, 0.3));
-    pointer-events: none;
   }
 `;
 
@@ -125,17 +102,7 @@ const ContentWrapper = styled(motion.div)`
   z-index: 1;
   width: 100%;
   max-width: 400px;
-  padding: 40px;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(0, 119, 182, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-
-  @media (max-width: 968px) {
-    max-width: 100%;
-    padding: 30px;
-  }
+  margin: 0 auto;
 `;
 
 const HeroContent = styled(motion.div)`
@@ -175,159 +142,28 @@ const Tagline = styled(motion.p)`
   max-width: 500px;
 `;
 
-const LoginForm = styled(Form)`
-  width: 100%;
-`;
-
-const FormTitle = styled(motion.h2)`
-  font-size: 2.2rem;
-  color: #0077b6;
-  margin-bottom: 40px;
-  text-align: center;
-  font-weight: 700;
-  position: relative;
-  background: linear-gradient(135deg, #0077b6 0%, #023e8a 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 50px;
-    height: 4px;
-    background: linear-gradient(90deg, #0077b6, #023e8a);
-    border-radius: 2px;
-  }
-
-  @media (max-width: 968px) {
-    font-size: 1.8rem;
-    margin-bottom: 30px;
-  }
-`;
-
-const InputWrapper = styled(motion.div)`
-  position: relative;
-  margin-bottom: 24px;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.2),
-      transparent
-    );
-    transition: 0.5s;
-  }
-
-  &:hover::before {
-    left: 100%;
-  }
-`;
-
 const StyledInput = styled(Input)`
-  height: 54px;
-  border-radius: 12px;
-  font-size: 1.1rem;
+  height: 42px;
+  border-radius: 8px;
+  font-size: 0.95rem;
   border: 2px solid rgba(0, 119, 182, 0.1);
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(5px);
-  padding: 0 20px;
-  transition: all 0.3s ease;
-
-  .ant-input {
-    background: transparent;
-  }
 
   .ant-input-prefix {
-    margin-right: 15px;
+    margin-right: 10px;
     color: #0077b6;
-    font-size: 1.2rem;
     opacity: 0.8;
-    transition: all 0.3s ease;
   }
 
   &:hover {
     border-color: #0077b6;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 119, 182, 0.1);
-
-    .ant-input-prefix {
-      opacity: 1;
-      transform: scale(1.1);
-    }
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 119, 182, 0.1);
   }
 
   &:focus {
     border-color: #0077b6;
-    box-shadow: 0 0 0 2px rgba(0, 119, 182, 0.2);
-    transform: translateY(-2px);
-  }
-
-  @media (max-width: 968px) {
-    height: 50px;
-    font-size: 1rem;
-  }
-`;
-
-const StyledPasswordInput = styled(Input.Password)`
-  height: 54px;
-  border-radius: 12px;
-  font-size: 1.1rem;
-  border: 2px solid rgba(0, 119, 182, 0.1);
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(5px);
-  padding: 0 20px;
-  transition: all 0.3s ease;
-
-  .ant-input {
-    background: transparent;
-  }
-
-  .ant-input-prefix {
-    margin-right: 15px;
-    color: #0077b6;
-    font-size: 1.2rem;
-    opacity: 0.8;
-    transition: all 0.3s ease;
-  }
-
-  .ant-input-suffix {
-    font-size: 1.2rem;
-    color: #0077b6;
-    opacity: 0.8;
-    transition: all 0.3s ease;
-  }
-
-  &:hover {
-    border-color: #0077b6;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 119, 182, 0.1);
-
-    .ant-input-prefix,
-    .ant-input-suffix {
-      opacity: 1;
-      transform: scale(1.1);
-    }
-  }
-
-  &:focus {
-    border-color: #0077b6;
-    box-shadow: 0 0 0 2px rgba(0, 119, 182, 0.2);
-    transform: translateY(-2px);
-  }
-
-  @media (max-width: 968px) {
-    height: 50px;
-    font-size: 1rem;
+    box-shadow: 0 0 0 2px rgba(0, 119, 182, 0.1);
+    transform: translateY(-1px);
   }
 `;
 
@@ -377,97 +213,20 @@ const LoginButton = styled(motion.button)`
   }
 `;
 
-const ForgotPassword = styled(motion.a)`
-  display: block;
-  text-align: center;
-  color: #0077b6;
-  font-size: 1rem;
-  margin-top: 20px;
-  text-decoration: none;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  text-shadow: 0 0 1px rgba(0, 119, 182, 0.1);
-
-  &:hover {
-    color: #023e8a;
-    text-shadow: 0 0 2px rgba(0, 119, 182, 0.2);
-  }
-`;
-
-const ParticleContainer = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  overflow: hidden;
-  pointer-events: none;
-`;
-
-const FloatingDot = styled(motion.div)`
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-`;
-
-const FloatingSquare = styled(motion.div)`
-  position: absolute;
-  transform: rotate(45deg);
-  pointer-events: none;
-`;
-
-const GradientLine = styled(motion.div)`
-  position: absolute;
-  height: 1px;
-  pointer-events: none;
-`;
-
-const CircleDecoration = styled(motion.div)`
-  position: absolute;
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  pointer-events: none;
-`;
-
-const FloatingShape = styled(FloatingElement)`
-  position: absolute;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-  border-radius: 50%;
-  z-index: 0;
-  animation: ${float} 3s ease-in-out infinite;
-`;
-
-const GridLines = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: 
-    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-  background-size: 30px 30px;
-  z-index: 1;
-  pointer-events: none;
-`;
-
-const RightGridLines = styled(GridLines)`
-  background-image: 
-    linear-gradient(rgba(0, 119, 182, 0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 119, 182, 0.015) 1px, transparent 1px);
-`;
-
-const GlowingOrb = styled(motion.div)`
-  position: absolute;
-  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-  border-radius: 50%;
-  z-index: 1;
-`;
+interface FormValues {
+  name: string;
+  salary: number;
+  mobileNumber: string;
+  email: string;
+  currentCompany: string;
+  netTakeHome: number;
+  bankAccountDetails: string;
+  productType: 'Loans' | 'Insurance' | 'Credit Cards';
+}
 
 const Apply: React.FC = () => {
   const [form] = Form.useForm();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -492,8 +251,42 @@ const Apply: React.FC = () => {
     }
   };
 
-  const handleSubmit = (values: any) => {
-    console.log('Form values:', values);
+  const handleSubmit = async (values: FormValues) => {
+    setIsSubmitting(true);
+    try {
+      console.log('Form values:', values);
+
+      const applicationData = {
+        name: values.name,
+        salary: values.salary,
+        mobile_number: values.mobileNumber,
+        email: values.email,
+        current_company: values.currentCompany,
+        net_take_home: values.netTakeHome,
+        bank_account_details: values.bankAccountDetails,
+        product_type: values.productType,
+      };
+
+      console.log('Formatted application data:', applicationData);
+
+      await submitApplication(applicationData);
+      
+      notification.success({
+        message: 'Application Submitted',
+        description: 'Your loan application has been submitted successfully. We will contact you soon.',
+      });
+      
+      form.resetFields();
+    } catch (error: any) {
+      console.error('Form submission error:', error);
+      
+      notification.error({
+        message: 'Submission Failed',
+        description: error.message || 'There was an error submitting your application. Please try again.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -503,454 +296,188 @@ const Apply: React.FC = () => {
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <GridLines />
-        
-        <ParticleContainer>
-          {[...Array(10)].map((_, i) => (
-            <FloatingDot
-              key={i}
-              style={{
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-                width: `${Math.random() * 2 + 1}px`,
-                height: `${Math.random() * 2 + 1}px`,
-                background: 'rgba(255, 255, 255, 0.3)',
-              }}
-              animate={{
-                y: [0, -20, 0],
-                x: [0, Math.random() * 15 - 7.5, 0],
-                opacity: [0.1, 0.4, 0.1],
-              }}
-              transition={{
-                duration: Math.random() * 4 + 3,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: Math.random() * 2,
-              }}
-            />
-          ))}
-        </ParticleContainer>
-
-        <FloatingShape
-          style={{
-            width: '150px',
-            height: '150px',
-            top: '20%',
-            left: '10%',
-          }}
-          animate={{
-            rotate: [0, 360],
-            scale: [1, 1.1, 1],
-            opacity: [0.1, 0.2, 0.1],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-        />
-
-        <FloatingShape
-          style={{
-            width: '100px',
-            height: '100px',
-            bottom: '15%',
-            right: '5%',
-          }}
-          animate={{
-            rotate: [360, 0],
-            scale: [1, 1.2, 1],
-            opacity: [0.05, 0.15, 0.05],
-          }}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-        />
-
-        <GlowingOrb
-          style={{
-            width: '300px',
-            height: '300px',
-            top: '30%',
-            right: '20%',
-          }}
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.05, 0.1, 0.05],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
-
-        <FloatingSquare
-          style={{
-            width: '60px',
-            height: '60px',
-            bottom: '20%',
-            right: '15%',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-          }}
-          animate={{
-            rotate: [45, -135, 45],
-            scale: [1, 1.1, 1],
-            opacity: [0.05, 0.2, 0.05],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-
-        {[...Array(2)].map((_, i) => (
-          <GradientLine
-            key={i}
-            style={{
-              width: '120px',
-              bottom: `${40 + i * 15}%`,
-              right: '20%',
-              background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent)',
-            }}
-            animate={{
-              x: ['100%', '-200%'],
-              opacity: [0, 1, 0],
-            }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: i * 1.5,
-            }}
-          />
-        ))}
-
-        <CircleDecoration 
-          style={{ top: -100, right: -100 }}
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.1, 0.2, 0.1],
-          }}
-          transition={{
-            duration: 4,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
-
-        <CircleDecoration 
-          style={{ bottom: -100, left: -100 }}
-          animate={{
-            scale: [1.2, 1, 1.2],
-            opacity: [0.05, 0.15, 0.05],
-          }}
-          transition={{
-            duration: 5,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
-        
-        <HeroContent>
-          <MainTitle
-            initial={{ y: -20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.2 }}
+        <ContentWrapper>
+          <motion.h1 
+            className="text-2xl font-bold text-white mb-6 text-center"
+            variants={itemVariants}
           >
-            Enquire Now!
-          </MainTitle>
-          <Tagline
-            initial={{ y: -20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.3 }}
+            Enquire Now
+          </motion.h1>
+          <Form
+            form={form}
+            onFinish={handleSubmit}
+            layout="vertical"
+            requiredMark={false}
+            className="space-y-3"
           >
-            Curious about our loan options? Reach out today to connect with our experts and discover the perfect solution for your needs
-          </Tagline>
-          <LoginForm onFinish={handleSubmit}>
-            <Form.Item
-              name="name"
-              rules={[{ required: true, message: 'Please enter your name' }]}
-            >
-              <StyledInput prefix={<UserOutlined />} placeholder="Full Name" />
-            </Form.Item>
+            <motion.div variants={itemVariants}>
+              <Form.Item
+                name="productType"
+                rules={[{ required: true, message: 'Required' }]}
+              >
+                <Select
+                  placeholder="Select Product Type"
+                  className="h-[42px]"
+                  suffixIcon={<AppstoreOutlined className="text-primary opacity-80" />}
+                >
+                  <Select.Option value="Loans">Loans</Select.Option>
+                  <Select.Option value="Insurance">Insurance</Select.Option>
+                  <Select.Option value="Credit Cards">Credit Cards</Select.Option>
+                </Select>
+              </Form.Item>
+            </motion.div>
 
+            <motion.div variants={itemVariants}>
+              <Form.Item
+                name="name"
+                rules={[{ required: true, message: 'Required' }]}
+              >
+                <StyledInput prefix={<UserOutlined />} placeholder="Full Name" />
+              </Form.Item>
+            </motion.div>
 
-            <Form.Item
-              name="mobile"
-              rules={[
-                { required: true, message: 'Please enter your mobile number' },
-                { pattern: /^[0-9]{10}$/, message: 'Please enter a valid 10-digit mobile number' }
-              ]}
-            >
-              <StyledInput prefix={<MobileOutlined />} placeholder="Mobile Number" maxLength={10} />
-            </Form.Item>
+            <div className="grid grid-cols-2 gap-3">
+              <motion.div variants={itemVariants}>
+                <Form.Item
+                  name="salary"
+                  rules={[
+                    { required: true, message: 'Required' },
+                    { pattern: /^\d+$/, message: 'Invalid amount' }
+                  ]}
+                >
+                  <StyledInput prefix={<DollarOutlined />} placeholder="Monthly Salary" />
+                </Form.Item>
+              </motion.div>
 
+              <motion.div variants={itemVariants}>
+                <Form.Item
+                  name="netTakeHome"
+                  rules={[
+                    { required: true, message: 'Required' },
+                    { pattern: /^\d+$/, message: 'Invalid amount' }
+                  ]}
+                >
+                  <StyledInput prefix={<DollarOutlined />} placeholder="Net Take Home" />
+                </Form.Item>
+              </motion.div>
+            </div>
 
+            <motion.div variants={itemVariants}>
+              <Form.Item
+                name="mobileNumber"
+                rules={[
+                  { required: true, message: 'Required' },
+                  { pattern: /^\d{10}$/, message: 'Invalid phone number' }
+                ]}
+              >
+                <StyledInput prefix={<MobileOutlined />} placeholder="Mobile Number" />
+              </Form.Item>
+            </motion.div>
 
-            <Form.Item
-              name="email"
-              rules={[
-                { required: true, message: 'Please enter your email' },
-                { type: 'email', message: 'Please enter a valid email address' }
-              ]}
-            >
-              <StyledInput prefix={<MailOutlined />} placeholder="Email Address" />
-            </Form.Item>
+            <motion.div variants={itemVariants}>
+              <Form.Item
+                name="email"
+                rules={[
+                  { required: true, message: 'Required' },
+                  { type: 'email', message: 'Invalid email' }
+                ]}
+              >
+                <StyledInput prefix={<MailOutlined />} placeholder="Email" />
+              </Form.Item>
+            </motion.div>
 
-            <Form.Item
-              name="salary"
-              rules={[{ required: true, message: 'Please enter your salary' }]}
-            >
-              <StyledInput prefix={<DollarOutlined />} placeholder="Monthly Salary" type="number" />
-            </Form.Item>
+            <motion.div variants={itemVariants}>
+              <Form.Item
+                name="currentCompany"
+                rules={[{ required: true, message: 'Required' }]}
+              >
+                <StyledInput prefix={<BankOutlined />} placeholder="Current Company" />
+              </Form.Item>
+            </motion.div>
 
+            <motion.div variants={itemVariants}>
+              <Form.Item
+                name="bankAccountDetails"
+                rules={[{ required: true, message: 'Required' }]}
+              >
+                <StyledInput.TextArea
+                  placeholder="Bank Account Details"
+                  autoSize={{ minRows: 2, maxRows: 3 }}
+                  className="text-sm"
+                />
+              </Form.Item>
+            </motion.div>
 
-            <Form.Item
-              name="company"
-              rules={[{ required: true, message: 'Please enter your current company' }]}
-            >
-              <StyledInput prefix={<HomeOutlined />} placeholder="Current Employer Company" />
-            </Form.Item>
-
-            <Form.Item
-              name="netTakeHome"
-              rules={[{ required: true, message: 'Please enter your net take home' }]}
-            >
-              <StyledInput prefix={<DollarOutlined />} placeholder="Net Take Home" type="number" />
-            </Form.Item>
-
-            <Form.Item
-              name="bankDetails"
-              rules={[{ required: true, message: 'Please enter your bank account details' }]}
-            >
-              <StyledInput prefix={<BankOutlined />} placeholder="Salary Bank Account Details" />
-            </Form.Item>
-
-            <ShimmerButton type="submit">Submit Application</ShimmerButton>
-          </LoginForm>
-        </HeroContent>
+            <motion.div variants={itemVariants}>
+              <ShimmerButton
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full h-10 text-sm"
+              >
+                {isSubmitting ? 'Submitting...' : 'Submit Application'}
+              </ShimmerButton>
+            </motion.div>
+          </Form>
+        </ContentWrapper>
       </LeftSection>
+
       <RightSection
         initial={{ x: 100, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
-        transition={{ type: "spring", stiffness: 50, damping: 20 }}
+        transition={{ duration: 0.5 }}
       >
-        <RightGridLines />
-        <GlowingOrb
-          style={{
-            width: '400px',
-            height: '400px',
-            top: '-10%',
-            right: '-10%',
-          }}
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.03, 0.07, 0.03],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
-        <GlowingOrb
-          style={{
-            width: '300px',
-            height: '300px',
-            bottom: '-5%',
-            left: '-5%',
-          }}
-          animate={{
-            scale: [1.2, 1, 1.2],
-            opacity: [0.02, 0.05, 0.02],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
-        <FloatingShape
-          style={{
-            width: '80px',
-            height: '80px',
-            top: '10%',
-            left: '10%',
-          }}
-          animate={{
-            rotate: [0, 360],
-            scale: [1, 1.1, 1],
-            opacity: [0.05, 0.1, 0.05],
-          }}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-        />
-        <FloatingShape
-          style={{
-            width: '60px',
-            height: '60px',
-            bottom: '15%',
-            right: '10%',
-          }}
-          animate={{
-            rotate: [360, 0],
-            scale: [1, 1.15, 1],
-            opacity: [0.03, 0.08, 0.03],
-          }}
-          transition={{
-            duration: 12,
-            repeat: Infinity,
-            ease: "linear"
-          }}
-        />
-        <ParticleContainer>
-          {[...Array(10)].map((_, i) => (
-            <FloatingDot
-              key={i}
-              style={{
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-                width: `${Math.random() * 2 + 1}px`,
-                height: `${Math.random() * 2 + 1}px`,
-                background: 'rgba(0, 119, 182, 0.3)',
-              }}
-              animate={{
-                y: [0, -20, 0],
-                x: [0, Math.random() * 15 - 7.5, 0],
-                opacity: [0.1, 0.4, 0.1],
-              }}
-              transition={{
-                duration: Math.random() * 4 + 3,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: Math.random() * 2,
-              }}
-            />
-          ))}
-        </ParticleContainer>
-
-        <FloatingSquare
-          style={{
-            width: '60px',
-            height: '60px',
-            bottom: '20%',
-            right: '15%',
-            border: '1px solid rgba(0, 119, 182, 0.1)',
-          }}
-          animate={{
-            rotate: [45, -135, 45],
-            scale: [1, 1.1, 1],
-            opacity: [0.05, 0.2, 0.05],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-
-        {[...Array(2)].map((_, i) => (
-          <GradientLine
-            key={i}
-            style={{
-              width: '120px',
-              bottom: `${40 + i * 15}%`,
-              right: '20%',
-              background: 'linear-gradient(90deg, transparent, rgba(0, 119, 182, 0.1), transparent)',
-            }}
-            animate={{
-              x: ['100%', '-200%'],
-              opacity: [0, 1, 0],
-            }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: i * 1.5,
-            }}
-          />
-        ))}
-
-        <ContentWrapper
-          initial="hidden"
-          animate="visible"
-          variants={containerVariants}
-        >
-          <FormTitle variants={itemVariants}>
-            Login via Loan Assist
-          </FormTitle>
-          
-          <LoginForm 
-            form={form} 
-            onFinish={handleSubmit}
+        <ContentWrapper>
+          <motion.h2 
+            className="text-2xl font-bold text-primary mb-8 text-center"
+            variants={itemVariants}
           >
-            <InputWrapper variants={itemVariants}>
+            Login to Your Account
+          </motion.h2>
+          <Form
+            layout="vertical"
+            requiredMark={false}
+            className="space-y-4"
+          >
+            <motion.div variants={itemVariants}>
               <Form.Item
-                name="username"
-                rules={[{ required: true, message: 'Please enter your username' }]}
+                name="email"
+                rules={[
+                  { required: true, message: 'Required' },
+                  { type: 'email', message: 'Invalid email' }
+                ]}
               >
-                <StyledInput
-                  prefix={<UserOutlined style={{ color: '#0077b6' }} />}
-                  placeholder="Username"
-                  size="large"
-                />
+                <StyledInput prefix={<UserOutlined />} placeholder="Email" />
               </Form.Item>
-            </InputWrapper>
-            
-            <InputWrapper variants={itemVariants}>
+            </motion.div>
+
+            <motion.div variants={itemVariants}>
               <Form.Item
                 name="password"
-                rules={[{ required: true, message: 'Please enter your password' }]}
+                rules={[{ required: true, message: 'Required' }]}
               >
-                <StyledPasswordInput
-                  prefix={<LockOutlined style={{ color: '#0077b6' }} />}
-                  placeholder="Password"
-                  size="large"
-                />
+                <StyledInput.Password prefix={<LockOutlined />} placeholder="Password" />
               </Form.Item>
-            </InputWrapper>
-            
-            <motion.div variants={itemVariants}>
-              <LoginButton
-                type="button" 
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                Sign In
-              </LoginButton>
             </motion.div>
-            
-            <motion.div variants={itemVariants}>
-              <ForgotPassword 
-                href="/forgot-password"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Forgot your password?
-              </ForgotPassword>
-            </motion.div>
-          </LoginForm>
-        </ContentWrapper>
 
-        <CircleDecoration 
-          style={{ top: -100, right: -100 }}
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.1, 0.2, 0.1],
-          }}
-          transition={{
-            duration: 4,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
+            <motion.div variants={itemVariants}>
+              <ShimmerButton
+                type="submit"
+                className="w-full h-10 text-sm"
+              >
+                Login
+              </ShimmerButton>
+            </motion.div>
+
+            <motion.div 
+              variants={itemVariants}
+              className="text-center mt-4"
+            >
+              <a href="#" className="text-primary text-sm hover:underline">
+                Forgot Password?
+              </a>
+            </motion.div>
+          </Form>
+        </ContentWrapper>
       </RightSection>
     </LoginContainer>
   );
