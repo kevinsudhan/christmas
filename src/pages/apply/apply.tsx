@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import loginBg from '../../assets/login-bg.jpg';
 import { GlassCard, ShimmerButton, PulseCircle, FloatingElement } from '../../components/Animations/AnimatedComponents';
 import { submitApplication } from '@/services/applicationService';
+import { sendWhatsAppMessage } from '@/services/whatsappService';
 
 const shimmer = keyframes`
   0% {
@@ -270,6 +271,14 @@ const Apply: React.FC = () => {
       console.log('Formatted application data:', applicationData);
 
       await submitApplication(applicationData);
+      
+      // Send WhatsApp message
+      try {
+        await sendWhatsAppMessage(values.mobileNumber);
+      } catch (whatsappError) {
+        console.error('WhatsApp message error:', whatsappError);
+        // Don't show error to user as the form submission was successful
+      }
       
       notification.success({
         message: 'Application Submitted',

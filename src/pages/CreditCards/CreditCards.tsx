@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Form, Input, Select, Button, Tag, Typography } from 'antd';
-import { CreditCardOutlined, CheckCircleFilled, StarFilled } from '@ant-design/icons';
+import { Form, Input, Select, Button, Tag, Typography, notification } from 'antd';
+import { CreditCardOutlined, CheckCircleFilled, StarFilled, UserOutlined, MailOutlined, MobileOutlined, BankOutlined, DollarOutlined, HomeOutlined } from '@ant-design/icons';
+import { motion } from 'framer-motion';
 import creditCardImg from '../../assets/images/services/credit-card.jpg';
 import creditCardHeroImg from '../../assets/images/hero/creditcard.png';
+import { submitApplication } from '@/services/applicationService';
+import { sendWhatsAppMessage } from '@/services/whatsappService';
 
 import axisCard from '../../assets/images/cards/AXIS.png';
 import hdfcCard from '../../assets/images/cards/HDFC.png';
@@ -621,28 +624,6 @@ const StyledForm = styled(Form)`
     margin-bottom: 20px;
   }
 
-  .ant-input,
-  .ant-select-selector {
-    height: 45px !important;
-    border-radius: 12px !important;
-    border: 2px solid rgba(0, 0, 0, 0.08) !important;
-    padding: 0 16px !important;
-    font-size: ${typography.fontSize.body.small} !important;
-
-    &:hover {
-      border-color: rgba(33, 147, 176, 0.3) !important;
-    }
-
-    &:focus {
-      border-color: ${colors.primary.start} !important;
-    }
-  }
-
-  .ant-select-selection-item,
-  .ant-select-selection-placeholder {
-    line-height: 41px !important;
-  }
-
   .ant-btn {
     height: 45px;
     border-radius: 12px;
@@ -656,6 +637,24 @@ const StyledForm = styled(Form)`
       font-size: ${typography.fontSize.body.small};
       height: auto;
     }
+  }
+`;
+
+const StyledInput = styled(Input)`
+  height: 42px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  border: 2px solid rgba(0, 119, 182, 0.1);
+  background: white;
+
+  .ant-input-prefix {
+    margin-right: 10px;
+    color: #0077b6;
+  }
+
+  &:hover, &:focus {
+    border-color: #0077b6;
+    box-shadow: 0 2px 8px rgba(0, 119, 182, 0.1);
   }
 `;
 
@@ -814,8 +813,87 @@ const SectionTitle = styled.div`
 
 const CreditCards: React.FC = () => {
   const [form] = Form.useForm();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeFilter, setActiveFilter] = useState('top');
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 15
+      }
+    }
+  };
+
+  interface FormValues {
+    name: string;
+    salary: number;
+    mobileNumber: string;
+    email: string;
+    currentCompany: string;
+    netTakeHome: number;
+    bankAccountDetails: string;
+    productType?: string;
+  }
+
+  const handleSubmit = async (values: FormValues) => {
+    setIsSubmitting(true);
+    try {
+      const applicationData = {
+        name: values.name,
+        salary: values.salary,
+        mobile_number: values.mobileNumber,
+        email: values.email,
+        current_company: values.currentCompany,
+        net_take_home: values.netTakeHome,
+        bank_account_details: values.bankAccountDetails,
+        product_type: 'Credit Cards',
+        status: 'pending' as const,
+        created_at: new Date().toISOString()
+      };
+
+      console.log('Submitting application data:', applicationData);
+      
+      await submitApplication(applicationData);
+      
+      try {
+        await sendWhatsAppMessage(values.mobileNumber, 'Thank you for applying for our Credit Card!');
+      } catch (whatsappError) {
+        console.error('WhatsApp message failed:', whatsappError);
+        // Don't throw error for WhatsApp failure
+      }
+
+      notification.success({
+        message: 'Application Submitted Successfully!',
+        description: 'We will contact you shortly.',
+      });
+      
+      form.resetFields();
+    } catch (error) {
+      console.error('Form submission error:', error);
+      notification.error({
+        message: 'Submission Failed',
+        description: error instanceof Error ? error.message : 'Please try again later.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const cards = [
 
@@ -852,10 +930,6 @@ const CreditCards: React.FC = () => {
       visibleCards.push(cards[index]);
     }
     return visibleCards;
-  };
-
-  const onFinish = (values: any) => {
-    console.log('Form values:', values);
   };
 
   return (
@@ -945,63 +1019,105 @@ const CreditCards: React.FC = () => {
               <StyledForm
                 form={form}
                 layout="vertical"
-                onFinish={onFinish}
+                onFinish={handleSubmit}
+                requiredMark={false}
               >
                 <div className="form-header">
                   <h3>Get Started Today</h3>
                   <p>Fill in your details below and we'll process your application instantly</p>
                 </div>
 
-                <Form.Item
-                  label="Full Name"
-                  name="fullName"
-                  rules={[{ required: true, message: 'Please enter your full name' }]}
-                >
-                  <Input placeholder="Enter your full name" size="large" />
-                </Form.Item>
+                <motion.div variants={itemVariants}>
+                  <Form.Item
+                    name="name"
+                    rules={[{ required: true, message: 'Required' }]}
+                  >
+                    <StyledInput prefix={<UserOutlined />} placeholder="Full Name" />
+                  </Form.Item>
+                </motion.div>
 
-                <Form.Item
-                  label="Mobile Number"
-                  name="mobile"
-                  rules={[
-                    { required: true, message: 'Please enter your mobile number' },
-                    { pattern: /^[0-9]{10}$/, message: 'Please enter a valid 10-digit mobile number' }
-                  ]}
-                >
-                  <Input 
-                    placeholder="Enter your 10-digit mobile number" 
-                    size="large"
-                    maxLength={10}
-                  />
-                </Form.Item>
+                <div className="grid grid-cols-2 gap-3">
+                  <motion.div variants={itemVariants}>
+                    <Form.Item
+                      name="salary"
+                      rules={[
+                        { required: true, message: 'Required' },
+                        { pattern: /^\d+$/, message: 'Invalid amount' }
+                      ]}
+                    >
+                      <StyledInput prefix={<DollarOutlined />} placeholder="Monthly Salary" />
+                    </Form.Item>
+                  </motion.div>
 
-                <Form.Item
-                  label="Email Address"
-                  name="email"
-                  rules={[
-                    { required: true, message: 'Please enter your email' },
-                    { type: 'email', message: 'Please enter a valid email address' }
-                  ]}
-                >
-                  <Input placeholder="Enter your email address" size="large" />
-                </Form.Item>
+                  <motion.div variants={itemVariants}>
+                    <Form.Item
+                      name="netTakeHome"
+                      rules={[
+                        { required: true, message: 'Required' },
+                        { pattern: /^\d+$/, message: 'Invalid amount' }
+                      ]}
+                    >
+                      <StyledInput prefix={<DollarOutlined />} placeholder="Net Take Home" />
+                    </Form.Item>
+                  </motion.div>
+                </div>
 
-                <Form.Item
-                  label="Employment Type"
-                  name="employmentType"
-                  rules={[{ required: true, message: 'Please select your employment type' }]}
-                >
-                  <Select placeholder="Select your employment type" size="large">
-                    <Option value="salaried">Salaried</Option>
-                    <Option value="self-employed">Self Employed</Option>
-                    <Option value="business">Business Owner</Option>
-                    <Option value="professional">Professional</Option>
-                  </Select>
-                </Form.Item>
+                <motion.div variants={itemVariants}>
+                  <Form.Item
+                    name="mobileNumber"
+                    rules={[
+                      { required: true, message: 'Required' },
+                      { pattern: /^\d{10}$/, message: 'Invalid phone number' }
+                    ]}
+                  >
+                    <StyledInput prefix={<MobileOutlined />} placeholder="Mobile Number" />
+                  </Form.Item>
+                </motion.div>
+
+                <motion.div variants={itemVariants}>
+                  <Form.Item
+                    name="email"
+                    rules={[
+                      { required: true, message: 'Required' },
+                      { type: 'email', message: 'Invalid email' }
+                    ]}
+                  >
+                    <StyledInput prefix={<MailOutlined />} placeholder="Email" />
+                  </Form.Item>
+                </motion.div>
+
+                <motion.div variants={itemVariants}>
+                  <Form.Item
+                    name="currentCompany"
+                    rules={[{ required: true, message: 'Required' }]}
+                  >
+                    <StyledInput prefix={<HomeOutlined />} placeholder="Current Company" />
+                  </Form.Item>
+                </motion.div>
+
+                <motion.div variants={itemVariants}>
+                  <Form.Item
+                    name="bankAccountDetails"
+                    rules={[{ required: true, message: 'Required' }]}
+                  >
+                    <StyledInput 
+                      prefix={<BankOutlined />} 
+                      placeholder="Bank Account Details"
+                      type="text"
+                      allowClear
+                    />
+                  </Form.Item>
+                </motion.div>
 
                 <Form.Item>
-                  <SubmitButton type="primary" htmlType="submit" block size="large">
-                    Submit Application
+                  <SubmitButton
+                    type="primary"
+                    htmlType="submit"
+                    loading={isSubmitting}
+                    block
+                    size="large"
+                  >
+                    {isSubmitting ? 'Submitting...' : 'Submit Application'}
                   </SubmitButton>
                 </Form.Item>
               </StyledForm>
