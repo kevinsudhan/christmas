@@ -15,7 +15,7 @@ export interface Database {
             account_number: string;
             ifsc_code: string;
           };
-          status: 'pending' | 'contacted' | 'approved' | 'rejected';
+          status: 'pending' | 'completed' | 'acknowledged' | 'processing';
           created_at: string;
           updated_at: string;
         };

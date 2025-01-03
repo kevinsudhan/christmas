@@ -12,7 +12,7 @@ const PageContainer = styled.div`
 
 const DashboardContainer = styled.div`
   padding: 80px 20px;
-  max-width: 1200px;
+  max-width: 1600px;
   margin: 0 auto;
   width: 100%;
   flex: 1;
@@ -50,96 +50,156 @@ const HeaderSubtitle = styled.p`
 const CardsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 30px;
+  gap: 20px;
   padding: 20px;
   margin-bottom: 40px;
+  overflow-x: auto;
   
-  @media (max-width: 1200px) {
-    grid-template-columns: repeat(2, 1fr);
+  @media (max-width: 1400px) {
+    grid-template-columns: repeat(4, 300px);
+    justify-content: flex-start;
   }
   
   @media (max-width: 768px) {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(4, 280px);
+    gap: 15px;
     padding: 10px;
   }
 `;
 
 const Card = styled.div`
   background: white;
-  border-radius: 20px;
-  padding: 30px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  height: 100%;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 10px 20px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+  height: auto;
+  min-height: 450px;
+  min-width: 280px;
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.05);
   
   &:hover {
     transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
   }
   
   @media (max-width: 768px) {
-    padding: 20px;
+    padding: 15px;
+    min-height: 420px;
   }
 `;
 
 const CardImage = styled.img`
   width: 100%;
-  height: 200px;
+  height: 160px;
   object-fit: cover;
   border-radius: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 `;
 
 const CardTitle = styled.h3`
   color: #2d3748;
-  font-size: 1.5rem;
-  margin-bottom: 15px;
+  font-size: 1.3rem;
+  margin-bottom: 10px;
   font-weight: 600;
+  line-height: 1.4;
 `;
 
 const CardDescription = styled.p`
   color: #718096;
-  font-size: 1rem;
+  font-size: 0.9rem;
   line-height: 1.6;
+  height: 70px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  margin-bottom: 15px;
 `;
 
 const CardStats = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: auto;
   padding-top: 20px;
   border-top: 1px solid #e2e8f0;
+  overflow-x: auto;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 400px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const Stat = styled.div`
   text-align: center;
+  padding: 8px 5px;
+  background: #f7fafc;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  min-width: 80px;
+
+  &:hover {
+    background: #edf2f7;
+  }
 `;
 
 const StatNumber = styled.div`
   color: #4299e1;
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   font-weight: 700;
+  margin-bottom: 4px;
 `;
 
 const StatLabel = styled.div`
   color: #718096;
-  font-size: 0.875rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
 `;
 
 interface ApplicationCounts {
   total: number;
   completed: number;
   pending: number;
+  acknowledged: number;
+  processing: number;
 }
 
 const EmployeeDashboard: React.FC = () => {
   const navigate = useNavigate();
-  const [loanStats, setLoanStats] = useState<ApplicationCounts>({ total: 0, completed: 0, pending: 0 });
-  const [insuranceStats, setInsuranceStats] = useState<ApplicationCounts>({ total: 0, completed: 0, pending: 0 });
-  const [creditCardStats, setCreditCardStats] = useState<ApplicationCounts>({ total: 0, completed: 0, pending: 0 });
+  const [loanStats, setLoanStats] = useState<ApplicationCounts>({ 
+    total: 0, 
+    completed: 0, 
+    pending: 0, 
+    acknowledged: 0, 
+    processing: 0 
+  });
+  const [insuranceStats, setInsuranceStats] = useState<ApplicationCounts>({ 
+    total: 0, 
+    completed: 0, 
+    pending: 0, 
+    acknowledged: 0, 
+    processing: 0 
+  });
+  const [creditCardStats, setCreditCardStats] = useState<ApplicationCounts>({ 
+    total: 0, 
+    completed: 0, 
+    pending: 0, 
+    acknowledged: 0, 
+    processing: 0 
+  });
 
   useEffect(() => {
     fetchStats();
@@ -157,7 +217,9 @@ const EmployeeDashboard: React.FC = () => {
         setLoanStats({
           total: loanData.length,
           completed: loanData.filter(app => app.status === 'completed').length,
-          pending: loanData.filter(app => app.status === 'pending').length
+          pending: loanData.filter(app => app.status === 'pending').length,
+          acknowledged: loanData.filter(app => app.status === 'acknowledged').length,
+          processing: loanData.filter(app => app.status === 'processing').length
         });
       }
 
@@ -171,7 +233,9 @@ const EmployeeDashboard: React.FC = () => {
         setInsuranceStats({
           total: insuranceData.length,
           completed: insuranceData.filter(app => app.status === 'completed').length,
-          pending: insuranceData.filter(app => app.status === 'pending').length
+          pending: insuranceData.filter(app => app.status === 'pending').length,
+          acknowledged: insuranceData.filter(app => app.status === 'acknowledged').length,
+          processing: insuranceData.filter(app => app.status === 'processing').length
         });
       }
 
@@ -185,7 +249,9 @@ const EmployeeDashboard: React.FC = () => {
         setCreditCardStats({
           total: creditCardData.length,
           completed: creditCardData.filter(app => app.status === 'completed').length,
-          pending: creditCardData.filter(app => app.status === 'pending').length
+          pending: creditCardData.filter(app => app.status === 'pending').length,
+          acknowledged: creditCardData.filter(app => app.status === 'acknowledged').length,
+          processing: creditCardData.filter(app => app.status === 'processing').length
         });
       }
     } catch (error) {
@@ -226,6 +292,14 @@ const EmployeeDashboard: React.FC = () => {
                 <StatNumber>{loanStats.pending}</StatNumber>
                 <StatLabel>Pending</StatLabel>
               </Stat>
+              <Stat>
+                <StatNumber>{loanStats.acknowledged}</StatNumber>
+                <StatLabel>Acknowledged</StatLabel>
+              </Stat>
+              <Stat>
+                <StatNumber>{loanStats.processing}</StatNumber>
+                <StatLabel>Processing</StatLabel>
+              </Stat>
             </CardStats>
           </Card>
 
@@ -250,6 +324,14 @@ const EmployeeDashboard: React.FC = () => {
               <Stat>
                 <StatNumber>{insuranceStats.pending}</StatNumber>
                 <StatLabel>Pending</StatLabel>
+              </Stat>
+              <Stat>
+                <StatNumber>{insuranceStats.acknowledged}</StatNumber>
+                <StatLabel>Acknowledged</StatLabel>
+              </Stat>
+              <Stat>
+                <StatNumber>{insuranceStats.processing}</StatNumber>
+                <StatLabel>Processing</StatLabel>
               </Stat>
             </CardStats>
           </Card>
@@ -276,6 +358,14 @@ const EmployeeDashboard: React.FC = () => {
                 <StatNumber>{creditCardStats.pending}</StatNumber>
                 <StatLabel>Pending</StatLabel>
               </Stat>
+              <Stat>
+                <StatNumber>{creditCardStats.acknowledged}</StatNumber>
+                <StatLabel>Acknowledged</StatLabel>
+              </Stat>
+              <Stat>
+                <StatNumber>{creditCardStats.processing}</StatNumber>
+                <StatLabel>Processing</StatLabel>
+              </Stat>
             </CardStats>
           </Card>
 
@@ -283,10 +373,11 @@ const EmployeeDashboard: React.FC = () => {
             <CardImage 
               src="/images/database-44.svg"
               alt="Customer Database"
+              style={{ objectFit: 'contain', padding: '20px', background: '#f7fafc' }}
             />
             <CardTitle>Customer Database</CardTitle>
             <CardDescription>
-              Access and manage customer database records and information efficiently.
+              Access and manage comprehensive customer records, track interactions, and analyze customer data for better service delivery and decision-making.
             </CardDescription>
             <CardStats>
               <Stat>
@@ -300,6 +391,14 @@ const EmployeeDashboard: React.FC = () => {
               <Stat>
                 <StatNumber>--</StatNumber>
                 <StatLabel>New</StatLabel>
+              </Stat>
+              <Stat>
+                <StatNumber>--</StatNumber>
+                <StatLabel>Acknowledged</StatLabel>
+              </Stat>
+              <Stat>
+                <StatNumber>--</StatNumber>
+                <StatLabel>Processing</StatLabel>
               </Stat>
             </CardStats>
           </Card>

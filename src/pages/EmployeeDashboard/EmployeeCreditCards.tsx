@@ -165,11 +165,13 @@ const EmployeeCreditCards: React.FC = () => {
       render: (_, record) => (
         <Select
           defaultValue={record.status || 'pending'}
-          style={{ width: 120 }}
+          style={{ width: 140 }}
           onChange={(value) => handleStatusChange(value, record)}
         >
-          <Option value="completed">Completed</Option>
           <Option value="pending">Pending</Option>
+          <Option value="acknowledged">Acknowledged</Option>
+          <Option value="processing">Processing</Option>
+          <Option value="completed">Completed</Option>
         </Select>
       ),
     },

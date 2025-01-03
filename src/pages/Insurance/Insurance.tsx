@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { Card, Row, Col, Typography, Carousel, Form, Input, Select, Button } from 'antd';
-import { StarFilled, CheckCircleFilled, CreditCardOutlined, SafetyOutlined, SmileOutlined, BookOutlined, BankOutlined } from '@ant-design/icons';
+import { Card, Row, Col, Typography, Carousel, Form, Input, Select, Button, notification } from 'antd';
+import { StarFilled, CheckCircleFilled, CreditCardOutlined, SafetyOutlined, SmileOutlined, BookOutlined, BankOutlined, UserOutlined, MobileOutlined, MailOutlined, DollarOutlined, HomeOutlined } from '@ant-design/icons';
+import { submitApplication } from '@/services/applicationService';
 import { typography, colors, effects, spacing, breakpoints } from '../../styles/theme';
-import creditCardImg from '../../assets/images/services/credit-card.jpg';
 import insuranceHeroImg from '../../assets/images/hero/Sitemap Whiteboard in Green Purple Basic Style (13).png';
 import Footer from '../../components/Footer/Footer';
 import healthInsImg from '../../assets/images/hero/healthins.jpg';
@@ -14,25 +14,25 @@ import riskManagementImg from '../../assets/images/hero/risk management.jpg';
 import wealthPreservationImg from '../../assets/images/hero/wealth preservation.jpg';
 import peacefulMindImg from '../../assets/images/hero/peaceful mind.jpg';
 import lawComplianceImg from '../../assets/images/hero/law compliance.jpg';
+import { motion } from 'framer-motion';
+
 const { Title, Text } = Typography;
 const { Option } = Select;
 
 const PageContainer = styled.div`
   min-height: 100vh;
   background-color: #f5f7fa;
+  overflow-x: hidden;
 `;
 
 const HeroSection = styled.section`
-  padding: 60px 5%;
-  background: linear-gradient(135deg, #0077b6 0%, #023e8a 100%);
   position: relative;
+  min-height: 80vh;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 400px;
-  margin-top: 0;
-  padding-top: 100px;
-  padding-bottom: 60px;
+  padding: 40px;
+  background: linear-gradient(135deg, #0077b6 0%, #023e8a 100%);
   overflow: hidden;
 
   &::before {
@@ -42,7 +42,7 @@ const HeroSection = styled.section`
     left: 0;
     right: 0;
     bottom: 0;
-    background: url(${creditCardImg}) no-repeat center center;
+    background: url(${insuranceHeroImg}) no-repeat center center;
     background-size: cover;
     opacity: 0.1;
     z-index: 0;
@@ -830,28 +830,6 @@ const StyledForm = styled(Form)`
     margin-bottom: 20px;
   }
 
-  .ant-input,
-  .ant-select-selector {
-    height: 45px !important;
-    border-radius: 12px !important;
-    border: 2px solid rgba(0, 0, 0, 0.08) !important;
-    padding: 0 16px !important;
-    font-size: ${typography.fontSize.body.small} !important;
-
-    &:hover {
-      border-color: rgba(33, 147, 176, 0.3) !important;
-    }
-
-    &:focus {
-      border-color: ${colors.primary.start} !important;
-    }
-  }
-
-  .ant-select-selection-item,
-  .ant-select-selection-placeholder {
-    line-height: 41px !important;
-  }
-
   .ant-btn {
     height: 45px;
     border-radius: 12px;
@@ -865,6 +843,24 @@ const StyledForm = styled(Form)`
       font-size: ${typography.fontSize.body.small};
       height: auto;
     }
+  }
+`;
+
+const StyledInput = styled(Input)`
+  height: 42px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  border: 2px solid rgba(0, 119, 182, 0.1);
+  background: white;
+
+  .ant-input-prefix {
+    margin-right: 10px;
+    color: #0077b6;
+  }
+
+  &:hover, &:focus {
+    border-color: #0077b6;
+    box-shadow: 0 2px 8px rgba(0, 119, 182, 0.1);
   }
 `;
 
@@ -927,7 +923,6 @@ const InsuranceCard = styled.div`
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.3s ease;
     }
   }
 
@@ -962,14 +957,65 @@ const InsuranceSection = styled.section`
   }
 `;
 
+interface FormValues {
+  name: string;
+  salary: number;
+  mobileNumber: string;
+  email: string;
+  currentCompany: string;
+  netTakeHome: number;
+  bankAccountDetails: string;
+  productType?: string;
+}
+
 const Insurance: React.FC = () => {
+  const [form] = Form.useForm();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (values: FormValues) => {
+    setIsSubmitting(true);
+    try {
+      const applicationData = {
+        name: values.name,
+        salary: values.salary,
+        mobile_number: values.mobileNumber,
+        email: values.email,
+        current_company: values.currentCompany,
+        net_take_home: values.netTakeHome,
+        bank_account_details: values.bankAccountDetails,
+        product_type: 'Insurance',
+        status: 'pending' as const,
+        created_at: new Date().toISOString()
+      };
+
+      console.log('Submitting application data:', applicationData);
+      
+      await submitApplication(applicationData);
+
+      notification.success({
+        message: 'Application Submitted Successfully!',
+        description: 'We will contact you shortly.',
+      });
+      
+      form.resetFields();
+    } catch (error) {
+      console.error('Form submission error:', error);
+      notification.error({
+        message: 'Submission Failed',
+        description: error instanceof Error ? error.message : 'Please try again later.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const insuranceCards = [
     {
       title: 'Health Insurance',
       image: healthInsImg,
     },
     {
-      title: 'Life Insurance',  // Changed from Personal Insurance
+      title: 'Life Insurance',
       image: personalInsImg,
     },
     {
@@ -977,27 +1023,57 @@ const Insurance: React.FC = () => {
       image: generalInsImg,
     }
   ];
+
   const whyBeInsuredCards = [
     {
-      title: 'Risk and Finance Management',
+      title: 'Family Protection',
       image: riskManagementImg,
     },
     {
-      title: 'Wealth Generation',
+      title: 'Wealth Preservation',
       image: wealthPreservationImg,
     },
     {
-      title: 'Peace of Mind and Security',
+      title: 'Peace of Mind',
       image: peacefulMindImg,
     },
     {
-      title: 'Legal and Regulatory Compliance',
+      title: 'Legal Compliance',
       image: lawComplianceImg,
     }
   ];
 
-  // Duplicate items exactly twice for perfect loop
-  const duplicatedItems = [...insuranceCards, ...insuranceCards, ...insuranceCards, ...insuranceCards];
+  const containerVariants = {
+    hidden: {
+      opacity: 0,
+      y: 20,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: 0.2,
+        stiffness: 100,
+        damping: 20,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: {
+      opacity: 0,
+      y: 20,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: 0.5,
+        stiffness: 100,
+        damping: 20,
+      },
+    },
+  };
 
   return (
     <PageContainer>
@@ -1038,21 +1114,18 @@ const Insurance: React.FC = () => {
           <h2>Insurances Offered</h2>
         </div>
         <InsuranceGrid>
-          {insuranceCards.map((item, index) => {
-            const links = ['/health-insurance', '/life-insurance', '/general-insurance'];
-            return (
-              <Link to={links[index]} key={index}>
-                <InsuranceCard>
-                  <div className="image-wrapper">
-                    <img src={item.image} alt={item.title} />
-                  </div>
-                  <div className="content">
-                    <h3>{item.title}</h3>
-                  </div>
-                </InsuranceCard>
-              </Link>
-            );
-          })}
+          {insuranceCards.map((item, index) => (
+            <Link to={index === 0 ? '/health-insurance' : index === 1 ? '/life-insurance' : '/general-insurance'} key={index}>
+              <InsuranceCard>
+                <div className="image-wrapper">
+                  <img src={item.image} alt={item.title} />
+                </div>
+                <div className="content">
+                  <h3>{item.title}</h3>
+                </div>
+              </InsuranceCard>
+            </Link>
+          ))}
         </InsuranceGrid>
       </InsuranceSection>
 
@@ -1085,71 +1158,102 @@ const Insurance: React.FC = () => {
 
           <FormContainer>
             <StyledForm
+              form={form}
               layout="vertical"
-              onFinish={(values) => console.log('Form values:', values)}
+              onFinish={handleSubmit}
+              requiredMark={false}
             >
               <div className="form-header">
                 <h3>Get Your Insurance Quote</h3>
                 <p>Fill in your details below and we'll help you find the perfect insurance plan</p>
               </div>
 
-              <Form.Item
-                label="Full Name"
-                name="fullName"
-                rules={[{ required: true, message: 'Please enter your full name' }]}
+              <motion.div 
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
               >
-                <Input placeholder="Enter your full name" />
-              </Form.Item>
+                <motion.div variants={itemVariants}>
+                  <Form.Item
+                    name="name"
+                    rules={[{ required: true, message: 'Required' }]}
+                  >
+                    <StyledInput prefix={<UserOutlined />} placeholder="Full Name" />
+                  </Form.Item>
+                </motion.div>
 
-              <Form.Item
-                label="Email Address"
-                name="email"
-                rules={[
-                  { required: true, message: 'Please enter your email' },
-                  { type: 'email', message: 'Please enter a valid email' }
-                ]}
-              >
-                <Input placeholder="Enter your email address" />
-              </Form.Item>
+                <motion.div variants={itemVariants}>
+                  <Form.Item
+                    name="salary"
+                    rules={[
+                      { required: true, message: 'Required' },
+                      { pattern: /^\d+$/, message: 'Invalid amount' }
+                    ]}
+                  >
+                    <StyledInput prefix={<DollarOutlined />} placeholder="Monthly Salary" />
+                  </Form.Item>
+                </motion.div>
 
-              <Form.Item
-                label="Phone Number"
-                name="phone"
-                rules={[{ required: true, message: 'Please enter your phone number' }]}
-              >
-                <Input placeholder="Enter your phone number" />
-              </Form.Item>
+                <motion.div variants={itemVariants}>
+                  <Form.Item
+                    name="netTakeHome"
+                    rules={[
+                      { required: true, message: 'Required' },
+                      { pattern: /^\d+$/, message: 'Invalid amount' }
+                    ]}
+                  >
+                    <StyledInput prefix={<DollarOutlined />} placeholder="Net Take Home" />
+                  </Form.Item>
+                </motion.div>
 
-              <Form.Item
-                label="Insurance Type"
-                name="insuranceType"
-                rules={[{ required: true, message: 'Please select an insurance type' }]}
-              >
-                <Select placeholder="Select insurance type">
-                  <Option value="personal">Personal Insurance</Option>
-                  <Option value="general">General Insurance</Option>
-                  <Option value="health">Health Insurance</Option>
-                </Select>
-              </Form.Item>
+                <motion.div variants={itemVariants}>
+                  <Form.Item
+                    name="mobileNumber"
+                    rules={[
+                      { required: true, message: 'Required' },
+                      { pattern: /^\d{10}$/, message: 'Invalid phone number' }
+                    ]}
+                  >
+                    <StyledInput prefix={<MobileOutlined />} placeholder="Mobile Number" />
+                  </Form.Item>
+                </motion.div>
 
-              <Form.Item
-                label="Coverage Amount"
-                name="coverageAmount"
-                rules={[{ required: true, message: 'Please select a coverage amount' }]}
-              >
-                <Select placeholder="Select coverage amount">
-                  <Option value="basic">Basic Coverage (₹5,00,000)</Option>
-                  <Option value="standard">Standard Coverage (₹10,00,000)</Option>
-                  <Option value="premium">Premium Coverage (₹20,00,000)</Option>
-                  <Option value="custom">Custom Coverage Amount</Option>
-                </Select>
-              </Form.Item>
+                <motion.div variants={itemVariants}>
+                  <Form.Item
+                    name="email"
+                    rules={[
+                      { required: true, message: 'Required' },
+                      { type: 'email', message: 'Invalid email' }
+                    ]}
+                  >
+                    <StyledInput prefix={<MailOutlined />} placeholder="Email" />
+                  </Form.Item>
+                </motion.div>
 
-              <Form.Item>
-                <SubmitButton type="primary" htmlType="submit">
-                  Get Your Quote
-                </SubmitButton>
-              </Form.Item>
+                <motion.div variants={itemVariants}>
+                  <Form.Item
+                    name="currentCompany"
+                    rules={[{ required: true, message: 'Required' }]}
+                  >
+                    <StyledInput prefix={<HomeOutlined />} placeholder="Current Company" />
+                  </Form.Item>
+                </motion.div>
+
+                <motion.div variants={itemVariants}>
+                  <Form.Item
+                    name="bankAccountDetails"
+                    rules={[{ required: true, message: 'Required' }]}
+                  >
+                    <StyledInput prefix={<BankOutlined />} placeholder="Bank Account Details" />
+                  </Form.Item>
+                </motion.div>
+
+                <motion.div variants={itemVariants}>
+                  <SubmitButton type="primary" htmlType="submit" loading={isSubmitting}>
+                    submit application
+                  </SubmitButton>
+                </motion.div>
+              </motion.div>
             </StyledForm>
           </FormContainer>
         </ApplicationContainer>
@@ -1218,8 +1322,6 @@ const Insurance: React.FC = () => {
           </StyledCarousel>
         </CarouselContainer>
       </SecondCarouselSection>
-
-
 
       <Footer />
     </PageContainer>
