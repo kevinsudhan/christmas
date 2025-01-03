@@ -969,7 +969,7 @@ const Insurance: React.FC = () => {
       image: healthInsImg,
     },
     {
-      title: 'Personal Insurance',
+      title: 'Life Insurance',  // Changed from Personal Insurance
       image: personalInsImg,
     },
     {
@@ -1038,16 +1038,21 @@ const Insurance: React.FC = () => {
           <h2>Insurances Offered</h2>
         </div>
         <InsuranceGrid>
-          {insuranceCards.map((item, index) => (
-            <InsuranceCard key={index}>
-              <div className="image-wrapper">
-                <img src={item.image} alt={item.title} />
-              </div>
-              <div className="content">
-                <h3>{item.title}</h3>
-              </div>
-            </InsuranceCard>
-          ))}
+          {insuranceCards.map((item, index) => {
+            const links = ['/health-insurance', '/life-insurance', '/general-insurance'];
+            return (
+              <Link to={links[index]} key={index}>
+                <InsuranceCard>
+                  <div className="image-wrapper">
+                    <img src={item.image} alt={item.title} />
+                  </div>
+                  <div className="content">
+                    <h3>{item.title}</h3>
+                  </div>
+                </InsuranceCard>
+              </Link>
+            );
+          })}
         </InsuranceGrid>
       </InsuranceSection>
 

@@ -1,9 +1,26 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Form, Input, notification, Button, Select, Typography, Row, Col, Card } from 'antd';
 import styled from 'styled-components';
+import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
-import { Card, Row, Col, Typography, Form, Input, Select, Button } from 'antd';
-import { BankOutlined, SafetyOutlined, DollarOutlined, HomeOutlined, CalculatorOutlined, RiseOutlined, CheckCircleFilled, UserOutlined, ShopOutlined, SwapOutlined, GoldOutlined } from '@ant-design/icons';
-import { typography, colors, effects, spacing, breakpoints } from '../../styles/theme';
+import {
+  UserOutlined,
+  MailOutlined,
+  MobileOutlined,
+  BankOutlined,
+  DollarOutlined,
+  HomeOutlined,
+  SafetyOutlined,
+  RiseOutlined,
+  CheckCircleFilled,
+  CalculatorOutlined,
+  ShopOutlined,
+  SwapOutlined,
+  GoldOutlined
+} from '@ant-design/icons';
+import { submitApplication } from '@/services/applicationService';
+import { sendWhatsAppMessage } from '@/services/whatsappService';
+import { colors, typography, spacing, effects, breakpoints } from '../../styles/theme';
 import Footer from '../../components/Footer/Footer';
 import loanHeroImage from '../../assets/images/hero/loan-main-hero.png';
 
@@ -270,226 +287,6 @@ const FeatureTag = styled.div`
   }
 `;
 
-const LoanTypesSection = styled.section`
-  padding: 60px 4%;
-  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  overflow: hidden;
-
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(0, 119, 182, 0.2), transparent);
-  }
-
-  .section-title {
-    text-align: center;
-    margin-bottom: 35px;
-    position: relative;
-    font-size: 2.5rem;
-    color: ${colors.text.primary};
-    
-    &:after {
-      content: '';
-      position: absolute;
-      bottom: -12px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80px;
-      height: 4px;
-      background: ${colors.primary.gradient};
-      border-radius: 2px;
-    }
-  }
-
-  .ant-row {
-    max-width: 1200px;
-    width: 100%;
-    margin: -8px !important;
-    display: flex;
-    justify-content: center;
-    align-items: stretch;
-  }
-
-  .ant-col {
-    padding: 8px !important;
-    display: flex;
-    justify-content: center;
-    transition: all 0.3s ease;
-  }
-
-  @media (max-width: ${breakpoints.tablet}) {
-    padding: 50px 3%;
-    
-    .section-title {
-      font-size: 2rem;
-      margin-bottom: 30px;
-    }
-
-    .ant-row {
-      margin: -6px !important;
-    }
-
-    .ant-col {
-      padding: 6px !important;
-    }
-  }
-
-  @media (max-width: ${breakpoints.mobile}) {
-    padding: 40px 2%;
-    
-    .section-title {
-      font-size: 1.8rem;
-      margin-bottom: 25px;
-    }
-
-    .ant-row {
-      margin: -4px !important;
-    }
-
-    .ant-col {
-      padding: 4px !important;
-    }
-  }
-`;
-
-const LoanCard = styled(Card)`
-  width: 100%;
-  max-width: 320px;
-  height: 100%;
-  margin: 0 auto;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  background: white;
-  position: relative;
-
-  &:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
-
-    .ant-card-cover .anticon {
-      transform: scale(1.1);
-      background: ${colors.primary.gradient};
-      color: white;
-    }
-  }
-
-  .ant-card-cover {
-    padding: 24px 20px 0;
-    background: transparent;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    
-    .anticon {
-      font-size: 24px;
-      color: ${colors.primary.main};
-      background: ${colors.primary.light};
-      padding: 14px;
-      border-radius: 14px;
-      transition: all 0.4s ease;
-      box-shadow: 0 4px 10px rgba(0, 119, 182, 0.1);
-    }
-  }
-
-  .ant-card-body {
-    padding: 20px;
-  }
-
-  .ant-card-meta-title {
-    font-size: 1.2rem;
-    margin-bottom: 12px;
-    color: ${colors.text.primary};
-    font-weight: 600;
-    line-height: 1.3;
-  }
-
-  .ant-card-meta-description {
-    color: ${colors.text.secondary};
-    font-size: 0.9rem;
-    line-height: 1.5;
-    margin-bottom: 16px;
-  }
-
-  .features-list {
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid rgba(0, 0, 0, 0.06);
-
-    .ant-typography {
-      display: flex !important;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
-      font-size: 0.85rem;
-      color: ${colors.text.secondary};
-      transition: color 0.3s ease;
-
-      &:before {
-        content: "→";
-        color: ${colors.primary.main};
-        font-size: 1rem;
-        font-weight: 600;
-        transition: transform 0.3s ease;
-      }
-
-      &:hover {
-        color: ${colors.primary.main};
-        
-        &:before {
-          transform: translateX(4px);
-        }
-      }
-    }
-  }
-
-  @media (max-width: ${breakpoints.tablet}) {
-    max-width: 280px;
-
-    .ant-card-cover {
-      padding: 20px 16px 0;
-      
-      .anticon {
-        font-size: 22px;
-        padding: 12px;
-      }
-    }
-
-    .ant-card-body {
-      padding: 16px;
-    }
-  }
-
-  @media (max-width: ${breakpoints.mobile}) {
-    max-width: 260px;
-    border-radius: 14px;
-
-    .ant-card-cover {
-      padding: 16px 14px 0;
-      
-      .anticon {
-        font-size: 20px;
-        padding: 10px;
-        border-radius: 12px;
-      }
-    }
-
-    .ant-card-body {
-      padding: 14px;
-    }
-  }
-`;
-
 const QuoteSection = styled.section`
   padding: 80px 5%;
   background: ${colors.background.light};
@@ -708,49 +505,6 @@ const StyledForm = styled(Form)`
     margin-bottom: 20px;
   }
 
-  .ant-input,
-  .ant-select-selector {
-    height: 45px !important;
-    border-radius: 12px !important;
-    border: 1px solid rgba(0, 0, 0, 0.1) !important;
-    padding: 0 16px !important;
-    font-size: ${typography.fontSize.body.small} !important;
-    box-shadow: none !important;
-    outline: none !important;
-
-    &:hover, &:focus {
-      border-color: ${colors.primary.start} !important;
-      box-shadow: none !important;
-    }
-  }
-
-  .ant-input-affix-wrapper {
-    padding: 0 11px !important;
-    border: 1px solid rgba(0, 0, 0, 0.1) !important;
-    border-radius: 12px !important;
-    box-shadow: none !important;
-
-    &:hover, &:focus, &-focused {
-      border-color: ${colors.primary.start} !important;
-      box-shadow: none !important;
-    }
-
-    .ant-input {
-      border: none !important;
-      padding: 0 8px !important;
-      
-      &:hover, &:focus {
-        border: none !important;
-        box-shadow: none !important;
-      }
-    }
-  }
-
-  .ant-select-selection-item,
-  .ant-select-selection-placeholder {
-    line-height: 41px !important;
-  }
-
   .ant-btn {
     height: 45px;
     border-radius: 12px;
@@ -764,6 +518,24 @@ const StyledForm = styled(Form)`
       font-size: ${typography.fontSize.body.small};
       height: auto;
     }
+  }
+`;
+
+const StyledInput = styled(Input)`
+  height: 42px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  border: 2px solid rgba(0, 119, 182, 0.1);
+  background: white;
+
+  .ant-input-prefix {
+    margin-right: 10px;
+    color: #0077b6;
+  }
+
+  &:hover, &:focus {
+    border-color: #0077b6;
+    box-shadow: 0 2px 8px rgba(0, 119, 182, 0.1);
   }
 `;
 
@@ -789,99 +561,83 @@ const SubmitButton = styled(Button)`
 
 const Loans: React.FC = () => {
   const [form] = Form.useForm();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const location = useLocation();
 
-  useEffect(() => {
-    // Check if we have a hash in the URL
-    if (location.hash === '#loan-application') {
-      setTimeout(() => {
-        const element = document.getElementById('loan-application');
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          // Pre-select Personal Loan if coming from Personal Loan page
-          form.setFieldsValue({ loanType: 'personal' });
-        }
-      }, 500);
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
     }
-  }, [location, form]);
+  };
 
-  const loanTypes = [
-    {
-      title: "Personal Loans",
-      description: "Quick, collateral-free loans for your personal needs",
-      icon: <UserOutlined />,
-      link: "/personal-loan",
-      features: [
-        "Minimal documentation",
-        "Quick approval process",
-        "Flexible repayment options",
-        "Competitive interest rates"
-      ]
-    },
-    {
-      title: "Business Loan",
-      description: "Fuel your business growth with our tailored financing solutions",
-      icon: <ShopOutlined />,
-      link: "/business-loan",
-      features: [
-        "Working capital finance",
-        "Equipment financing",
-        "Business expansion loans",
-        "Flexible tenure options"
-      ]
-    },
-    {
-      title: "Home Loan",
-      description: "Make your dream home a reality with our affordable home loans",
-      icon: <HomeOutlined />,
-      link: "/home-loan",
-      features: [
-        "Attractive interest rates",
-        "Long repayment tenure",
-        "Quick loan processing",
-        "Transparent charges"
-      ]
-    },
-    {
-      title: "Home Loan Balance Transfer",
-      description: "Switch your existing home loan for better terms",
-      icon: <SwapOutlined />,
-      link: "/home-loan-balance-transfer",
-      features: [
-        "Lower interest rates",
-        "Top-up loan facility",
-        "Minimal transfer charges",
-        "Hassle-free process"
-      ]
-    },
-    {
-      title: "Loan Against Property",
-      description: "Unlock the value of your property with secured loans",
-      icon: <BankOutlined />,
-      link: "/loan-against-property",
-      features: [
-        "High loan amount",
-        "Lower interest rates",
-        "Longer repayment period",
-        "Multiple property types accepted"
-      ]
-    },
-    {
-      title: "Gold Loan",
-      description: "Get instant loans against your gold jewelry",
-      icon: <GoldOutlined />,
-      link: "/gold-loan",
-      features: [
-        "Quick disbursement",
-        "High value assessment",
-        "Safe gold storage",
-        "Flexible repayment options"
-      ]
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 15
+      }
     }
-  ];
+  };
 
-  const onFinish = (values: any) => {
-    console.log('Form values:', values);
+  interface FormValues {
+    name: string;
+    salary: number;
+    mobileNumber: string;
+    email: string;
+    currentCompany: string;
+    netTakeHome: number;
+    bankAccountDetails: string;
+  }
+
+  const handleSubmit = async (values: FormValues) => {
+    setIsSubmitting(true);
+    try {
+      const applicationData = {
+        name: values.name,
+        salary: values.salary,
+        mobile_number: values.mobileNumber,
+        email: values.email,
+        current_company: values.currentCompany,
+        net_take_home: values.netTakeHome,
+        bank_account_details: values.bankAccountDetails,
+        product_type: 'Loans',
+        status: 'pending' as const,
+        created_at: new Date().toISOString()
+      };
+
+      console.log('Submitting application data:', applicationData);
+      
+      await submitApplication(applicationData);
+      
+      try {
+        await sendWhatsAppMessage(values.mobileNumber, 'Thank you for applying for our Loan!');
+      } catch (whatsappError) {
+        console.error('WhatsApp message failed:', whatsappError);
+      }
+
+      notification.success({
+        message: 'Application Submitted Successfully!',
+        description: 'We will contact you shortly.',
+      });
+      
+      form.resetFields();
+    } catch (error) {
+      console.error('Form submission error:', error);
+      notification.error({
+        message: 'Submission Failed',
+        description: error instanceof Error ? error.message : 'Please try again later.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -914,64 +670,30 @@ const Loans: React.FC = () => {
           </div>
         </HeroContent>
         <HeroImage>
-        <img src={loanHeroImage} alt="Loan Services" />        </HeroImage>
+          <img src={loanHeroImage} alt="Loan Services" />
+        </HeroImage>
       </HeroSection>
-
-      <LoanTypesSection>
-        <Title level={2} className="section-title">
-          Explore Our Loan Products
-        </Title>
-        <Row>
-          {loanTypes.map((loan, index) => (
-            <Col xs={20} sm={11} lg={7} key={index}>
-              <Link to={loan.link} style={{ width: '100%', display: 'block' }}>
-                <LoanCard
-                  hoverable
-                  cover={<div>{loan.icon}</div>}
-                >
-                  <Card.Meta
-                    title={loan.title}
-                    description={loan.description}
-                  />
-                  <div className="features-list">
-                    {loan.features.map((feature, idx) => (
-                      <Text key={idx}>
-                        {feature}
-                      </Text>
-                    ))}
-                  </div>
-                </LoanCard>
-              </Link>
-            </Col>
-          ))}
-        </Row>
-      </LoanTypesSection>
-
-      
 
       <ApplicationSection id="loan-application">
         <ApplicationContainer>
           <FormLeftSection>
-            <h3>Why Choose EBS Loans?</h3>
-            <p>Get quick and hassle-free loans with competitive interest rates tailored to your needs.</p>
+            <h3>Why Choose Our Loans?</h3>
+            <p>Experience a world of financial flexibility with our diverse loan offerings.</p>
             <ul className="benefits">
               <li>
-                <CheckCircleFilled /> Quick loan approval within 24 hours
+                <CheckCircleFilled /> Quick approval process
               </li>
               <li>
-                <CheckCircleFilled /> Competitive interest rates starting at 8.99%
-              </li>
-              <li>
-                <CheckCircleFilled /> Flexible loan amounts up to ₹50 lakhs
+                <CheckCircleFilled /> Competitive interest rates
               </li>
               <li>
                 <CheckCircleFilled /> Minimal documentation required
               </li>
               <li>
-                <CheckCircleFilled /> No hidden charges or processing fees
+                <CheckCircleFilled /> Flexible repayment options
               </li>
               <li>
-                <CheckCircleFilled /> Dedicated loan relationship manager
+                <CheckCircleFilled /> Dedicated relationship manager
               </li>
             </ul>
           </FormLeftSection>
@@ -980,82 +702,103 @@ const Loans: React.FC = () => {
             <StyledForm
               form={form}
               layout="vertical"
-              onFinish={onFinish}
+              onFinish={handleSubmit}
+              requiredMark={false}
             >
               <div className="form-header">
-                <h3>Apply for a Loan</h3>
-                <p>Fill in your details and get instant loan approval</p>
+                <h3>Get Started Today</h3>
+                <p>Fill in your details below and we'll process your application instantly</p>
               </div>
 
-              <Form.Item
-                label="Loan Type"
-                name="loanType"
-                rules={[{ required: true, message: 'Please select loan type' }]}
-              >
-                <Select placeholder="Select loan type" size="large">
-                  <Option value="personal">Personal Loan</Option>
-                  <Option value="home">Home Loan</Option>
-                  <Option value="business">Business Loan</Option>
-                  <Option value="education">Education Loan</Option>
-                  <Option value="vehicle">Vehicle Loan</Option>
-                </Select>
-              </Form.Item>
+              <motion.div variants={itemVariants}>
+                <Form.Item
+                  name="name"
+                  rules={[{ required: true, message: 'Required' }]}
+                >
+                  <StyledInput prefix={<UserOutlined />} placeholder="Full Name" />
+                </Form.Item>
+              </motion.div>
 
-              <Form.Item
-                label="Loan Amount"
-                name="loanAmount"
-                rules={[{ required: true, message: 'Please enter loan amount' }]}
-              >
-                <Input 
-                  placeholder="Enter loan amount" 
-                  size="large"
-                  prefix="₹"
-                />
-              </Form.Item>
+              <motion.div variants={itemVariants}>
+                <Form.Item
+                  name="salary"
+                  rules={[
+                    { required: true, message: 'Required' },
+                    { pattern: /^\d+$/, message: 'Invalid amount' }
+                  ]}
+                >
+                  <StyledInput prefix={<DollarOutlined />} placeholder="Monthly Salary" />
+                </Form.Item>
+              </motion.div>
 
-              <Form.Item
-                label="Monthly Income"
-                name="monthlyIncome"
-                rules={[{ required: true, message: 'Please enter your monthly income' }]}
-              >
-                <Input 
-                  placeholder="Enter your monthly income" 
-                  size="large"
-                  prefix="₹"
-                />
-              </Form.Item>
+              <motion.div variants={itemVariants}>
+                <Form.Item
+                  name="netTakeHome"
+                  rules={[
+                    { required: true, message: 'Required' },
+                    { pattern: /^\d+$/, message: 'Invalid amount' }
+                  ]}
+                >
+                  <StyledInput prefix={<DollarOutlined />} placeholder="Net Take Home" />
+                </Form.Item>
+              </motion.div>
 
-              <Form.Item
-                label="Employment Type"
-                name="employmentType"
-                rules={[{ required: true, message: 'Please select your employment type' }]}
-              >
-                <Select placeholder="Select your employment type" size="large">
-                  <Option value="salaried">Salaried</Option>
-                  <Option value="self-employed">Self Employed</Option>
-                  <Option value="business">Business Owner</Option>
-                  <Option value="professional">Professional</Option>
-                </Select>
-              </Form.Item>
+              <motion.div variants={itemVariants}>
+                <Form.Item
+                  name="mobileNumber"
+                  rules={[
+                    { required: true, message: 'Required' },
+                    { pattern: /^\d{10}$/, message: 'Invalid phone number' }
+                  ]}
+                >
+                  <StyledInput prefix={<MobileOutlined />} placeholder="Mobile Number" />
+                </Form.Item>
+              </motion.div>
 
-              <Form.Item
-                label="Mobile Number"
-                name="mobile"
-                rules={[
-                  { required: true, message: 'Please enter your mobile number' },
-                  { pattern: /^[0-9]{10}$/, message: 'Please enter a valid 10-digit mobile number' }
-                ]}
-              >
-                <Input 
-                  placeholder="Enter your 10-digit mobile number" 
-                  size="large"
-                  maxLength={10}
-                />
-              </Form.Item>
+              <motion.div variants={itemVariants}>
+                <Form.Item
+                  name="email"
+                  rules={[
+                    { required: true, message: 'Required' },
+                    { type: 'email', message: 'Invalid email' }
+                  ]}
+                >
+                  <StyledInput prefix={<MailOutlined />} placeholder="Email" />
+                </Form.Item>
+              </motion.div>
+
+              <motion.div variants={itemVariants}>
+                <Form.Item
+                  name="currentCompany"
+                  rules={[{ required: true, message: 'Required' }]}
+                >
+                  <StyledInput prefix={<HomeOutlined />} placeholder="Current Company" />
+                </Form.Item>
+              </motion.div>
+
+              <motion.div variants={itemVariants}>
+                <Form.Item
+                  name="bankAccountDetails"
+                  rules={[{ required: true, message: 'Required' }]}
+                >
+                  <StyledInput 
+                    prefix={<BankOutlined />} 
+                    placeholder="Bank Account Details"
+                    type="text"
+                    allowClear
+                  />
+                </Form.Item>
+              </motion.div>
 
               <Form.Item>
-                <SubmitButton type="primary" htmlType="submit" block size="large">
-                  Check Loan Eligibility
+                <SubmitButton
+                  type="primary"
+                  htmlType="submit"
+                  loading={isSubmitting}
+                  block
+                  size="large"
+                >
+                  {isSubmitting ? 'Submitting...' : 'Submit Application'}
                 </SubmitButton>
               </Form.Item>
             </StyledForm>
@@ -1069,3 +812,4 @@ const Loans: React.FC = () => {
 };
 
 export default Loans;
+

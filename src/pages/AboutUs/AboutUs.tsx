@@ -336,7 +336,7 @@ const AboutUs: React.FC = () => {
             variants={itemVariants}
           >
             <div className="stat">
-              <div className="number">25+</div>
+              <div className="number">19+</div>
               <div className="label">Years of Excellence</div>
             </div>
             <div className="stat">
@@ -369,9 +369,7 @@ const AboutUs: React.FC = () => {
                 </FloatingIcon>
                 <Title level={3}>Our Mission</Title>
                 <Paragraph>
-                  To empower individuals and businesses with innovative financial solutions that enable growth,
-                  security, and prosperity. We strive to make financial services accessible, transparent, and
-                  tailored to meet the unique needs of our diverse clientele.
+                Our mission is to help people feel confident about their financial future and security.
                 </Paragraph>
               </StyledCard>
             </Col>
@@ -385,9 +383,7 @@ const AboutUs: React.FC = () => {
                 </FloatingIcon>
                 <Title level={3}>Our Vision</Title>
                 <Paragraph>
-                  To be the most trusted and preferred financial partner in India, recognized for our
-                  customer-centric approach, technological innovation, and commitment to creating lasting
-                  financial well-being for our customers.
+                To be the most respected and referred Banking solutions company
                 </Paragraph>
               </StyledCard>
             </Col>
@@ -405,24 +401,30 @@ const AboutUs: React.FC = () => {
             Our Core Values
           </Title>
           <Row gutter={[24, 24]} style={{ marginBottom: '4rem' }}>
-            {[
+            {[/* eslint-disable @typescript-eslint/no-unused-vars */
               {
                 icon: <TeamOutlined />,
-                title: "Customer First",
-                description: "We put our customers at the heart of everything we do, ensuring their success is our success."
+                title: "Integrity",
+                description: "We act with honesty and uphold strong moral principles in every decision."
               },
               {
                 icon: <TrophyOutlined />,
-                title: "Excellence",
-                description: "We strive for excellence in our services, processes, and customer relationships."
+                title: "Quality",
+                description: "We deliver excellence through unmatched attention to detail and standards."
               },
               {
                 icon: <GlobalOutlined />,
-                title: "Innovation",
-                description: "We embrace technology and innovative solutions to provide better financial services."
+                title: "Teamwork",
+                description: "We achieve more together by fostering collaboration and mutual respect."
+              },
+              {
+                icon: <GlobalOutlined />,
+                title: "Speed",
+                description: "We work with agility to provide swift and effective solutions."
               }
+
             ].map((value, index) => (
-              <Col xs={24} md={8} key={index}>
+              <Col xs={24} sm={12} md={6} key={index}>
                 <ValueCard
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -440,7 +442,7 @@ const AboutUs: React.FC = () => {
                   <Paragraph>{value.description}</Paragraph>
                 </ValueCard>
               </Col>
-            ))}
+            ))/* eslint-enable @typescript-eslint/no-unused-vars */}
           </Row>
         </motion.div>
 
@@ -455,7 +457,7 @@ const AboutUs: React.FC = () => {
             Our Journey
           </Title>
           <StyledTimeline mode="alternate">
-            {[
+            {[/* eslint-disable @typescript-eslint/no-unused-vars */
               { year: "1995", event: "Founded as EBS Financial Services" },
               { year: "2000", event: "Expanded operations to 10 major cities" },
               { year: "2010", event: "Launched digital banking services" },
@@ -474,7 +476,7 @@ const AboutUs: React.FC = () => {
                   <Paragraph>{milestone.event}</Paragraph>
                 </motion.div>
               </Timeline.Item>
-            ))}
+            ))/* eslint-enable @typescript-eslint/no-unused-vars */}
           </StyledTimeline>
         </MilestoneSection>
 
@@ -489,9 +491,9 @@ const AboutUs: React.FC = () => {
             Why Choose EBS Financial
           </Title>
           <Row gutter={[24, 24]}>
-            {[
+            {[/* eslint-disable @typescript-eslint/no-unused-vars */
               {
-                title: "25+ Years of Experience",
+                title: "19+ Years of Experience",
                 description: "Trusted by millions of customers with their financial needs for over two decades."
               },
               {
@@ -503,7 +505,7 @@ const AboutUs: React.FC = () => {
                 description: "Cutting-edge technology for seamless and secure financial services."
               }
             ].map((feature, index) => (
-              <Col xs={24} md={8} key={index}>
+              <Col xs={24} sm={12} md={8} key={index}>
                 <StyledCard
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -521,7 +523,7 @@ const AboutUs: React.FC = () => {
                   <Paragraph>{feature.description}</Paragraph>
                 </StyledCard>
               </Col>
-            ))}
+            ))/* eslint-enable @typescript-eslint/no-unused-vars */}
           </Row>
         </motion.div>
       </ContentSection>

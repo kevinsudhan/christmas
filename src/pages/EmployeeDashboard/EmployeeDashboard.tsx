@@ -49,10 +49,14 @@ const HeaderSubtitle = styled.p`
 
 const CardsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 30px;
   padding: 20px;
   margin-bottom: 40px;
+  
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
   
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -271,6 +275,31 @@ const EmployeeDashboard: React.FC = () => {
               <Stat>
                 <StatNumber>{creditCardStats.pending}</StatNumber>
                 <StatLabel>Pending</StatLabel>
+              </Stat>
+            </CardStats>
+          </Card>
+
+          <Card onClick={() => navigate('/employee/database')}>
+            <CardImage 
+              src="/images/database-44.svg"
+              alt="Customer Database"
+            />
+            <CardTitle>Customer Database</CardTitle>
+            <CardDescription>
+              Access and manage customer database records and information efficiently.
+            </CardDescription>
+            <CardStats>
+              <Stat>
+                <StatNumber>--</StatNumber>
+                <StatLabel>Total</StatLabel>
+              </Stat>
+              <Stat>
+                <StatNumber>--</StatNumber>
+                <StatLabel>Active</StatLabel>
+              </Stat>
+              <Stat>
+                <StatNumber>--</StatNumber>
+                <StatLabel>New</StatLabel>
               </Stat>
             </CardStats>
           </Card>
