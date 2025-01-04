@@ -22,7 +22,7 @@ import AboutUs from './pages/AboutUs/AboutUs';
 import Insurance from './pages/Insurance/Insurance';
 import Loans from './pages/Loans/Loans';
 import Login from './pages/login/Login';
-import Apply from './pages/apply/Apply';
+import Apply from './pages/apply/apply';
 import EmployeeLogin from './pages/EmployeeLogin/EmployeeLogin';
 import EmployeeDashboard from './pages/EmployeeDashboard/EmployeeDashboard';
 import EmployeeLoans from './pages/EmployeeDashboard/EmployeeLoans';
