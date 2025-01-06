@@ -6,6 +6,7 @@ import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { Canvas, useFrame, extend, useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
+import BranchNetwork from './BranchNetwork';
 
 const { Title, Paragraph } = Typography;
 
@@ -261,6 +262,149 @@ const ThreeBackground = () => {
     </Canvas>
   );
 };
+
+const FounderSection = styled.section`
+  padding: 8rem 2rem;
+  background: #ffffff;
+  position: relative;
+`;
+
+const FounderCard = styled(motion.div)`
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  position: relative;
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const ImageSection = styled.div`
+  position: relative;
+  height: 100%;
+  min-height: 600px;
+  background: #1a365d;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 1;
+  }
+`;
+
+const ImageOverlay = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 2rem;
+  color: white;
+  z-index: 1;
+  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+
+  h2 {
+    color: white;
+    font-size: 3rem;
+    margin: 0;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  }
+
+  h3 {
+    color: rgba(255,255,255,0.9);
+    font-size: 1.5rem;
+    margin: 0.5rem 0 0 0;
+    font-weight: 500;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+  }
+`;
+
+const FounderContentSection = styled.div`
+  padding: 3rem;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
+
+const Quote = styled.div`
+  font-size: 1.5rem;
+  color: #1a365d;
+  font-style: italic;
+  margin-bottom: 2rem;
+  position: relative;
+  padding-left: 2rem;
+  line-height: 1.6;
+
+  &::before {
+    content: '"';
+    position: absolute;
+    left: 0;
+    top: -0.5rem;
+    font-size: 4rem;
+    color: #023e8a;
+    opacity: 0.3;
+    font-family: Georgia, serif;
+  }
+`;
+
+const BioText = styled(motion.p)`
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #4a5568;
+  margin-bottom: 1.5rem;
+`;
+
+const AchievementGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+`;
+
+const AchievementCard = styled(motion.div)`
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 15px;
+  text-align: center;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    background: #1a365d;
+    color: white;
+
+    .achievement-number {
+      color: white;
+    }
+
+    .achievement-label {
+      color: rgba(255,255,255,0.9);
+    }
+  }
+
+  .achievement-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a365d;
+    margin-bottom: 0.5rem;
+  }
+
+  .achievement-label {
+    font-size: 0.9rem;
+    color: #4a5568;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+`;
 
 const AboutUs: React.FC = () => {
   const { scrollYProgress } = useScroll();
@@ -526,6 +670,96 @@ const AboutUs: React.FC = () => {
             ))/* eslint-enable @typescript-eslint/no-unused-vars */}
           </Row>
         </motion.div>
+
+        {/* Founder Section */}
+        <FounderSection>
+          <FounderCard
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <ImageSection>
+              <img src="/images/sivakumr.jpeg" alt="A A Sivakumar - Founder & CEO" />
+              <ImageOverlay>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.5 }}
+                  viewport={{ once: true }}
+                >
+                  <h2>A A Sivakumar</h2>
+                  <h3>Founder & CEO</h3>
+                </motion.div>
+              </ImageOverlay>
+            </ImageSection>
+
+            <FounderContentSection>
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.5 }}
+                viewport={{ once: true }}
+              >
+                <Quote>
+                  Transforming India's Retail Banking landscape through innovation and excellence
+                </Quote>
+
+                <BioText
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.7, duration: 0.5 }}
+                  viewport={{ once: true }}
+                >
+                  A post graduate in Business Management from Madras University, A A Sivakumar has revolutionized India's Retail Banking channel partner business with unprecedented professionalism and organization.
+                </BioText>
+
+                <BioText
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.8, duration: 0.5 }}
+                  viewport={{ once: true }}
+                >
+                  With three decades of experience in the Indian Retail banking industry and Insurance sector, he has held prestigious positions at BANK OF AMERICA'S ASSOCIATE, ANZ GRINDLAYS BANK, STANDARD CHARTERED BANK, and AVIVA LIFE INSURANCE COMPANY.
+                </BioText>
+
+                <AchievementGrid>
+                  <AchievementCard
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    <div className="achievement-number">100+</div>
+                    <div className="achievement-label">Branches Nationwide</div>
+                  </AchievementCard>
+                  <AchievementCard
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    <div className="achievement-number">200+</div>
+                    <div className="achievement-label">Professional Team</div>
+                  </AchievementCard>
+                  <AchievementCard
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    <div className="achievement-number">1000+</div>
+                    <div className="achievement-label">Business Associates</div>
+                  </AchievementCard>
+                  <AchievementCard
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    <div className="achievement-number">₹500M+</div>
+                    <div className="achievement-label">Annual Turnover</div>
+                  </AchievementCard>
+                </AchievementGrid>
+              </motion.div>
+            </FounderContentSection>
+          </FounderCard>
+        </FounderSection>
+
+        {/* Branch Network Section */}
+        <BranchNetwork />
       </ContentSection>
     </PageWrapper>
   );
