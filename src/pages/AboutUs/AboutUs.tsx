@@ -7,6 +7,7 @@ import { Canvas, useFrame, extend, useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 import BranchNetwork from './BranchNetwork';
+import Footer from '../../components/Footer/Footer';
 
 const { Title, Paragraph } = Typography;
 
@@ -303,13 +304,13 @@ const FloatingIcon = styled(motion.div)`
 `;
 
 const FounderSection = styled.section`
-  padding: 8rem 2rem;
+  padding: 4rem 2rem;  // Reduced from 8rem to 4rem
   background: #ffffff;
   position: relative;
 `;
 
 const FounderCard = styled(motion.div)`
-  max-width: 1200px;
+  max-width: 1000px;  // Reduced from 1200px
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -327,7 +328,7 @@ const FounderCard = styled(motion.div)`
 const ImageSection = styled.div`
   position: relative;
   height: 100%;
-  min-height: 600px;
+  min-height: 500px;  // Reduced from 600px
   background: #1a365d;
   overflow: hidden;
 
@@ -367,7 +368,7 @@ const ImageOverlay = styled.div`
 `;
 
 const FounderContentSection = styled.div`
-  padding: 3rem;
+  padding: 2.5rem;  // Reduced from 3rem
   background: white;
   display: flex;
   flex-direction: column;
@@ -375,29 +376,18 @@ const FounderContentSection = styled.div`
 `;
 
 const Quote = styled.div`
-  font-size: 1.5rem;
+  font-size: 1.3rem;  // Reduced from 1.5rem
   color: #1a365d;
   font-style: italic;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;  // Reduced from 2rem
   position: relative;
-  padding-left: 2rem;
   line-height: 1.6;
-
-  &::before {
-    content: '"';
-    position: absolute;
-    left: 0;
-    top: -0.5rem;
-    font-size: 4rem;
-    color: #023e8a;
-    opacity: 0.3;
-    font-family: Georgia, serif;
-  }
 `;
 
+
 const BioText = styled(motion.p)`
-  font-size: 1.1rem;
-  line-height: 1.8;
+  font-size: 1rem;  // Reduced from 1.1rem
+  line-height: 1.7;
   color: #4a5568;
   margin-bottom: 1.5rem;
 `;
@@ -411,7 +401,7 @@ const AchievementGrid = styled.div`
 
 const AchievementCard = styled(motion.div)`
   background: #f8f9fa;
-  padding: 1.5rem;
+  padding: 2rem;
   border-radius: 15px;
   text-align: center;
   transition: all 0.3s ease;
@@ -423,10 +413,12 @@ const AchievementCard = styled(motion.div)`
 
     .achievement-number {
       color: white;
+      
     }
 
     .achievement-label {
       color: rgba(255,255,255,0.9);
+      
     }
   }
 
@@ -779,7 +771,9 @@ const AboutUs: React.FC = () => {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
+          style={{ marginBottom: '5rem' }}
         >
+
           <Title level={2} style={{ textAlign: 'center', marginBottom: '3rem' }}>
             Why Choose EBS Financial
           </Title>
@@ -819,113 +813,96 @@ const AboutUs: React.FC = () => {
             ))/* eslint-enable @typescript-eslint/no-unused-vars */}
           </Row>
         </motion.div>
+      
 
         {/* Founder Section */}
-        <FounderSection>
-          <FounderCard
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+<FounderSection>
+  <FounderCard
+    initial={{ opacity: 0, y: 50 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.8 }}
+    viewport={{ once: true }}
+  >
+    <ImageSection>
+      <img src="/images/sivakumr.jpeg" alt="A A Sivakumar - Founder & CEO" />
+      <ImageOverlay>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+          viewport={{ once: true }}
+        >
+          <h2>A A Sivakumar</h2>
+          <h3>Founder & CEO</h3>
+        </motion.div>
+      </ImageOverlay>
+    </ImageSection>
+
+    <FounderContentSection>
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ delay: 0.5, duration: 0.5 }}
+        viewport={{ once: true }}
+      >
+        <Quote>
+          "Transforming India's Retail Banking landscape through innovation and excellence"
+        </Quote>
+
+        <BioText
+          initial={{ opacity: 0, x: 20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.7, duration: 0.5 }}
+          viewport={{ once: true }}
+        >
+          A. A. Sivakumar, a distinguished postgraduate in Business Management from Madras University, brings over three decades of rich expertise in the retail banking and insurance sectors. Throughout his illustrious career, he has held pivotal roles in renowned institutions such as Bank of America, ANZ Grindlays Bank, Standard Chartered Bank, and Aviva Life Insurance Company. His journey has been defined by transformative leadership, innovative solutions, and a relentless pursuit of excellence.
+        </BioText>
+
+        <BioText
+          initial={{ opacity: 0, x: 20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.8, duration: 0.5 }}
+          viewport={{ once: true }}
+        >
+          As a visionary leader, Sivakumar has played an instrumental role in revolutionizing the retail banking channel partner business in India. He has fostered a culture that prioritizes integrity, customer-centricity, and operational excellence, driving significant business growth and enhancing the customer experience. His strategic insights and ability to navigate complex business landscapes have solidified his reputation as a trailblazer in the industry.
+        </BioText>
+
+        <AchievementGrid>
+          <AchievementCard
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 300 }}
           >
-            <ImageSection>
-              <img src="/images/sivakumr.jpeg" alt="A A Sivakumar - Founder & CEO" />
-              <ImageOverlay>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3, duration: 0.5 }}
-                  viewport={{ once: true }}
-                >
-                  <h2>A A Sivakumar</h2>
-                  <h3>Founder & CEO</h3>
-                </motion.div>
-              </ImageOverlay>
-            </ImageSection>
-
-            <FounderContentSection>
-              <motion.div
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ delay: 0.5, duration: 0.5 }}
-                viewport={{ once: true }}
-              >
-                <Quote>
-                  Transforming India's Retail Banking landscape through innovation and excellence
-                </Quote>
-
-                <BioText
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.7, duration: 0.5 }}
-                  viewport={{ once: true }}
-                >
-                  A. A. Sivakumar: The Architect of Modern Retail Banking in India
-
-                  With a visionary approach and relentless pursuit of excellence, A. A. Sivakumar has become a cornerstone in the evolution of India’s retail banking and insurance sectors. A postgraduate in Business Management from the esteemed Madras University, he has spent over 30 years driving innovation and setting new benchmarks in professionalism and organizational leadership.
-
-                  
-                </BioText>
-
-                <BioText
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.7, duration: 0.5 }}
-                  viewport={{ once: true }}
-                >
-                  From his early days at Bank of America to his transformative roles at ANZ Grindlays Bank, Standard Chartered Bank, and Aviva Life Insurance Company, Mr. Sivakumar has consistently delivered unparalleled results, earning accolades for his strategic foresight and ability to navigate complex financial landscapes.
-
-                  
-                </BioText>
-
-                <BioText
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.8, duration: 0.5 }}
-                  viewport={{ once: true }}
-                >
-                  His pioneering efforts have revolutionized the retail banking channel partner business in India, embedding a culture of integrity, customer-centricity, and operational efficiency. With his wealth of experience and trailblazing leadership, A. A. Sivakumar stands as an icon of success and a guiding force for the next generation of financial innovators.
-                </BioText>
-
-                <AchievementGrid>
-                  <AchievementCard
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    <div className="achievement-number">100+</div>
-                    <div className="achievement-label">Branches Nationwide</div>
-                  </AchievementCard>
-                  <AchievementCard
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    <div className="achievement-number">200+</div>
-                    <div className="achievement-label">Professional Team</div>
-                  </AchievementCard>
-                  <AchievementCard
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    <div className="achievement-number">1000+</div>
-                    <div className="achievement-label">Business Associates</div>
-                  </AchievementCard>
-                  <AchievementCard
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    <div className="achievement-number">₹500M+</div>
-                    <div className="achievement-label">Annual Turnover</div>
-                  </AchievementCard>
-                </AchievementGrid>
-              </motion.div>
-            </FounderContentSection>
-          </FounderCard>
-        </FounderSection>
+            <div className="achievement-number">30+</div>
+            <div className="achievement-label">Years of Experience</div>
+          </AchievementCard>
+          <AchievementCard
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            <div className="achievement-number">100+</div>
+            <div className="achievement-label">Branches Nationwide</div>
+          </AchievementCard>
+          <AchievementCard
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            <div className="achievement-number">₹500M+</div>
+            <div className="achievement-label">Annual Turnover</div>
+          </AchievementCard>
+        </AchievementGrid>
+      </motion.div>
+    </FounderContentSection>
+  </FounderCard>
+</FounderSection>
 
         {/* Branch Network Section */}
         <BranchNetwork />
+    
       </ContentSection>
+     
+      <Footer />
     </PageWrapper>
+    
   );
 };
 
