@@ -168,14 +168,125 @@ const MilestoneSection = styled(motion.div)`
   box-shadow: 0 10px 30px rgba(0,0,0,0.05);
 `;
 
-const StyledTimeline = styled(Timeline)`
-  .ant-timeline-item-tail {
-    border-left: 2px solid rgba(26, 54, 93, 0.2);
+const TimelineSection = styled.section`
+  padding: 6rem 2rem;
+  background: #f8f9fa;
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 20%;
+    bottom: 20%;
+    left: 50%;
+    width: 1px;
+    background: #e0e0e0;
+    transform: translateX(-50%);
   }
   
-  .ant-timeline-item-head {
-    background: #1a365d;
-    border-color: #1a365d;
+  .timeline-title {
+    text-align: center;
+    margin-bottom: 6rem;
+    color: #1a1a1a;
+    position: relative;
+    z-index: 2;
+  }
+
+  .timeline-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+  }
+`;
+
+const TimelineItem = styled(motion.div)<{ isEven: boolean }>`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  margin-bottom: 6rem;
+  align-items: center;
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #1a1a1a;
+    z-index: 2;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: ${props => props.isEven ? 'auto' : '50%'};
+    right: ${props => props.isEven ? '50%' : 'auto'};
+    width: 2rem;
+    height: 1px;
+    background: #e0e0e0;
+  }
+  
+  ${props => props.isEven && `
+    direction: rtl;
+  `}
+
+  .content {
+    direction: ltr;
+    padding: ${props => props.isEven ? '0 0 0 2rem' : '0 2rem 0 0'};
+    text-align: ${props => props.isEven ? 'right' : 'left'};
+  }
+
+  .year {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: #1a1a1a;
+  }
+
+  .description {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #666;
+  }
+
+  .image-container {
+    position: relative;
+    width: 100%;
+    height: 280px;
+    background: #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+    direction: ltr;
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    direction: ltr;
+
+    &::after {
+      left: 0;
+    }
+
+    &::before {
+      left: 0;
+      width: 2rem;
+      right: auto;
+    }
+
+    .content {
+      padding: 0 0 0 3rem;
+      text-align: left;
+    }
+
+    .image-container {
+      height: 200px;
+    }
   }
 `;
 
@@ -190,78 +301,6 @@ const FloatingIcon = styled(motion.div)`
   color: white;
   margin-bottom: 1.5rem;
 `;
-
-const ParticleField = () => {
-  const count = 1000;
-  const particlesRef = useRef<THREE.Points>(null);
-  const { mouse } = useThree();
-
-  const [positions] = React.useState(() => {
-    const positions = new Float32Array(count * 3);
-    for (let i = 0; i < count; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 10;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 10;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
-    }
-    return positions;
-  });
-
-  useFrame((state) => {
-    if (!particlesRef.current) return;
-    
-    const time = state.clock.getElapsedTime();
-    
-    for (let i = 0; i < count; i++) {
-      const i3 = i * 3;
-      particlesRef.current.geometry.attributes.position.array[i3] += Math.sin(time + i) * 0.001;
-      particlesRef.current.geometry.attributes.position.array[i3 + 1] += Math.cos(time + i) * 0.001;
-    }
-    
-    particlesRef.current.geometry.attributes.position.needsUpdate = true;
-    particlesRef.current.rotation.y = mouse.x * 0.1;
-    particlesRef.current.rotation.x = -mouse.y * 0.1;
-  });
-
-  return (
-    <points ref={particlesRef}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={positions.length / 3}
-          array={positions}
-          itemSize={3}
-        />
-      </bufferGeometry>
-      <pointsMaterial
-        size={0.02}
-        color="#ffffff"
-        transparent
-        opacity={0.6}
-        sizeAttenuation
-      />
-    </points>
-  );
-};
-
-const ThreeBackground = () => {
-  return (
-    <Canvas
-      camera={{ position: [0, 0, 5], fov: 75 }}
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        pointerEvents: 'none',
-      }}
-    >
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} />
-      <ParticleField />
-    </Canvas>
-  );
-};
 
 const FounderSection = styled.section`
   padding: 8rem 2rem;
@@ -406,6 +445,78 @@ const AchievementCard = styled(motion.div)`
   }
 `;
 
+const ParticleField = () => {
+  const count = 1000;
+  const particlesRef = useRef<THREE.Points>(null);
+  const { mouse } = useThree();
+
+  const [positions] = React.useState(() => {
+    const positions = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 10;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 10;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
+    }
+    return positions;
+  });
+
+  useFrame((state) => {
+    if (!particlesRef.current) return;
+    
+    const time = state.clock.getElapsedTime();
+    
+    for (let i = 0; i < count; i++) {
+      const i3 = i * 3;
+      particlesRef.current.geometry.attributes.position.array[i3] += Math.sin(time + i) * 0.001;
+      particlesRef.current.geometry.attributes.position.array[i3 + 1] += Math.cos(time + i) * 0.001;
+    }
+    
+    particlesRef.current.geometry.attributes.position.needsUpdate = true;
+    particlesRef.current.rotation.y = mouse.x * 0.1;
+    particlesRef.current.rotation.x = -mouse.y * 0.1;
+  });
+
+  return (
+    <points ref={particlesRef}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={positions.length / 3}
+          array={positions}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.02}
+        color="#ffffff"
+        transparent
+        opacity={0.6}
+        sizeAttenuation
+      />
+    </points>
+  );
+};
+
+const ThreeBackground = () => {
+  return (
+    <Canvas
+      camera={{ position: [0, 0, 5], fov: 75 }}
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        pointerEvents: 'none',
+      }}
+    >
+      <ambientLight intensity={0.5} />
+      <pointLight position={[10, 10, 10]} />
+      <ParticleField />
+    </Canvas>
+  );
+};
+
 const AboutUs: React.FC = () => {
   const { scrollYProgress } = useScroll();
   const parallaxRef = useRef<HTMLDivElement>(null);
@@ -501,7 +612,12 @@ const AboutUs: React.FC = () => {
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
         {/* Mission and Vision */}
-        <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+        <motion.div 
+          variants={containerVariants} 
+          initial="hidden" 
+          animate="visible" 
+          style={{ marginBottom: '4rem', width: '100%' }}
+        >
           <Row gutter={[24, 24]} style={{ marginBottom: '4rem' }}>
             <Col xs={24} md={12}>
               <StyledCard variants={cardVariants} whileHover={{ y: -10, transition: { duration: 0.3 } }}>
@@ -513,7 +629,7 @@ const AboutUs: React.FC = () => {
                 </FloatingIcon>
                 <Title level={3}>Our Mission</Title>
                 <Paragraph>
-                Our mission is to help people feel confident about their financial future and security.
+                  Our mission is to help people feel confident about their financial future and security.
                 </Paragraph>
               </StyledCard>
             </Col>
@@ -527,7 +643,7 @@ const AboutUs: React.FC = () => {
                 </FloatingIcon>
                 <Title level={3}>Our Vision</Title>
                 <Paragraph>
-                To be the most respected and referred Banking solutions company
+                  To be the most respected and referred Banking solutions company
                 </Paragraph>
               </StyledCard>
             </Col>
@@ -597,31 +713,64 @@ const AboutUs: React.FC = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <Title level={2} style={{ textAlign: 'center', marginBottom: '3rem' }}>
-            Our Journey
-          </Title>
-          <StyledTimeline mode="alternate">
-            {[/* eslint-disable @typescript-eslint/no-unused-vars */
-              { year: "1995", event: "Founded as EBS Financial Services" },
-              { year: "2000", event: "Expanded operations to 10 major cities" },
-              { year: "2010", event: "Launched digital banking services" },
-              { year: "2015", event: "Achieved 1 million customer milestone" },
-              { year: "2020", event: "Introduced AI-powered financial advisory" },
-              { year: "Present", event: "Serving millions of customers with innovative financial solutions" }
-            ].map((milestone, index) => (
-              <Timeline.Item key={index}>
-                <motion.div
-                  initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
+
+          <TimelineSection>
+            <Title level={2} className="timeline-title">Our Journey</Title>
+            <div className="timeline-container">
+              {[
+                {
+                  year: "2005",
+                  description: "Founded with a vision to revolutionize banking.",
+                  image: "/images/WhatsApp Image 2025-01-07 at 10.43.37 PM.jpeg"
+                },
+                {
+                  year: "2009",
+                  description: "Expanded to multibanking and multistate operations; achieved ₹100M turnover.",
+                  image: "/images/WhatsApp Image 2025-01-07 at 10.48.27 PM.jpeg"
+                },
+                {
+                  year: "2015",
+                  description: "Crossed ₹250M turnover, cementing industry leadership.",
+                  image: "/images/WhatsApp Image 2025-01-07 at 10.50.35 PM (1).jpeg"
+                },
+                {
+                  year: "2023",
+                  description: "Surpassed ₹500M turnover with over 100 branches nationwide.",
+                  image: "/images/WhatsApp Image 2025-01-07 at 10.50.35 PM.jpeg"
+                }
+              ].map((item, index) => (
+                <TimelineItem
+                  key={index}
+                  isEven={index % 2 === 1}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.2 }}
+                  transition={{ duration: 0.5 }}
                 >
-                  <Title level={4}>{milestone.year}</Title>
-                  <Paragraph>{milestone.event}</Paragraph>
-                </motion.div>
-              </Timeline.Item>
-            ))/* eslint-enable @typescript-eslint/no-unused-vars */}
-          </StyledTimeline>
+                  <div className="image-container">
+                    <img 
+                      src={item.image} 
+                      alt={`${item.year} - ${item.description}`}
+                      style={{ 
+                        width: '100%', 
+                        height: '100%', 
+                        objectFit: 'cover',
+                        opacity: 0.9
+                      }} 
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.backgroundColor = '#e5e7eb';
+                      }}
+                    />
+                  </div>
+                  <div className="content">
+                    <div className="year">{item.year}</div>
+                    <div className="description">{item.description}</div>
+                  </div>
+                </TimelineItem>
+              ))}
+            </div>
+          </TimelineSection>
         </MilestoneSection>
 
         {/* Why Choose Us */}
@@ -711,7 +860,22 @@ const AboutUs: React.FC = () => {
                   transition={{ delay: 0.7, duration: 0.5 }}
                   viewport={{ once: true }}
                 >
-                  A post graduate in Business Management from Madras University, A A Sivakumar has revolutionized India's Retail Banking channel partner business with unprecedented professionalism and organization.
+                  A. A. Sivakumar: The Architect of Modern Retail Banking in India
+
+                  With a visionary approach and relentless pursuit of excellence, A. A. Sivakumar has become a cornerstone in the evolution of India’s retail banking and insurance sectors. A postgraduate in Business Management from the esteemed Madras University, he has spent over 30 years driving innovation and setting new benchmarks in professionalism and organizational leadership.
+
+                  
+                </BioText>
+
+                <BioText
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.7, duration: 0.5 }}
+                  viewport={{ once: true }}
+                >
+                  From his early days at Bank of America to his transformative roles at ANZ Grindlays Bank, Standard Chartered Bank, and Aviva Life Insurance Company, Mr. Sivakumar has consistently delivered unparalleled results, earning accolades for his strategic foresight and ability to navigate complex financial landscapes.
+
+                  
                 </BioText>
 
                 <BioText
@@ -720,7 +884,7 @@ const AboutUs: React.FC = () => {
                   transition={{ delay: 0.8, duration: 0.5 }}
                   viewport={{ once: true }}
                 >
-                  With three decades of experience in the Indian Retail banking industry and Insurance sector, he has held prestigious positions at BANK OF AMERICA'S ASSOCIATE, ANZ GRINDLAYS BANK, STANDARD CHARTERED BANK, and AVIVA LIFE INSURANCE COMPANY.
+                  His pioneering efforts have revolutionized the retail banking channel partner business in India, embedding a culture of integrity, customer-centricity, and operational efficiency. With his wealth of experience and trailblazing leadership, A. A. Sivakumar stands as an icon of success and a guiding force for the next generation of financial innovators.
                 </BioText>
 
                 <AchievementGrid>
