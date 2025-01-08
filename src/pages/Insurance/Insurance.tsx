@@ -168,6 +168,7 @@ const HeroSection = styled.section`
   }
 `;
 
+
 const HeroContent = styled.div`
   flex: 1;
   max-width: 600px;
@@ -247,7 +248,7 @@ const HeroImage = styled.div`
   }
 
   img {
-    max-width: 90%;
+    max-width: 70%;
     height: auto;
     filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.2));
     transform: perspective(1000px) rotateY(-15deg);
@@ -271,7 +272,6 @@ const HeroImage = styled.div`
     }
   }
 `;
-
 const FeatureTag = styled.div`
   display: inline-flex;
   align-items: center;

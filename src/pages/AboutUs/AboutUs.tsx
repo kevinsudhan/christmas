@@ -132,10 +132,18 @@ const ContentSection = styled(motion.div)`
   border-radius: 30px;
   margin-top: -100px;
   box-shadow: 0 -20px 60px rgba(0,0,0,0.1);
+  margin-bottom: 4rem;
 
   @media (max-width: 768px) {
     margin-top: -50px;
     padding: 4rem 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  @media (max-width: 480px) {
+    margin-top: -30px;
+    padding: 3rem 1rem;
+    margin-bottom: 2rem;
   }
 `;
 
@@ -383,7 +391,6 @@ const Quote = styled.div`
   position: relative;
   line-height: 1.6;
 `;
-
 
 const BioText = styled(motion.p)`
   font-size: 1rem;  // Reduced from 1.1rem

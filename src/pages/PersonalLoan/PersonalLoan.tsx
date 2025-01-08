@@ -5,8 +5,6 @@ import { Button, Typography, Rate, Checkbox, Modal, Tabs, Badge } from 'antd';
 import { StarFilled, PercentageOutlined, SwapOutlined, CloseOutlined, SafetyCertificateOutlined, GiftOutlined, CheckCircleFilled, DownloadOutlined, DollarOutlined, FieldTimeOutlined, FileProtectOutlined } from '@ant-design/icons';
 import { motion, AnimatePresence } from 'framer-motion';
 import Footer from '../../components/Footer/Footer';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
 
 // Bank logos from public directory
 const bankLogos = {
