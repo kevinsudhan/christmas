@@ -5,6 +5,7 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { motion } from 'framer-motion';
 import loginBg from '../../assets/login-bg.jpg';
 import { GlassCard, ShimmerButton, PulseCircle, FloatingElement } from '../../components/Animations/AnimatedComponents';
+import { BankOutlined } from '@ant-design/icons';
 
 const shimmer = keyframes`
   0% {
@@ -199,7 +200,6 @@ const FormTitle = styled(motion.h2)`
 
   @media (max-width: 480px) {
     font-size: 1.5rem;
-    margin-bottom: 24px;
   }
 `;
 
@@ -273,12 +273,22 @@ const StyledPasswordInput = styled(Input.Password)`
 const LoginButton = styled(ShimmerButton)`
   width: 100%;
   height: 50px;
-  border-radius: 8px;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 600;
+  background: linear-gradient(135deg, #0077b6 0%, #023e8a 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
   margin-top: 20px;
   position: relative;
   overflow: hidden;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0, 119, 182, 0.2);
+  }
 
   &::before {
     content: '';
@@ -293,12 +303,74 @@ const LoginButton = styled(ShimmerButton)`
       rgba(255, 255, 255, 0.2),
       transparent
     );
-    animation: ${shimmer} 2s infinite;
+    animation: ${shimmer} 1.5s infinite;
+  }
+`;
+
+const OrDivider = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 24px 0;
+  color: #718096;
+  font-size: 0.9rem;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #e2e8f0;
+    margin: 0 12px;
+  }
+`;
+
+const LoanAssistButton = styled(motion.button)`
+  width: 100%;
+  height: 50px;
+  background: #ffffff;
+  color: #0077b6;
+  border: 2px solid #0077b6;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    background: rgba(0, 119, 182, 0.05);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 119, 182, 0.1);
   }
 
-  @media (max-width: 968px) {
-    height: 45px;
-    padding: 0 16px;
+  svg {
+    font-size: 1.2rem;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      45deg,
+      transparent,
+      rgba(0, 119, 182, 0.1),
+      transparent
+    );
+    transform: rotate(45deg);
+    transition: all 0.6s ease;
+  }
+
+  &:hover::after {
+    transform: rotate(45deg) translate(50%, 50%);
   }
 `;
 
@@ -628,64 +700,47 @@ const Login: React.FC = () => {
         ))}
 
         <ContentWrapper
+          variants={containerVariants}
           initial="hidden"
           animate="visible"
-          variants={containerVariants}
         >
-          <FormTitle variants={itemVariants}>
-            Login via Loan Assist
-          </FormTitle>
-          
-          <LoginForm 
-            form={form} 
-            onFinish={handleSubmit}
-          >
-            <InputWrapper variants={itemVariants}>
-              <Form.Item
-                name="username"
-                rules={[{ required: true, message: 'Please enter your username' }]}
-              >
-                <StyledInput
-                  prefix={<UserOutlined style={{ color: '#0077b6' }} />}
-                  placeholder="Username"
-                  size="large"
-                />
-              </Form.Item>
-            </InputWrapper>
-            
-            <InputWrapper variants={itemVariants}>
-              <Form.Item
-                name="password"
-                rules={[{ required: true, message: 'Please enter your password' }]}
-              >
-                <StyledPasswordInput
-                  prefix={<LockOutlined style={{ color: '#0077b6' }} />}
-                  placeholder="Password"
-                  size="large"
-                />
-              </Form.Item>
-            </InputWrapper>
-            
-            <motion.div variants={itemVariants}>
-              <LoginButton
-                type="button" 
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
+          <FormTitle variants={itemVariants}>Welcome Back</FormTitle>
+          <LoginForm form={form} onFinish={handleSubmit}>
+            <Form.Item
+              name="username"
+              rules={[{ required: true, message: 'Please enter your username' }]}
+            >
+              <StyledInput prefix={<UserOutlined />} placeholder="Username" />
+            </Form.Item>
+
+            <Form.Item
+              name="password"
+              rules={[{ required: true, message: 'Please enter your password' }]}
+            >
+              <StyledPasswordInput
+                prefix={<LockOutlined />}
+                placeholder="Password"
+              />
+            </Form.Item>
+
+            <Form.Item>
+              <LoginButton type="submit">
                 Sign In
               </LoginButton>
-            </motion.div>
-            
-            <motion.div variants={itemVariants}>
-              <ForgotPassword 
-                href="/forgot-password"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Forgot your password?
-              </ForgotPassword>
-            </motion.div>
+            </Form.Item>
           </LoginForm>
+
+          <OrDivider>or</OrDivider>
+
+          <motion.div variants={itemVariants}>
+            <LoanAssistButton
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <BankOutlined />
+              Login via Loan Assist
+            </LoanAssistButton>
+          </motion.div>
         </ContentWrapper>
 
         <CircleDecoration 

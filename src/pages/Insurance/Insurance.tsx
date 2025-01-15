@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { Card, Row, Col, Typography, Carousel, Form, Input, Select, Button, notification } from 'antd';
 import { StarFilled, CheckCircleFilled, CreditCardOutlined, SafetyOutlined, SmileOutlined, BookOutlined, BankOutlined, UserOutlined, MobileOutlined, MailOutlined, DollarOutlined, HomeOutlined } from '@ant-design/icons';
-import { submitApplication } from '@/services/applicationService';
+
 import { typography, colors, effects, spacing, breakpoints } from '../../styles/theme';
 import insuranceHeroImg from '../../assets/images/hero/Sitemap Whiteboard in Green Purple Basic Style (13).png';
 import Footer from '../../components/Footer/Footer';
@@ -19,6 +19,42 @@ import { supabase } from '@/supabaseClient';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
+
+const insuranceCards = [
+  {
+    title: 'Health Insurance',
+    image: healthInsImg,
+    description: 'Comprehensive health coverage for you and your family',
+    benefits: [
+      'Cashless hospitalization',
+      'Pre and post hospitalization coverage',
+      'No claim bonus',
+      'Preventive healthcare'
+    ]
+  },
+  {
+    title: 'Life Insurance',
+    image: personalInsImg,
+    description: 'Secure your family\'s future with our life insurance plans',
+    benefits: [
+      'Term life coverage',
+      'Investment options',
+      'Tax benefits',
+      'Rider options'
+    ]
+  },
+  {
+    title: 'General Insurance',
+    image: generalInsImg,
+    description: 'Protection for your assets and liabilities',
+    benefits: [
+      'Property insurance',
+      'Vehicle insurance',
+      'Travel insurance',
+      'Business insurance'
+    ]
+  }
+];
 
 const PageContainer = styled.div`
   min-height: 100vh;

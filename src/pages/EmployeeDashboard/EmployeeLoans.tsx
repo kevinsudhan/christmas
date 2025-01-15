@@ -54,16 +54,18 @@ const Subtitle = styled.p`
 `;
 
 interface Application {
-  id: number;
+  id: string;
   created_at: string;
-  product_type: string;
-  name: string;
-  salary: number;
-  net_take_home: number;
-  mobile_number: string;
+  firstname: string;
+  middlename?: string;
+  lastname: string;
   email: string;
-  current_company: string;
-  bank_account_details: string;
+  mobilenumber: string;
+  currentcompany: string;
+  monthlysalary: number;
+  nettakehome: number;
+  bankingdetails: string;
+  producttype: string;
   status: string;
 }
 
@@ -96,49 +98,26 @@ const EmployeeLoans: React.FC = () => {
       render: (date: string) => new Date(date).toLocaleDateString(),
     },
     {
-      title: 'Product Type',
-      dataIndex: 'product_type',
-      key: 'product_type',
-      render: (type: string) => {
-        let color = 'blue';
-        switch (type?.toLowerCase()) {
-          case 'loan':
-            color = 'blue';
-            break;
-          case 'insurance':
-            color = 'purple';
-            break;
-          case 'credit_card':
-            color = 'cyan';
-            break;
-          default:
-            color = 'default';
-        }
-        return <Tag color={color}>{type || 'N/A'}</Tag>;
-      },
-    },
-    {
       title: 'Name',
-      dataIndex: 'name',
       key: 'name',
-      render: (name: string) => name || 'N/A',
+      render: (_, record) => `${record.firstname} ${record.middlename || ''} ${record.lastname}`.trim(),
     },
     {
-      title: 'Salary',
-      dataIndex: 'salary',
-      key: 'salary',
+      title: 'Monthly Salary',
+      dataIndex: 'monthlysalary',
+      key: 'monthlysalary',
       render: (salary: number) => `₹${salary?.toLocaleString() || 0}`,
     },
     {
       title: 'Net Take Home',
-      dataIndex: 'net_take_home',
-      key: 'net_take_home',
+      dataIndex: 'nettakehome',
+      key: 'nettakehome',
       render: (amount: number) => `₹${amount?.toLocaleString() || 0}`,
     },
     {
       title: 'Mobile No',
-      dataIndex: 'mobile_number',
-      key: 'mobile_number',
+      dataIndex: 'mobilenumber',
+      key: 'mobilenumber',
       render: (phone: string) => phone || 'N/A',
     },
     {
@@ -149,14 +128,14 @@ const EmployeeLoans: React.FC = () => {
     },
     {
       title: 'Current Company',
-      dataIndex: 'current_company',
-      key: 'current_company',
+      dataIndex: 'currentcompany',
+      key: 'currentcompany',
       render: (company: string) => company || 'N/A',
     },
     {
-      title: 'Bank Account Details',
-      dataIndex: 'bank_account_details',
-      key: 'bank_account_details',
+      title: 'Banking Details',
+      dataIndex: 'bankingdetails',
+      key: 'bankingdetails',
       render: (details: string) => details || 'N/A',
     },
     {
@@ -186,7 +165,7 @@ const EmployeeLoans: React.FC = () => {
       const { data, error } = await supabase
         .from('applications')
         .select('*')
-        .eq('product_type', 'Loans')  
+        .eq('producttype', 'Loans')  
         .order('created_at', { ascending: false });
 
       if (error) throw error;

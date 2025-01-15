@@ -96,6 +96,12 @@ const App: React.FC = () => {
             {/* Loan Routes */}
             <Route path="/loans" element={<Loans />} />
             
+            {/* Insurance Routes */}
+            <Route path="/insurance" element={<Insurance />} />
+            <Route path="/health-insurance" element={<HealthInsurance />} />
+            <Route path="/life-insurance" element={<LifeInsurance />} />
+            <Route path="/general-insurance" element={<GeneralInsurance />} />
+            
             {/* Personal Loan Routes */}
             <Route path="/personal-loan" element={<PersonalLoan />} />
             <Route path="/personal-loan/banking-partners" element={<PLBankingPartners />} />
@@ -120,10 +126,6 @@ const App: React.FC = () => {
             <Route path="/home-loan/nbfc-partners" element={<HLNBFCPartners />} />
             <Route path="/gold-loan" element={<GoldLoan />} />
             <Route path="/gold-loan/banking-partners" element={<GLBankingPartners />} />
-            <Route path="/insurance" element={<Insurance />} />
-            <Route path="/health-insurance" element={<HealthInsurance />} />
-            <Route path="/life-insurance" element={<LifeInsurance />} />
-            <Route path="/general-insurance" element={<GeneralInsurance />} />
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/login" element={<Login />} />
             <Route path="/apply" element={<Apply />} />

@@ -98,6 +98,17 @@ const NavLink = styled(Link)<{ $active?: boolean }>`
     transition: transform 0.2s ease;
   }
 
+  .anticon-down {
+    font-size: 20px;
+    transition: transform 0.2s ease;
+    alignment: center;
+    padding-top: 2.5px;
+  }
+
+  &:hover .anticon-down {
+    transform: rotate(180deg);
+  }
+
   &:hover::after,
   ${props => props.$active && `
     &::after {

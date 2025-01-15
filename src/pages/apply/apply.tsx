@@ -42,73 +42,127 @@ const LeftSection = styled(motion.section)`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 1.5rem;
+  min-height: 100vh;
+  padding-top: 4rem;
+  padding-right: 1rem;
+  overflow: hidden;
 
-  &:before {
+  &::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #0077b6 0%, #023e8a 100%);
+    bottom: 0;
+    background: url(${loginBg}) no-repeat center center;
+    background-size: cover;
+    opacity: 0.05;
+    z-index: 0;
   }
 
-  .form-header {
-    margin-bottom: 1rem;
+  @media (max-width: 968px) {
+    padding: 1.5rem;
+    min-height: auto;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1.25rem;
+  }
+`;
+
+const FormContainer = styled(motion.div)`
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 580px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  margin: auto 0;
+
+  h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #1a365d;
+    margin-bottom: 0.25rem;
     text-align: center;
+    background: linear-gradient(135deg, #0077b6 0%, #023e8a 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 
-    h3 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: #1a1a1a;
-      margin-bottom: 0.25rem;
-    }
+  p {
+    text-align: center;
+    color: #64748b;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
 
-    p {
-      color: #666;
-      font-size: 0.875rem;
-    }
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .full-width {
+    grid-column: 1 / -1;
   }
 
   .ant-form-item {
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
   }
 
   .ant-form-item-label {
     padding-bottom: 2px;
-    
+
     label {
-      font-size: 0.75rem;
-      color: #4b5563;
-      height: 16px;
+      color: #1e293b;
+      font-weight: 500;
+      font-size: 0.8rem;
+      height: auto;
+      
+      &::before {
+        display: none !important;
+      }
     }
   }
 
   .ant-input-affix-wrapper {
+    padding: 4px 8px;
     border-radius: 6px;
-    border: 1px solid #e5e7eb;
-    transition: all 0.2s;
-    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    transition: all 0.3s ease;
     height: 32px;
 
     &:hover, &:focus {
       border-color: #0077b6;
       box-shadow: 0 0 0 2px rgba(0, 119, 182, 0.1);
     }
+
+    .anticon {
+      color: #0077b6;
+      font-size: 0.9rem;
+    }
+
+    input {
+      font-size: 0.85rem;
+    }
   }
 
   .ant-select {
     .ant-select-selector {
-      border-radius: 6px;
-      border: 1px solid #e5e7eb;
+      padding: 0 8px;
       height: 32px;
-      padding: 0 11px;
-      
-      .ant-select-selection-placeholder,
+      border-radius: 6px;
+      border: 1.5px solid #e2e8f0;
+      transition: all 0.3s ease;
+
       .ant-select-selection-item {
         line-height: 30px;
-        font-size: 0.875rem;
+        font-size: 0.85rem;
       }
     }
 
@@ -120,13 +174,72 @@ const LeftSection = styled(motion.section)`
     }
   }
 
-  .grid {
-    gap: 0.75rem !important;
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    
+    .form-grid {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    p {
+      font-size: 0.85rem;
+      margin-bottom: 0.75rem;
+    }
   }
 
-  @media (max-width: 968px) {
-    padding: 1rem;
+  @media (max-width: 480px) {
+    padding: 1.25rem;
+    margin: 1.25rem 0;
   }
+`;
+
+const SubmitButton = styled(motion.button)`
+  width: 100%;
+  padding: 8px;
+  background: linear-gradient(135deg, #0077b6 0%, #023e8a 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
+  height: 36px;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 119, 182, 0.2);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+  }
+`;
+
+const FloatingParticle = styled(motion.div)`
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+`;
+
+const GradientCircle = styled(motion.div)`
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(96, 165, 250, 0.2) 0%, transparent 70%);
+  z-index: 0;
 `;
 
 const ContentWrapper = styled.div`
@@ -201,32 +314,182 @@ const RightSection = styled(GlassCard)`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 60px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
+  padding: 2rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
   position: relative;
   overflow: hidden;
   border: none;
   border-radius: 0;
 
+  .content-container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .section-title {
+    text-align: center;
+    margin-bottom: 2rem;
+
+    h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p {
+      font-size: 1rem;
+      color: #64748b;
+      line-height: 1.5;
+    }
+  }
+
+  .features-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .feature-item {
+    background: white;
+    padding: 1.25rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+
+    .icon {
+      width: 40px;
+      height: 40px;
+      background: #f0f9ff;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+
+      svg {
+        font-size: 1.25rem;
+        color: #0077b6;
+      }
+    }
+
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      font-size: 0.9rem;
+      color: #64748b;
+      line-height: 1.4;
+    }
+  }
+
+  .info-section {
+    background: #f8fafc;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    margin-top: 1rem;
+
+    h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 0.75rem;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      li {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        color: #64748b;
+        margin-bottom: 0.5rem;
+
+        svg {
+          color: #0077b6;
+          font-size: 1rem;
+        }
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+
+  .background-pattern {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-image: radial-gradient(circle at 1px 1px, #e2e8f0 1px, transparent 0);
+    background-size: 40px 40px;
+    opacity: 0.4;
+    z-index: 0;
+  }
+
   @media (max-width: 968px) {
-    padding: 40px 20px;
+    padding: 1.5rem;
+
+    .section-title {
+      margin-bottom: 1.5rem;
+
+      h2 {
+        font-size: 1.75rem;
+      }
+    }
+
+    .features-list {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
   }
 
   @media (max-width: 480px) {
-    padding: 30px 16px;
-  }
+    padding: 1rem;
 
-  &::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -50%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, rgba(0, 119, 182, 0.05) 0%, rgba(2, 62, 138, 0.05) 100%);
-    transform: rotate(-45deg);
-    z-index: 0;
+    .section-title {
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      p {
+        font-size: 0.9rem;
+      }
+    }
+
+    .feature-item {
+      padding: 1rem;
+
+      .icon {
+        width: 36px;
+        height: 36px;
+      }
+
+      h3 {
+        font-size: 1rem;
+      }
+    }
   }
 `;
 
@@ -328,51 +591,60 @@ const Apply: React.FC = () => {
   return (
     <LoginContainer>
       <LeftSection
-        initial={{ x: -100, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <ContentWrapper>
-          <motion.h1
-            className="text-2xl font-bold text-white mb-6 text-center"
-            variants={itemVariants}
-          >
-            Enquire Now
-          </motion.h1>
+        {[...Array(20)].map((_, i) => (
+          <FloatingParticle
+            key={i}
+            style={{
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              y: [0, -30, 0],
+              x: [0, Math.random() * 20 - 10, 0],
+              opacity: [0.3, 0.8, 0.3],
+            }}
+            transition={{
+              duration: Math.random() * 3 + 2,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+
+        <FormContainer
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+        >
+          <h1>Apply Now</h1>
+          <p>Fill in your details to get started with your application</p>
+
           <Form
             form={form}
             layout="vertical"
             onFinish={handleSubmit}
             requiredMark={false}
-            className="space-y-3"
           >
-            <div className="form-header">
-              <h3>Application Form</h3>
-              <p>Fill in your details below</p>
-            </div>
+            <div className="form-grid">
+              <Form.Item
+                name="firstName"
+                label="First Name"
+                rules={[{ required: true, message: 'First Name is required' }]}
+              >
+                <Input prefix={<UserOutlined />} placeholder="Enter First Name" />
+              </Form.Item>
 
-            <div className="grid grid-cols-2 gap-4">
-              <motion.div variants={itemVariants}>
-                <Form.Item
-                  name="firstName"
-                  label="First Name"
-                  rules={[{ required: true, message: 'First Name is required' }]}
-                >
-                  <Input prefix={<UserOutlined />} placeholder="Enter First Name" />
-                </Form.Item>
-              </motion.div>
+              <Form.Item
+                name="middleName"
+                label="Middle Name"
+              >
+                <Input prefix={<UserOutlined />} placeholder="Enter Middle Name (Optional)" />
+              </Form.Item>
 
-              <motion.div variants={itemVariants}>
-                <Form.Item
-                  name="middleName"
-                  label="Middle Name"
-                >
-                  <Input prefix={<UserOutlined />} placeholder="Enter Middle Name (Optional)" />
-                </Form.Item>
-              </motion.div>
-            </div>
-
-            <motion.div variants={itemVariants}>
               <Form.Item
                 name="lastName"
                 label="Last Name"
@@ -380,9 +652,7 @@ const Apply: React.FC = () => {
               >
                 <Input prefix={<UserOutlined />} placeholder="Enter Last Name" />
               </Form.Item>
-            </motion.div>
 
-            <motion.div variants={itemVariants}>
               <Form.Item
                 name="email"
                 label="Email"
@@ -393,9 +663,7 @@ const Apply: React.FC = () => {
               >
                 <Input prefix={<MailOutlined />} placeholder="Enter Email Address" />
               </Form.Item>
-            </motion.div>
 
-            <motion.div variants={itemVariants}>
               <Form.Item
                 name="mobileNumber"
                 label="Mobile Number"
@@ -410,9 +678,7 @@ const Apply: React.FC = () => {
                   maxLength={10}
                 />
               </Form.Item>
-            </motion.div>
 
-            <motion.div variants={itemVariants}>
               <Form.Item
                 name="currentCompany"
                 label="Current Company"
@@ -420,46 +686,39 @@ const Apply: React.FC = () => {
               >
                 <Input prefix={<HomeOutlined />} placeholder="Enter Company Name" />
               </Form.Item>
-            </motion.div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <motion.div variants={itemVariants}>
-                <Form.Item
-                  name="monthlySalary"
-                  label="Monthly Salary"
-                  rules={[
-                    { required: true, message: 'Monthly Salary is required' },
-                    { pattern: /^\d+$/, message: 'Please enter a valid amount' }
-                  ]}
-                >
-                  <Input
-                    prefix={<DollarOutlined />}
-                    placeholder="Enter Monthly Salary"
-                    type="number"
-                  />
-                </Form.Item>
-              </motion.div>
-
-              <motion.div variants={itemVariants}>
-                <Form.Item
-                  name="netTakeHome"
-                  label="Net Take Home"
-                  rules={[
-                    { required: true, message: 'Net Take Home is required' },
-                    { pattern: /^\d+$/, message: 'Please enter a valid amount' }
-                  ]}
-                >
-                  <Input
-                    prefix={<DollarOutlined />}
-                    placeholder="Enter Net Take Home"
-                    type="number"
-                  />
-                </Form.Item>
-              </motion.div>
-            </div>
-
-            <motion.div variants={itemVariants}>
               <Form.Item
+                name="monthlySalary"
+                label="Monthly Salary"
+                rules={[
+                  { required: true, message: 'Monthly Salary is required' },
+                  { pattern: /^\d+$/, message: 'Please enter a valid amount' }
+                ]}
+              >
+                <Input
+                  prefix={<DollarOutlined />}
+                  placeholder="Enter Monthly Salary"
+                  type="number"
+                />
+              </Form.Item>
+
+              <Form.Item
+                name="netTakeHome"
+                label="Net Take Home"
+                rules={[
+                  { required: true, message: 'Net Take Home is required' },
+                  { pattern: /^\d+$/, message: 'Please enter a valid amount' }
+                ]}
+              >
+                <Input
+                  prefix={<DollarOutlined />}
+                  placeholder="Enter Net Take Home"
+                  type="number"
+                />
+              </Form.Item>
+
+              <Form.Item
+                className="full-width"
                 name="bankingDetails"
                 label="Banking Details"
                 rules={[{ required: true, message: 'Banking Details are required' }]}
@@ -469,39 +728,36 @@ const Apply: React.FC = () => {
                   placeholder="Enter Bank Name and Account Number"
                 />
               </Form.Item>
-            </motion.div>
 
-            <motion.div variants={itemVariants}>
               <Form.Item
+                className="full-width"
                 name="productType"
-                rules={[{ required: true, message: 'Required' }]}
+                label="Product Type"
+                rules={[{ required: true, message: 'Product Type is required' }]}
               >
                 <Select
                   placeholder="Select Product Type"
-                  className="h-[42px]"
-                  suffixIcon={<AppstoreOutlined className="text-primary opacity-80" />}
+                  suffixIcon={<AppstoreOutlined className="text-primary" />}
                 >
                   <Select.Option value="Loans">Loans</Select.Option>
                   <Select.Option value="Insurance">Insurance</Select.Option>
                   <Select.Option value="Credit Cards">Credit Cards</Select.Option>
                 </Select>
               </Form.Item>
-            </motion.div>
+            </div>
 
-            <motion.div variants={itemVariants}>
-              <Form.Item>
-                <LoginButton
-                  type="submit"
-                  disabled={isSubmitting}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  {isSubmitting ? 'Submitting...' : 'Submit Application'}
-                </LoginButton>
-              </Form.Item>
-            </motion.div>
+            <Form.Item>
+              <SubmitButton
+                type="submit"
+                disabled={isSubmitting}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                {isSubmitting ? 'Submitting...' : 'Submit Application'}
+              </SubmitButton>
+            </Form.Item>
           </Form>
-        </ContentWrapper>
+        </FormContainer>
       </LeftSection>
 
       <RightSection
@@ -509,58 +765,81 @@ const Apply: React.FC = () => {
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <ContentWrapper>
-          <motion.h2
-            className="text-2xl font-bold text-primary mb-8 text-center"
-            variants={itemVariants}
-          >
-            Login to Your Account
-          </motion.h2>
-          <Form
-            layout="vertical"
-            requiredMark={false}
-            className="space-y-4"
-          >
-            <motion.div variants={itemVariants}>
-              <Form.Item
-                name="email"
-                rules={[
-                  { required: true, message: 'Required' },
-                  { type: 'email', message: 'Invalid email' }
-                ]}
-              >
-                <Input prefix={<UserOutlined />} placeholder="Email" />
-              </Form.Item>
-            </motion.div>
+        <div className="background-pattern" />
+        <div className="content-container">
+          <div className="section-title">
+            <h2>Why Choose Us?</h2>
+            <p>Discover the advantages of our financial solutions</p>
+          </div>
 
-            <motion.div variants={itemVariants}>
-              <Form.Item
-                name="password"
-                rules={[{ required: true, message: 'Required' }]}
-              >
-                <Input.Password prefix={<LockOutlined />} placeholder="Password" />
-              </Form.Item>
-            </motion.div>
-
-            <motion.div variants={itemVariants}>
-              <ShimmerButton
-                type="submit"
-                className="w-full h-10 text-sm"
-              >
-                Login
-              </ShimmerButton>
-            </motion.div>
-
-            <motion.div
-              variants={itemVariants}
-              className="text-center mt-4"
+          <div className="features-list">
+            <motion.div 
+              className="feature-item"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
-              <a href="#" className="text-primary text-sm hover:underline">
-                Forgot Password?
-              </a>
+              <div className="icon">
+                <DollarOutlined />
+              </div>
+              <h3>Competitive Rates</h3>
+              <p>Get access to the best market rates and flexible repayment options.</p>
             </motion.div>
-          </Form>
-        </ContentWrapper>
+
+            <motion.div 
+              className="feature-item"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="icon">
+                <BankOutlined />
+              </div>
+              <h3>Quick Processing</h3>
+              <p>Fast approval process with minimal documentation required.</p>
+            </motion.div>
+
+            <motion.div 
+              className="feature-item"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="icon">
+                <UserOutlined />
+              </div>
+              <h3>Dedicated Support</h3>
+              <p>Personal assistance throughout your application journey.</p>
+            </motion.div>
+
+            <motion.div 
+              className="feature-item"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="icon">
+                <LockOutlined />
+              </div>
+              <h3>Secure Process</h3>
+              <p>Your information is protected with bank-grade security.</p>
+            </motion.div>
+          </div>
+
+          <div className="info-section">
+            <h4>What you'll need:</h4>
+            <ul>
+              <li>
+                <UserOutlined /> Valid identification documents
+              </li>
+              <li>
+                <BankOutlined /> Recent bank statements
+              </li>
+              <li>
+                <HomeOutlined /> Proof of address
+              </li>
+              <li>
+                <DollarOutlined /> Salary slips or income proof
+              </li>
+            </ul>
+          </div>
+        </div>
       </RightSection>
     </LoginContainer>
   );
