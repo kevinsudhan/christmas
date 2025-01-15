@@ -1258,7 +1258,12 @@ const HLBankingPartners: React.FC = () => {
                     </Text>
                   </RatingContainer>
                   <Button onClick={() => handleViewDetails(loan.name)}>View Details</Button>
-                  <Button type="primary">Apply</Button>
+                  <Button 
+  type="primary" 
+  onClick={() => navigate('/apply', { state: { productType: 'Loans' } })}
+>
+  Apply
+</Button>
                   <Text type="secondary" style={{ fontSize: '12px', textAlign: 'center' }}>
                     On bank website
                   </Text>

@@ -5,8 +5,7 @@ import { UserOutlined, LockOutlined, MailOutlined, MobileOutlined, BankOutlined,
 import { motion } from 'framer-motion';
 import loginBg from '../../assets/login-bg.jpg';
 import { GlassCard, ShimmerButton, PulseCircle, FloatingElement } from '../../components/Animations/AnimatedComponents';
-import { submitApplication } from '@/services/applicationService';
-import { sendWhatsAppMessage } from '@/services/whatsappService';
+import { supabase } from '@/supabaseClient';
 
 const shimmer = keyframes`
   0% {
@@ -30,15 +29,9 @@ const float = keyframes`
 `;
 
 const LoginContainer = styled.div`
-  min-height: 100vh;
   display: flex;
-  background: #f5f7fa;
-  position: relative;
-  overflow: hidden;
-
-  @media (max-width: 968px) {
-    flex-direction: column;
-  }
+  min-height: 100vh;
+  background: #f3f4f6;
 `;
 
 const LeftSection = styled(motion.section)`
@@ -49,18 +42,157 @@ const LeftSection = styled(motion.section)`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 60px;
-  overflow: hidden;
+  padding: 1.5rem;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #0077b6 0%, #023e8a 100%);
+  }
+
+  .form-header {
+    margin-bottom: 1rem;
+    text-align: center;
+
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 0.25rem;
+    }
+
+    p {
+      color: #666;
+      font-size: 0.875rem;
+    }
+  }
+
+  .ant-form-item {
+    margin-bottom: 0.75rem;
+  }
+
+  .ant-form-item-label {
+    padding-bottom: 2px;
+    
+    label {
+      font-size: 0.75rem;
+      color: #4b5563;
+      height: 16px;
+    }
+  }
+
+  .ant-input-affix-wrapper {
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s;
+    background: #ffffff;
+    height: 32px;
+
+    &:hover, &:focus {
+      border-color: #0077b6;
+      box-shadow: 0 0 0 2px rgba(0, 119, 182, 0.1);
+    }
+  }
+
+  .ant-select {
+    .ant-select-selector {
+      border-radius: 6px;
+      border: 1px solid #e5e7eb;
+      height: 32px;
+      padding: 0 11px;
+      
+      .ant-select-selection-placeholder,
+      .ant-select-selection-item {
+        line-height: 30px;
+        font-size: 0.875rem;
+      }
+    }
+
+    &:hover, &.ant-select-focused {
+      .ant-select-selector {
+        border-color: #0077b6;
+        box-shadow: 0 0 0 2px rgba(0, 119, 182, 0.1);
+      }
+    }
+  }
+
+  .grid {
+    gap: 0.75rem !important;
+  }
 
   @media (max-width: 968px) {
-    padding: 40px 20px;
-    min-height: 300px;
+    padding: 1rem;
+  }
+`;
+
+const ContentWrapper = styled.div`
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+  .form-header {
+    margin-bottom: 0.5rem;
+    h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.1rem;
+      color: #1a1a1a;
+    }
+    p {
+      font-size: 0.75rem;
+      color: #666;
+    }
+  }
+
+  .ant-form-item {
+    margin-bottom: 0.5rem;
+  }
+
+  .ant-form-item-label {
+    padding-bottom: 1px;
+    label {
+      font-size: 0.7rem;
+      height: 14px;
+    }
+  }
+
+  .ant-input-affix-wrapper {
+    height: 28px;
+    font-size: 0.8rem;
+    .anticon {
+      font-size: 0.9rem;
+    }
+  }
+
+  .ant-select-selector {
+    height: 28px !important;
+    .ant-select-selection-item,
+    .ant-select-selection-placeholder {
+      line-height: 26px !important;
+      font-size: 0.8rem !important;
+    }
+  }
+
+  .grid {
+    gap: 0.5rem !important;
   }
 
   @media (max-width: 480px) {
-    padding: 70px 24px;
-    min-height: 250px;
+    padding: 0.75rem;
   }
+`;
+
+const LoginButton = styled(motion.button)`
+  width: 100%;
+  height: 28px;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
 `;
 
 const RightSection = styled(GlassCard)`
@@ -98,130 +230,16 @@ const RightSection = styled(GlassCard)`
   }
 `;
 
-const ContentWrapper = styled(motion.div)`
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  max-width: 400px;
-  margin: 0 auto;
-`;
-
-const HeroContent = styled(motion.div)`
-  position: relative;
-  z-index: 1;
-  max-width: 600px;
-`;
-
-const MainTitle = styled(motion.h1)`
-  font-size: 3.5rem;
-  font-weight: 700;
-  color: #ffffff;
-  margin-bottom: 24px;
-  line-height: 1.2;
-  position: relative;
-
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 0;
-    width: 60px;
-    height: 4px;
-    background: linear-gradient(90deg, #fff, transparent);
-  }
-
-  @media (max-width: 768px) {
-    font-size: 2.5rem;
-  }
-`;
-
-const Tagline = styled(motion.p)`
-  font-size: 1.25rem;
-  color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 40px;
-  line-height: 1.6;
-  max-width: 500px;
-`;
-
-const StyledInput = styled(Input)`
-  height: 42px;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  border: 2px solid rgba(0, 119, 182, 0.1);
-
-  .ant-input-prefix {
-    margin-right: 10px;
-    color: #0077b6;
-    opacity: 0.8;
-  }
-
-  &:hover {
-    border-color: #0077b6;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0, 119, 182, 0.1);
-  }
-
-  &:focus {
-    border-color: #0077b6;
-    box-shadow: 0 0 0 2px rgba(0, 119, 182, 0.1);
-    transform: translateY(-1px);
-  }
-`;
-
-const LoginButton = styled(motion.button)`
-  width: 100%;
-  height: 54px;
-  background: linear-gradient(135deg, #0077b6 0%, #023e8a 100%);
-  border: none;
-  border-radius: 12px;
-  color: white;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  margin-top: 20px;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.2),
-      transparent
-    );
-    animation: ${shimmer} 2s infinite;
-  }
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 119, 182, 0.3);
-  }
-
-  &:active {
-    transform: translateY(1px);
-  }
-
-  @media (max-width: 968px) {
-    height: 50px;
-    font-size: 1rem;
-  }
-`;
-
 interface FormValues {
-  name: string;
-  salary: number;
-  mobileNumber: string;
+  firstName: string;
+  middleName?: string;
+  lastName: string;
   email: string;
+  mobileNumber: string;
   currentCompany: string;
+  monthlySalary: number;
   netTakeHome: number;
-  bankAccountDetails: string;
+  bankingDetails: string;
   productType: 'Loans' | 'Insurance' | 'Credit Cards';
 }
 
@@ -255,44 +273,37 @@ const Apply: React.FC = () => {
   const handleSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
     try {
-      console.log('Form values:', values);
+      const { data, error } = await supabase
+        .from('applications')
+        .insert([
+          {
+            first_name: values.firstName,
+            middle_name: values.middleName || null,
+            last_name: values.lastName,
+            email: values.email,
+            mobile_number: values.mobileNumber,
+            current_company: values.currentCompany,
+            monthly_salary: Number(values.monthlySalary),
+            net_take_home: Number(values.netTakeHome),
+            banking_details: values.bankingDetails,
+            product_type: values.productType
+          }
+        ]);
 
-      const applicationData = {
-        name: values.name,
-        salary: values.salary,
-        mobile_number: values.mobileNumber,
-        email: values.email,
-        current_company: values.currentCompany,
-        net_take_home: values.netTakeHome,
-        bank_account_details: values.bankAccountDetails,
-        product_type: values.productType,
-      };
+      if (error) throw error;
 
-      console.log('Formatted application data:', applicationData);
-
-      await submitApplication(applicationData);
-      
-      // Send WhatsApp message
-      try {
-        await sendWhatsAppMessage(values.mobileNumber);
-      } catch (whatsappError) {
-        console.error('WhatsApp message error:', whatsappError);
-        // Don't show error to user as the form submission was successful
-      }
-      
       notification.success({
         message: 'Application Submitted',
-        description: 'Your loan application has been submitted successfully. We will contact you soon.',
+        description: 'Your application has been successfully submitted.'
       });
-      
+
       form.resetFields();
-    } catch (error: any) {
-      console.error('Form submission error:', error);
-      
+    } catch (error) {
       notification.error({
         message: 'Submission Failed',
-        description: error.message || 'There was an error submitting your application. Please try again.',
+        description: 'There was an error submitting your application. Please try again.'
       });
+      console.error('Submission error:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -306,7 +317,7 @@ const Apply: React.FC = () => {
         transition={{ duration: 0.5 }}
       >
         <ContentWrapper>
-          <motion.h1 
+          <motion.h1
             className="text-2xl font-bold text-white mb-6 text-center"
             variants={itemVariants}
           >
@@ -314,11 +325,136 @@ const Apply: React.FC = () => {
           </motion.h1>
           <Form
             form={form}
-            onFinish={handleSubmit}
             layout="vertical"
+            onFinish={handleSubmit}
             requiredMark={false}
             className="space-y-3"
           >
+            <div className="form-header">
+              <h3>Application Form</h3>
+              <p>Fill in your details below</p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <motion.div variants={itemVariants}>
+                <Form.Item
+                  name="firstName"
+                  label="First Name"
+                  rules={[{ required: true, message: 'First Name is required' }]}
+                >
+                  <Input prefix={<UserOutlined />} placeholder="Enter First Name" />
+                </Form.Item>
+              </motion.div>
+
+              <motion.div variants={itemVariants}>
+                <Form.Item
+                  name="middleName"
+                  label="Middle Name"
+                >
+                  <Input prefix={<UserOutlined />} placeholder="Enter Middle Name (Optional)" />
+                </Form.Item>
+              </motion.div>
+            </div>
+
+            <motion.div variants={itemVariants}>
+              <Form.Item
+                name="lastName"
+                label="Last Name"
+                rules={[{ required: true, message: 'Last Name is required' }]}
+              >
+                <Input prefix={<UserOutlined />} placeholder="Enter Last Name" />
+              </Form.Item>
+            </motion.div>
+
+            <motion.div variants={itemVariants}>
+              <Form.Item
+                name="email"
+                label="Email"
+                rules={[
+                  { required: true, message: 'Email is required' },
+                  { type: 'email', message: 'Please enter a valid email' }
+                ]}
+              >
+                <Input prefix={<MailOutlined />} placeholder="Enter Email Address" />
+              </Form.Item>
+            </motion.div>
+
+            <motion.div variants={itemVariants}>
+              <Form.Item
+                name="mobileNumber"
+                label="Mobile Number"
+                rules={[
+                  { required: true, message: 'Mobile Number is required' },
+                  { pattern: /^[6-9]\d{9}$/, message: 'Please enter a valid 10-digit mobile number' }
+                ]}
+              >
+                <Input
+                  prefix={<MobileOutlined />}
+                  placeholder="Enter Mobile Number"
+                  maxLength={10}
+                />
+              </Form.Item>
+            </motion.div>
+
+            <motion.div variants={itemVariants}>
+              <Form.Item
+                name="currentCompany"
+                label="Current Company"
+                rules={[{ required: true, message: 'Current Company is required' }]}
+              >
+                <Input prefix={<HomeOutlined />} placeholder="Enter Company Name" />
+              </Form.Item>
+            </motion.div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <motion.div variants={itemVariants}>
+                <Form.Item
+                  name="monthlySalary"
+                  label="Monthly Salary"
+                  rules={[
+                    { required: true, message: 'Monthly Salary is required' },
+                    { pattern: /^\d+$/, message: 'Please enter a valid amount' }
+                  ]}
+                >
+                  <Input
+                    prefix={<DollarOutlined />}
+                    placeholder="Enter Monthly Salary"
+                    type="number"
+                  />
+                </Form.Item>
+              </motion.div>
+
+              <motion.div variants={itemVariants}>
+                <Form.Item
+                  name="netTakeHome"
+                  label="Net Take Home"
+                  rules={[
+                    { required: true, message: 'Net Take Home is required' },
+                    { pattern: /^\d+$/, message: 'Please enter a valid amount' }
+                  ]}
+                >
+                  <Input
+                    prefix={<DollarOutlined />}
+                    placeholder="Enter Net Take Home"
+                    type="number"
+                  />
+                </Form.Item>
+              </motion.div>
+            </div>
+
+            <motion.div variants={itemVariants}>
+              <Form.Item
+                name="bankingDetails"
+                label="Banking Details"
+                rules={[{ required: true, message: 'Banking Details are required' }]}
+              >
+                <Input
+                  prefix={<BankOutlined />}
+                  placeholder="Enter Bank Name and Account Number"
+                />
+              </Form.Item>
+            </motion.div>
+
             <motion.div variants={itemVariants}>
               <Form.Item
                 name="productType"
@@ -337,94 +473,16 @@ const Apply: React.FC = () => {
             </motion.div>
 
             <motion.div variants={itemVariants}>
-              <Form.Item
-                name="name"
-                rules={[{ required: true, message: 'Required' }]}
-              >
-                <StyledInput prefix={<UserOutlined />} placeholder="Full Name" />
-              </Form.Item>
-            </motion.div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <motion.div variants={itemVariants}>
-                <Form.Item
-                  name="salary"
-                  rules={[
-                    { required: true, message: 'Required' },
-                    { pattern: /^\d+$/, message: 'Invalid amount' }
-                  ]}
+              <Form.Item>
+                <LoginButton
+                  type="submit"
+                  disabled={isSubmitting}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  <StyledInput prefix={<DollarOutlined />} placeholder="Monthly Salary" />
-                </Form.Item>
-              </motion.div>
-
-              <motion.div variants={itemVariants}>
-                <Form.Item
-                  name="netTakeHome"
-                  rules={[
-                    { required: true, message: 'Required' },
-                    { pattern: /^\d+$/, message: 'Invalid amount' }
-                  ]}
-                >
-                  <StyledInput prefix={<DollarOutlined />} placeholder="Net Take Home" />
-                </Form.Item>
-              </motion.div>
-            </div>
-
-            <motion.div variants={itemVariants}>
-              <Form.Item
-                name="mobileNumber"
-                rules={[
-                  { required: true, message: 'Required' },
-                  { pattern: /^\d{10}$/, message: 'Invalid phone number' }
-                ]}
-              >
-                <StyledInput prefix={<MobileOutlined />} placeholder="Mobile Number" />
+                  {isSubmitting ? 'Submitting...' : 'Submit Application'}
+                </LoginButton>
               </Form.Item>
-            </motion.div>
-
-            <motion.div variants={itemVariants}>
-              <Form.Item
-                name="email"
-                rules={[
-                  { required: true, message: 'Required' },
-                  { type: 'email', message: 'Invalid email' }
-                ]}
-              >
-                <StyledInput prefix={<MailOutlined />} placeholder="Email" />
-              </Form.Item>
-            </motion.div>
-
-            <motion.div variants={itemVariants}>
-              <Form.Item
-                name="currentCompany"
-                rules={[{ required: true, message: 'Required' }]}
-              >
-                <StyledInput prefix={<BankOutlined />} placeholder="Current Company" />
-              </Form.Item>
-            </motion.div>
-
-            <motion.div variants={itemVariants}>
-              <Form.Item
-                name="bankAccountDetails"
-                rules={[{ required: true, message: 'Required' }]}
-              >
-                <StyledInput.TextArea
-                  placeholder="Bank Account Details"
-                  autoSize={{ minRows: 2, maxRows: 3 }}
-                  className="text-sm"
-                />
-              </Form.Item>
-            </motion.div>
-
-            <motion.div variants={itemVariants}>
-              <ShimmerButton
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full h-10 text-sm"
-              >
-                {isSubmitting ? 'Submitting...' : 'Submit Application'}
-              </ShimmerButton>
             </motion.div>
           </Form>
         </ContentWrapper>
@@ -436,7 +494,7 @@ const Apply: React.FC = () => {
         transition={{ duration: 0.5 }}
       >
         <ContentWrapper>
-          <motion.h2 
+          <motion.h2
             className="text-2xl font-bold text-primary mb-8 text-center"
             variants={itemVariants}
           >
@@ -455,7 +513,7 @@ const Apply: React.FC = () => {
                   { type: 'email', message: 'Invalid email' }
                 ]}
               >
-                <StyledInput prefix={<UserOutlined />} placeholder="Email" />
+                <Input prefix={<UserOutlined />} placeholder="Email" />
               </Form.Item>
             </motion.div>
 
@@ -464,7 +522,7 @@ const Apply: React.FC = () => {
                 name="password"
                 rules={[{ required: true, message: 'Required' }]}
               >
-                <StyledInput.Password prefix={<LockOutlined />} placeholder="Password" />
+                <Input.Password prefix={<LockOutlined />} placeholder="Password" />
               </Form.Item>
             </motion.div>
 
@@ -477,7 +535,7 @@ const Apply: React.FC = () => {
               </ShimmerButton>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               variants={itemVariants}
               className="text-center mt-4"
             >
