@@ -273,24 +273,40 @@ const Apply: React.FC = () => {
   const handleSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
     try {
+      console.log('Form Values:', values);
+      
+      // Create the payload with lowercase column names to match the database
+      const payload = {
+        firstname: values.firstName,
+        middlename: values.middleName || null,
+        lastname: values.lastName,
+        email: values.email,
+        mobilenumber: values.mobileNumber,
+        currentcompany: values.currentCompany,
+        monthlysalary: Number(values.monthlySalary),
+        nettakehome: Number(values.netTakeHome),
+        bankingdetails: values.bankingDetails,
+        producttype: values.productType || 'Credit Cards'
+      };
+      
+      console.log('Payload being sent to Supabase:', payload);
+
       const { data, error } = await supabase
         .from('applications')
-        .insert([
-          {
-            first_name: values.firstName,
-            middle_name: values.middleName || null,
-            last_name: values.lastName,
-            email: values.email,
-            mobile_number: values.mobileNumber,
-            current_company: values.currentCompany,
-            monthly_salary: Number(values.monthlySalary),
-            net_take_home: Number(values.netTakeHome),
-            banking_details: values.bankingDetails,
-            product_type: values.productType
-          }
-        ]);
+        .insert([payload])
+        .select();
 
-      if (error) throw error;
+      console.log('Complete Supabase Response:', { data, error });
+
+      if (error) {
+        console.error('Detailed Error:', {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        });
+        throw error;
+      }
 
       notification.success({
         message: 'Application Submitted',
@@ -299,11 +315,11 @@ const Apply: React.FC = () => {
 
       form.resetFields();
     } catch (error) {
+      console.error('Full error object:', error);
       notification.error({
         message: 'Submission Failed',
-        description: 'There was an error submitting your application. Please try again.'
+        description: error.message || 'There was an error submitting your application. Please try again.'
       });
-      console.error('Submission error:', error);
     } finally {
       setIsSubmitting(false);
     }

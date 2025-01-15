@@ -5,6 +5,7 @@ import { CreditCardOutlined, CheckCircleFilled, StarFilled, UserOutlined, MailOu
 import { motion } from 'framer-motion';
 import creditCardImg from '../../assets/images/services/credit-card.jpg';
 import creditCardHeroImg from '../../assets/images/hero/creditcard.png';
+import { supabase } from '@/supabaseClient';
 
 
 import axisCard from '../../assets/images/cards/AXIS.png';
@@ -854,24 +855,30 @@ const CreditCards: React.FC = () => {
   const handleSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
     try {
+      const payload = {
+        firstname: values.firstName,
+        middlename: values.middleName || null,
+        lastname: values.lastName,
+        email: values.email,
+        mobilenumber: values.mobileNumber,
+        currentcompany: values.currentCompany,
+        monthlysalary: Number(values.monthlySalary),
+        nettakehome: Number(values.netTakeHome),
+        bankingdetails: values.bankingDetails,
+        producttype: 'Credit Cards'
+      };
+  
+      console.log('Submitting payload:', payload);
+  
       const { data, error } = await supabase
         .from('applications')
-        .insert([
-          {
-            first_name: values.firstName,
-            middle_name: values.middleName || null,
-            last_name: values.lastName,
-            email: values.email,
-            mobile_number: values.mobileNumber,
-            current_company: values.currentCompany,
-            monthly_salary: Number(values.monthlySalary),
-            net_take_home: Number(values.netTakeHome),
-            banking_details: values.bankingDetails,
-            product_type: 'Credit Cards'
-          }
-        ]);
+        .insert([payload])
+        .select();
   
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
   
       notification.success({
         message: 'Application Submitted',
@@ -880,11 +887,11 @@ const CreditCards: React.FC = () => {
   
       form.resetFields();
     } catch (error) {
+      console.error('Submission error:', error);
       notification.error({
         message: 'Submission Failed',
-        description: 'There was an error submitting your application. Please try again.'
+        description: error.message || 'There was an error submitting your application. Please try again.'
       });
-      console.error('Submission error:', error);
     } finally {
       setIsSubmitting(false);
     }
