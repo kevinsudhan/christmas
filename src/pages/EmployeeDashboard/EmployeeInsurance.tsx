@@ -4,6 +4,7 @@ import { supabase } from '../../supabaseClient';
 import DataTable from '../../components/DataTable/DataTable';
 import type { ColumnsType } from 'antd/es/table';
 import { Tag, Select, message } from 'antd';
+import BackButton from '../../components/BackButton/BackButton';
 
 const { Option } = Select;
 
@@ -18,22 +19,27 @@ const MainContent = styled.main`
   flex: 1;
   width: 100%;
   background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+  padding-top: 80px;
 `;
 
 const ContentContainer = styled.div`
-  padding: 80px 20px;
+  padding: 0 20px;
   max-width: 1400px;
   margin: 0 auto;
   width: 100%;
-  
-  @media (max-width: 768px) {
-    padding: 60px 16px;
-  }
+`;
+
+const HeaderSection = styled.div`
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
 `;
 
 const Header = styled.div`
-  margin-top: 100px;
-  margin-bottom: 40px;
+  margin-top: 0;
+  margin-bottom: 0;
   text-align: left;
 `;
 
@@ -182,10 +188,15 @@ const EmployeeInsurance: React.FC = () => {
     <PageWrapper>
       <MainContent>
         <ContentContainer>
-          <Header>
-            <Title>Insurance Applications</Title>
-            <Subtitle>View and manage all insurance applications</Subtitle>
-          </Header>
+          <BackButton />
+          
+          <HeaderSection>
+            <Header>
+              <Title>Insurance Applications</Title>
+              <Subtitle>View and manage all insurance applications</Subtitle>
+            </Header>
+          </HeaderSection>
+
           <DataTable 
             columns={columns}
             data={applications}

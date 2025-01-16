@@ -3,7 +3,9 @@ import styled from 'styled-components';
 import { supabase } from '../../supabaseClient';
 import DataTable from '../../components/DataTable/DataTable';
 import type { ColumnsType } from 'antd/es/table';
-import { Tag, Select, message } from 'antd';
+import { Tag, Select, message, Button } from 'antd';
+import { LeftOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 
 const { Option } = Select;
 
@@ -18,29 +20,60 @@ const MainContent = styled.main`
   flex: 1;
   width: 100%;
   background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+  padding-top: 80px;
 `;
 
 const ContentContainer = styled.div`
-  padding: 80px 20px;
+  padding: 0 20px;
   max-width: 1400px;
   margin: 0 auto;
   width: 100%;
-  
-  @media (max-width: 768px) {
-    padding: 60px 16px;
+`;
+
+const BackButton = styled(Button)`
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  height: auto;
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+
+  .anticon {
+    margin-right: 8px;
+    font-size: 0.9rem;
+  }
+
+  &:hover {
+    color: #1a365d;
+    background: transparent;
+    transform: translateX(-5px);
+  }
+
+  &:focus {
+    background: transparent;
   }
 `;
 
+const HeaderSection = styled.div`
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+`;
+
 const Header = styled.div`
-  margin-top: 100px;
-  margin-bottom: 40px;
   text-align: left;
 `;
 
 const Title = styled.h1`
   color: #1a365d;
   font-size: 2.5rem;
-  margin-bottom: 15px;
+  margin-bottom: 0.5rem;
   font-weight: 700;
   
   @media (max-width: 768px) {
@@ -51,6 +84,7 @@ const Title = styled.h1`
 const Subtitle = styled.p`
   color: #4a5568;
   font-size: 1.1rem;
+  margin: 0;
 `;
 
 interface Application {
@@ -72,6 +106,7 @@ interface Application {
 const EmployeeLoans: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [applications, setApplications] = useState<Application[]>([]);
+  const navigate = useNavigate();
 
   const handleStatusChange = async (value: string, record: Application) => {
     try {
@@ -88,6 +123,10 @@ const EmployeeLoans: React.FC = () => {
       console.error('Error updating status:', err);
       message.error('Failed to update status');
     }
+  };
+
+  const handleBack = () => {
+    navigate('/employee-dashboard');
   };
 
   const columns: ColumnsType<Application> = [
@@ -182,10 +221,21 @@ const EmployeeLoans: React.FC = () => {
     <PageWrapper>
       <MainContent>
         <ContentContainer>
-          <Header>
-            <Title>Loan Applications</Title>
-            <Subtitle>View and manage all loan applications</Subtitle>
-          </Header>
+          <BackButton 
+            icon={<LeftOutlined />} 
+            onClick={handleBack}
+            aria-label="Back to dashboard"
+          >
+            Back to Dashboard
+          </BackButton>
+          
+          <HeaderSection>
+            <Header>
+              <Title>Loan Applications</Title>
+              <Subtitle>View and manage all loan applications</Subtitle>
+            </Header>
+          </HeaderSection>
+
           <DataTable 
             columns={columns}
             data={applications}

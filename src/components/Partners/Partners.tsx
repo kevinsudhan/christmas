@@ -317,6 +317,7 @@ const Partners: React.FC = () => {
         <Copyright>
           {new Date().getFullYear()} EBS. All rights reserved.
         </Copyright>
+        <br />
       </FooterContent>
     </CombinedSection>
   );

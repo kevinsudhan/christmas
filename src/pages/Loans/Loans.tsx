@@ -51,7 +51,7 @@ const HeroSection = styled.section`
     left: 0;
     right: 0;
     bottom: 0;
-    background: url(${loanHeroImage}) no-repeat center center;
+
     background-size: cover;
     opacity: 0.1;
     z-index: 0;
@@ -214,6 +214,7 @@ const HeroContent = styled.div`
 `;
 
 const HeroImage = styled.div`
+  
   flex: 1;
   max-width: 500px;
   display: flex;

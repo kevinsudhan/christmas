@@ -768,6 +768,8 @@ const Apply: React.FC = () => {
         <div className="background-pattern" />
         <div className="content-container">
           <div className="section-title">
+            <br />
+            <br />
             <h2>Why Choose Us?</h2>
             <p>Discover the advantages of our financial solutions</p>
           </div>
