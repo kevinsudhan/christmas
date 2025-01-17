@@ -502,9 +502,6 @@ const Login: React.FC = () => {
   const handleSignup = async (values: SignupFormValues) => {
     setIsLoading(true);
     try {
-      // Generate unique customer ID
-      const customerId = generateCustomerId();
-
       // Create auth user
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: values.email,
@@ -512,7 +509,7 @@ const Login: React.FC = () => {
         options: {
           data: {
             full_name: values.fullName,
-            customer_id: customerId,
+            phone: values.phone,
           },
         },
       });
@@ -520,35 +517,22 @@ const Login: React.FC = () => {
       if (authError) throw authError;
       if (!authData.user) throw new Error('Failed to create user account');
 
-      // Immediately sign in with the created credentials
-      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-        email: values.email,
-        password: values.password,
-      });
-
-      if (signInError) throw signInError;
-      if (!signInData.user) throw new Error('Failed to establish session');
-
-      // Create the customer record using the auth user's ID
-      const { error: customerError } = await supabase
+      // Get the customer profile that was created by the trigger
+      const { data: customerData, error: customerError } = await supabase
         .from('customers')
-        .insert({
-          id: signInData.user.id,
-          customer_id: customerId,
-          full_name: values.fullName,
-          email: values.email,
-          phone: values.phone || null, // Make phone optional
-        });
+        .select('customer_id')
+        .eq('id', authData.user.id)
+        .single();
 
       if (customerError) {
-        console.error('Customer creation error:', customerError);
-        await supabase.auth.signOut();
-        throw new Error('Failed to create customer profile. Please try again.');
+        console.error('Error fetching customer data:', customerError);
       }
 
       notification.success({
         message: 'Account Created Successfully',
-        description: `Welcome! Your Customer ID is: ${customerId}`,
+        description: customerData?.customer_id 
+          ? `Welcome! Your Customer ID is: ${customerData.customer_id}`
+          : 'Welcome! Your account has been created successfully.',
         duration: 5,
       });
 
