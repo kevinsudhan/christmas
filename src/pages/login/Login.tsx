@@ -486,8 +486,8 @@ const Login: React.FC = () => {
         description: `Successfully logged in. Your Customer ID: ${customerData.customer_id}`,
       });
 
-      // Navigate based on role (you can add role-based navigation here)
-      navigate('/dashboard');
+      // Navigate to home page after successful login
+      navigate('/');
 
     } catch (error: any) {
       notification.error({
@@ -552,8 +552,8 @@ const Login: React.FC = () => {
         duration: 5,
       });
 
-      // Navigate to dashboard
-      navigate('/dashboard');
+      // Navigate to home page after successful signup
+      navigate('/');
 
     } catch (error: any) {
       console.error('Signup error:', error);

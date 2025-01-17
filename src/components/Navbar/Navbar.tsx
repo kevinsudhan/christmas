@@ -5,6 +5,14 @@ import styled from 'styled-components';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { DownOutlined, CloseOutlined } from '@ant-design/icons';
 import ebsLogo from './EBS logo.png';
+import { supabase } from '@/lib/supabase';
+import { UserOutlined } from '@ant-design/icons';
+
+interface UserProfile {
+  id: string;
+  full_name: string;
+  email: string;
+}
 
 const StyledHeader = styled.header`
   width: 100%;
@@ -382,6 +390,8 @@ const Navbar: React.FC = () => {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openSubMenus, setOpenSubMenus] = useState<string[]>([]);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleHomeClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -409,6 +419,55 @@ const Navbar: React.FC = () => {
     );
   };
 
+  useEffect(() => {
+    async function fetchUserProfile() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (user) {
+          const { data: profile, error } = await supabase
+            .from('customers')
+            .select('id, full_name, email')
+            .eq('id', user.id)
+            .single();
+  
+          if (error) throw error;
+          setUserProfile(profile);
+        } else {
+          setUserProfile(null);
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+        setUserProfile(null);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchUserProfile();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event) => {
+      if (event === 'SIGNED_IN') {
+        fetchUserProfile();
+      } else if (event === 'SIGNED_OUT') {
+        setUserProfile(null);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+  
+
+  const handleSignOut = async () => {
+    try {
+      await supabase.auth.signOut();
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
   // Close mobile menu and reset submenus when route changes
   useEffect(() => {
     setIsMobileMenuOpen(false);
@@ -552,6 +611,22 @@ const Navbar: React.FC = () => {
     </DropdownMenu>
   );
 
+  const userMenu = (
+    <DropdownMenu>
+      <Menu.Item key="profile">
+        <Link to="/profile">Profile</Link>
+      </Menu.Item>
+      <Menu.Item key="settings">
+        <Link to="/settings">Settings</Link>
+      </Menu.Item>
+      <Menu.Divider />
+      <Menu.Item key="signout" onClick={handleSignOut}>
+        Sign Out
+      </Menu.Item>
+    </DropdownMenu>
+  );
+
+
   return (
     <StyledHeader>
       <NavbarContainer>
@@ -576,15 +651,27 @@ const Navbar: React.FC = () => {
             <NavLink to="/insurance" $active={location.pathname.includes('insurance')}>Insurance <DownOutlined style={{ fontSize: 8 }} /></NavLink>
           </Dropdown>
         </NavLinks>
-
         <ActionButtons>
-          <Link to="/login">
-            <LoginButton>Login</LoginButton>
-          </Link>
-          <Link to="/about-us">
-            <AboutUsButton>About Us</AboutUsButton>
-          </Link>
-        </ActionButtons>
+  {!isLoading && (
+    <>
+      {userProfile ? (
+        <Dropdown overlay={userMenu} trigger={['click']} placement="bottomRight">
+          <Button>
+            <UserOutlined />
+            <span style={{ marginLeft: '8px' }}>{userProfile.full_name}</span>
+          </Button>
+        </Dropdown>
+      ) : (
+        <Link to="/login">
+          <LoginButton>Login</LoginButton>
+        </Link>
+      )}
+      <Link to="/about-us">
+        <AboutUsButton>About Us</AboutUsButton>
+      </Link>
+    </>
+  )}
+</ActionButtons>
 
         <MobileMenuButton 
           onClick={toggleMobileMenu}
@@ -758,15 +845,30 @@ const Navbar: React.FC = () => {
               </MobileSubMenu>
             </MobileMenuSection>
           </MobileNavLinks>
-
           <MobileActionButtons>
-            <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
-              <LoginButton style={{ width: '100%' }}>Login</LoginButton>
-            </Link>
-            <Link to="/about-us" onClick={() => setIsMobileMenuOpen(false)}>
-              <AboutUsButton style={{ width: '100%' }}>About Us</AboutUsButton>
-            </Link>
-          </MobileActionButtons>
+  {!isLoading && (
+    <>
+      {userProfile ? (
+        <>
+          <Button onClick={handleSignOut} style={{ width: '100%' }}>
+            <UserOutlined />
+            <span style={{ marginLeft: '8px' }}>Sign Out</span>
+          </Button>
+          <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)}>
+            <Button style={{ width: '100%' }}>Profile</Button>
+          </Link>
+        </>
+      ) : (
+        <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
+          <LoginButton style={{ width: '100%' }}>Login</LoginButton>
+        </Link>
+      )}
+      <Link to="/about-us" onClick={() => setIsMobileMenuOpen(false)}>
+        <AboutUsButton style={{ width: '100%' }}>About Us</AboutUsButton>
+      </Link>
+    </>
+  )}
+</MobileActionButtons>
         </MobileMenu>
       </NavbarContainer>
     </StyledHeader>
