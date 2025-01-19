@@ -45,65 +45,49 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const signUp = async (email: string, password: string, fullName: string, phone: string) => {
+  const signUp = async (email: string, password: string, fullName: string, phone: string): Promise<string> => {
     try {
-      // Step 1: Sign up the user
-      const { data: authData, error: authError } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
           data: {
             full_name: fullName,
-            phone: phone,
-          },
-        },
+            phone: phone
+          }
+        }
       });
 
-      if (authError) throw authError;
-      if (!authData.user) throw new Error('User creation failed');
-
-      // Step 2: Generate a customer ID
-      const { data: customerIdData, error: customerIdError } = await supabase
-        .rpc('generate_customer_id');
-
-      if (customerIdError) {
-        console.error('Error generating customer ID:', customerIdError);
-        throw customerIdError;
+      if (error) {
+        console.error('Signup error:', error);
+        throw error;
       }
 
-      // Step 3: Create customer record
-      const { error: insertError } = await supabase
-        .from('customers')
-        .insert({
-          id: authData.user.id,
-          customer_id: customerIdData,
-          full_name: fullName,
-          email: email,
-          phone: phone,
-        });
-
-      if (insertError) {
-        console.error('Error creating customer record:', insertError);
-        // Attempt to delete the auth user if customer creation fails
-        await supabase.auth.admin.deleteUser(authData.user.id);
-        throw insertError;
+      if (!data.user) {
+        throw new Error('No user data returned');
       }
 
-      // Step 4: Verify customer record was created
-      const { data: verifyData, error: verifyError } = await supabase
+      // Wait briefly for the trigger
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      // Get customer ID
+      const { data: customer, error: customerError } = await supabase
         .from('customers')
         .select('customer_id')
-        .eq('id', authData.user.id)
+        .eq('id', data.user.id)
         .single();
 
-      if (verifyError || !verifyData) {
-        console.error('Error verifying customer record:', verifyError);
-        throw new Error('Failed to verify customer record creation');
+      if (customerError) {
+        console.error('Customer fetch error:', customerError);
+        throw new Error('Could not retrieve customer information');
       }
 
-      console.log('Successfully created customer with ID:', verifyData.customer_id);
-      return verifyData.customer_id;
+      if (!customer?.customer_id) {
+        throw new Error('Customer ID not generated');
+      }
 
+      return customer.customer_id;
     } catch (error: any) {
       console.error('Signup process error:', error);
       throw error;

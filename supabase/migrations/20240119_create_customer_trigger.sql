@@ -1,61 +1,94 @@
--- Drop existing objects if they exist
-drop trigger if exists on_auth_user_created on auth.users;
-drop function if exists handle_new_user_signup();
-drop function if exists generate_customer_id();
-drop sequence if exists customer_id_seq;
+-- Clean up existing objects
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users CASCADE;
+DROP TRIGGER IF EXISTS update_customers_updated_at ON public.customers CASCADE;
+DROP FUNCTION IF EXISTS public.handle_new_customer() CASCADE;
+DROP FUNCTION IF EXISTS public.generate_customer_id() CASCADE;
+DROP FUNCTION IF EXISTS public.update_updated_at_column() CASCADE;
+DROP TABLE IF EXISTS public.customers CASCADE;
+DROP SEQUENCE IF EXISTS customer_id_seq CASCADE;
 
 -- Create sequence
-create sequence if not exists customer_id_seq start 1;
+CREATE SEQUENCE customer_id_seq START 1;
 
--- Create or replace customers table
-drop table if exists public.customers;
-create table public.customers (
-    id uuid references auth.users on delete cascade not null primary key,
-    customer_id text unique,
-    full_name text,
-    email text,
-    phone text,
-    created_at timestamp with time zone default timezone('utc'::text, now()) not null,
-    updated_at timestamp with time zone default timezone('utc'::text, now()) not null
+-- Create customers table
+CREATE TABLE public.customers (
+    id UUID PRIMARY KEY REFERENCES auth.users ON DELETE CASCADE,
+    customer_id TEXT UNIQUE,
+    full_name TEXT,
+    email TEXT,
+    phone TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Enable RLS
-alter table public.customers enable row level security;
+ALTER TABLE public.customers ENABLE ROW LEVEL SECURITY;
 
 -- Create policies
-create policy "Users can view own customer profile"
-    on customers for select
-    using ( auth.uid() = id );
+CREATE POLICY "Enable read access for own profile" ON public.customers
+    FOR SELECT USING (auth.uid() = id);
 
-create policy "Users can update own customer profile"
-    on customers for update
-    using ( auth.uid() = id );
-
-create policy "Users can insert own customer profile"
-    on customers for insert
-    with check ( auth.uid() = id );
+CREATE POLICY "Enable insert for authenticated users" ON public.customers
+    FOR INSERT WITH CHECK (auth.uid() = id);
 
 -- Function to generate customer ID
-create or replace function public.generate_customer_id()
-returns text
-language plpgsql
-security definer
-set search_path = public
-as $$
-declare
-    _date text;
-    _sequence int;
-    _customer_id text;
-begin
-    -- Get current date in YYMMDD format
-    _date := to_char(current_timestamp, 'YYMMDD');
+CREATE OR REPLACE FUNCTION public.generate_customer_id() 
+RETURNS TEXT AS $$
+DECLARE
+    new_id TEXT;
+BEGIN
+    new_id := 'EBS-' || 
+              to_char(CURRENT_DATE, 'YY') || '-' ||
+              LPAD(nextval('customer_id_seq')::TEXT, 4, '0');
+    RETURN new_id;
+EXCEPTION WHEN OTHERS THEN
+    RAISE LOG 'Error in generate_customer_id: %', SQLERRM;
+    RAISE;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to handle user creation
+CREATE OR REPLACE FUNCTION public.handle_new_customer()
+RETURNS TRIGGER
+SECURITY DEFINER
+SET search_path = public
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    new_customer_id TEXT;
+BEGIN
+    -- Generate customer ID first to handle any errors
+    new_customer_id := public.generate_customer_id();
     
-    -- Get next sequence number
-    _sequence := nextval('customer_id_seq'::regclass);
-    
-    -- Format customer ID as EBS-YYMMDD-XXXX where XXXX is the sequence padded with zeros
-    _customer_id := 'EBS-' || _date || '-' || lpad(_sequence::text, 4, '0');
-    
-    return _customer_id;
-end;
+    IF new_customer_id IS NULL THEN
+        RAISE EXCEPTION 'Failed to generate customer ID';
+    END IF;
+
+    BEGIN
+        INSERT INTO public.customers (id, customer_id, full_name, email, phone)
+        VALUES (
+            NEW.id,
+            new_customer_id,
+            NEW.raw_user_meta_data->>'full_name',
+            NEW.email,
+            NEW.raw_user_meta_data->>'phone'
+        );
+    EXCEPTION WHEN OTHERS THEN
+        RAISE LOG 'Error in handle_new_customer: %', SQLERRM;
+        RAISE;
+    END;
+
+    RETURN NEW;
+END;
 $$;
+
+-- Create trigger
+CREATE TRIGGER on_auth_user_created
+    AFTER INSERT ON auth.users
+    FOR EACH ROW
+    EXECUTE FUNCTION public.handle_new_customer();
+
+-- Grant permissions
+GRANT USAGE ON SEQUENCE customer_id_seq TO service_role;
+GRANT ALL ON public.customers TO service_role;
+GRANT ALL ON public.customers TO authenticated;
