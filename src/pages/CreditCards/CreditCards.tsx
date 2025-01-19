@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import creditCardImg from '../../assets/images/services/credit-card.jpg';
 import creditCardHeroImg from '../../assets/images/hero/creditcard.png';
 import { supabase } from '@/supabaseClient';
+import { AuthGuard } from '../../components/AuthGuard/AuthGuard';
 
 
 import axisCard from '../../assets/images/cards/AXIS.png';
@@ -935,7 +936,7 @@ const CreditCards: React.FC = () => {
   };
 
   return (
-    <PageContainer>
+    <AuthGuard><PageContainer>
       <HeroSection>
         <div className="shape-1"></div>
         <div className="shape-2"></div>
@@ -1177,6 +1178,8 @@ const CreditCards: React.FC = () => {
       </ContentSection>
       <Footer />
     </PageContainer>
+    </AuthGuard>
+    
   );
 };
 

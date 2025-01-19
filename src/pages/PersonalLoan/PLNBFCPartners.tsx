@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Footer from '../../components/Footer/Footer';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { useProtectedAction } from '../../hooks/useProtectedAction';
 
 const nbfcLogos = {
   fedbank: "/images/nbfc partners/fedbank-financial-services-limited-arumbakkam-chennai-loan-against-gold-rwhd1d3chu.PNG",
@@ -2133,6 +2134,8 @@ const PLNBFCPartners: React.FC = () => {
   const [selectedLoans, setSelectedLoans] = useState<string[]>([]);
   const [isCompareModalVisible, setIsCompareModalVisible] = useState(false);
   const compareContentRef = useRef<HTMLDivElement>(null);
+  const handleProtectedAction = useProtectedAction();
+
 
   const handleViewDetails = (loanName: string) => {
     setSelectedLoan(loanName);
@@ -2342,9 +2345,12 @@ const PLNBFCPartners: React.FC = () => {
                     </Text>
                   </RatingContainer>
                   <Button onClick={() => handleViewDetails(loan.name)}>View Details</Button>
-                  <Button 
+                  
+<Button 
   type="primary" 
-  onClick={() => navigate('/apply', { state: { productType: 'Loans' } })}
+  onClick={() => handleProtectedAction(() => 
+    navigate('/apply', { state: { productType: 'Loans' } })
+  )}
 >
   Apply
 </Button>

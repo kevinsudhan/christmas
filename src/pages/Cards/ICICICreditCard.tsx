@@ -19,6 +19,7 @@ import adaniSignatureCard from '../../assets/images/cards/icici-bank/icici-adani
 import adaniPlatinumCard from '../../assets/images/cards/icici-bank/icici-adani-one-platinum-removebg-preview.png';
 import manchesterCard from '../../assets/images/cards/icici-bank/icici-bank-machester-united-removebg-preview.png';
 import expressionsCard from '../../assets/images/cards/icici-bank/icici-bank-expressions.jpg';
+import { useProtectedAction } from '../../hooks/useProtectedAction';
 
 interface Card {
   id: number;
@@ -1004,6 +1005,7 @@ const DownloadButton = styled(Button)`
 `;
 
 const ICICICreditCard: React.FC = () => {
+  const handleProtectedAction = useProtectedAction();
   const navigate = useNavigate();
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
@@ -1091,10 +1093,14 @@ const ICICICreditCard: React.FC = () => {
     type="default" 
     size="large" 
     style={{ marginRight: '16px' }}
-    onClick={() => navigate('/apply')}
+    onClick={() => handleProtectedAction(() => 
+      navigate('/apply', { state: { productType: 'Credit Cards' } })
+    )}
+  
   >
     Apply Now
   </Button>
+
                   <Text type="secondary" style={{ fontSize: '14px' }}>
                     On ICICI Bank website
                   </Text>
@@ -1161,7 +1167,14 @@ const ICICICreditCard: React.FC = () => {
                       </Text>
                     </RatingContainer>
                     <Button onClick={() => handleViewDetails(card.name)}>View Details</Button>
-                    <Button type="primary" block onClick={() => navigate('/apply')}>Apply</Button>
+                    <Button 
+  type="primary" 
+  onClick={() => handleProtectedAction(() => 
+    navigate('/apply', { state: { productType: 'Credit Cards' } })
+  )}
+>
+  Apply
+</Button>
                     <Text type="secondary" style={{ fontSize: '12px', textAlign: 'center' }}>
                       On ICICI Bank Website
                     </Text>

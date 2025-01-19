@@ -451,45 +451,30 @@ const Login: React.FC = () => {
   const [showSignup, setShowSignup] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = async (values: LoginFormValues) => {
+  const handleLoginSuccess = () => {
+    const redirectPath = sessionStorage.getItem('redirectAfterLogin') || '/';
+    sessionStorage.removeItem('redirectAfterLogin');
+    navigate(redirectPath);
+  };
+
+  const handleLogin = async (values: any) => {
     setIsLoading(true);
     try {
-      // First, try to sign in with Supabase auth
-      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email: values.email,
         password: values.password,
       });
 
-      if (authError) throw authError;
-
-      // Check if user exists in customers table
-      const { data: customerData, error: customerError } = await supabase
-        .from('customers')
-        .select('customer_id, full_name')
-        .eq('id', authData.user.id)
-        .single();
-
-      if (customerError) {
-        // If user doesn't exist in customers table, show signup form
-        notification.info({
-          message: 'Account Not Found',
-          description: 'Please create an account to continue.',
-          duration: 5,
-        });
-        setShowSignup(true);
-        loginForm.resetFields();
-        return;
-      }
+      if (error) throw error;
 
       notification.success({
-        message: 'Welcome back!',
-        description: `Successfully logged in. Your Customer ID: ${customerData.customer_id}`,
+        message: 'Login Successful',
+        description: 'Welcome back!',
       });
 
-      // Navigate to home page after successful login
-      navigate('/');
-
-    } catch (error: any) {
+      handleLoginSuccess();
+    } catch (error) {
+      console.error('Login error:', error);
       notification.error({
         message: 'Login Failed',
         description: error.message,

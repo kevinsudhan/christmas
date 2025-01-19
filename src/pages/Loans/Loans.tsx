@@ -18,6 +18,7 @@ import {
   SwapOutlined,
   GoldOutlined
 } from '@ant-design/icons';
+import { AuthGuard } from '../../components/AuthGuard/AuthGuard';
 
 import { colors, typography, spacing, effects, breakpoints } from '../../styles/theme';
 import Footer from '../../components/Footer/Footer';
@@ -645,6 +646,7 @@ const Loans: React.FC = () => {
   };
 
   return (
+    <AuthGuard>
     <PageContainer>
       <HeroSection>
         <div className="shape-1" />
@@ -852,6 +854,7 @@ const Loans: React.FC = () => {
 
       <Footer />
     </PageContainer>
+    </AuthGuard>
   );
 };
 

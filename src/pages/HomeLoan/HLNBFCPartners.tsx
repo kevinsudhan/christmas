@@ -21,7 +21,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Footer from '../../components/Footer/Footer';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-
+import { useProtectedAction } from '../../hooks/useProtectedAction';
 
 // Bank logos from public directory
 const bankLogos = {
@@ -935,6 +935,7 @@ const DownloadButton = styled(Button)`
 `;
 
 const HLNBFCPartners: React.FC = () => {
+  const handleProtectedAction = useProtectedAction();
   const navigate = useNavigate();
   const [selectedLoan, setSelectedLoan] = useState<string | null>(null);
   const [selectedLoans, setSelectedLoans] = useState<string[]>([]);
@@ -1145,9 +1146,12 @@ const HLNBFCPartners: React.FC = () => {
                     </Text>
                   </RatingContainer>
                   <Button onClick={() => handleViewDetails(loan.name)}>View Details</Button>
-                  <Button 
+                  
+<Button 
   type="primary" 
-  onClick={() => navigate('/apply', { state: { productType: 'Loans' } })}
+  onClick={() => handleProtectedAction(() => 
+    navigate('/apply', { state: { productType: 'Loans' } })
+  )}
 >
   Apply
 </Button>

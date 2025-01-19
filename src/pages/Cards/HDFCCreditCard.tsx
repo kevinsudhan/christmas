@@ -8,6 +8,7 @@ import Footer from '../../components/Footer/Footer';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { useNavigate } from 'react-router-dom';
+import { useProtectedAction } from '../../hooks/useProtectedAction';
 
 // Import images
 import hdfcHeroImage from '../../assets/images/cards/HDFC.png';
@@ -925,6 +926,8 @@ const DownloadButton = styled(Button)`
 `;
 
 const HDFCCreditCard: React.FC = () => {
+  const handleProtectedAction = useProtectedAction();
+
   const navigate = useNavigate();
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
   const [selectedCards, setSelectedCards] = useState<string[]>([]);
@@ -1008,14 +1011,17 @@ const HDFCCreditCard: React.FC = () => {
                   to enhance your banking experience.
                 </Text>
                 <div>
-                  <Button   
-                  type="default" 
-                  size="large" 
-                  style={{ marginRight: '16px' }}
-                  onClick={() => navigate('/apply')}
-                  >
-                  Apply Now
-                  </Button>
+                <Button 
+    type="default" 
+    size="large" 
+    style={{ marginRight: '16px' }}
+    onClick={() => handleProtectedAction(() => 
+      navigate('/apply', { state: { productType: 'Credit Cards' } })
+    )}
+  
+  >
+    Apply Now
+  </Button>
                   <Text type="secondary" style={{ fontSize: '14px' }}>
                     On HDFC Bank website
                   </Text>
@@ -1082,7 +1088,14 @@ const HDFCCreditCard: React.FC = () => {
                       </Text>
                     </RatingContainer>
                     <Button onClick={() => handleViewDetails(card.name)}>View Details</Button>
-                    <Button type="primary" block onClick={() => navigate('/apply')}>Apply</Button>
+                    <Button 
+  type="primary" 
+  onClick={() => handleProtectedAction(() => 
+    navigate('/apply', { state: { productType: 'Credit Cards' } })
+  )}
+>
+  Apply
+</Button>
                     <Text type="secondary" style={{ fontSize: '12px', textAlign: 'center' }}>
                       On HDFC Bank Website
                     </Text>

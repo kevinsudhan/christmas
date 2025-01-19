@@ -16,6 +16,7 @@ import peacefulMindImg from '../../assets/images/hero/peaceful mind.jpg';
 import lawComplianceImg from '../../assets/images/hero/law compliance.jpg';
 import { motion } from 'framer-motion';
 import { supabase } from '@/supabaseClient';
+import { AuthGuard } from '../../components/AuthGuard/AuthGuard';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -1108,6 +1109,7 @@ const Insurance: React.FC = () => {
   };
 
   return (
+    <AuthGuard>
     <PageContainer>
       <HeroSection>
         <div className="shape-1"></div>
@@ -1402,6 +1404,7 @@ const Insurance: React.FC = () => {
 
       <Footer />
     </PageContainer>
+    </AuthGuard>
   );
 };
 
