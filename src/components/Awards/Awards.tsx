@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, TouchEvent } from 'react';
 import styled from 'styled-components';
-import goldenLaurel from '../../assets/images/golden laurel.png';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { gsap } from 'gsap';
 
@@ -25,7 +24,7 @@ const Title = styled.h2`
   margin-bottom: 40px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   position: relative;
   
   &::after {
@@ -90,6 +89,7 @@ const AwardCard = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   text-align: center;
   transition: all 0.4s ease;
 
@@ -117,8 +117,8 @@ const AwardCard = styled.div`
 `;
 
 const ImageContainer = styled.div`
-  width: 160px;
-  height: 160px;
+  width: 280px;
+  height: 280px;
   margin: 0 0 15px;
   display: flex;
   align-items: center;
@@ -129,51 +129,21 @@ const ImageContainer = styled.div`
     height: 100%;
     object-fit: contain;
     transition: transform 0.4s ease;
-    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.15));
   }
 
   ${AwardCard}:hover & img {
-    transform: scale(1.08) rotate(5deg);
+    transform: scale(1.05);
   }
 
   @media (max-width: 480px) {
-    width: 140px;
-    height: 140px;
+    width: 240px;
+    height: 240px;
     margin: 0 0 12px;
-
-    img {
-      filter: none;
-    }
 
     ${AwardCard}:hover & img {
       transform: none;
     }
   }
-`;
-
-const AwardTitle = styled.h3`
-  font-size: 1.1rem;
-  color: #1a1a1a;
-  margin: 0 0 8px;
-  font-weight: 700;
-  line-height: 1.4;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  flex-shrink: 0;
-  padding: 0 10px;
-`;
-
-const AwardDescription = styled.p`
-  font-size: 0.9rem;
-  color: #666666;
-  line-height: 1.6;
-  margin: 0;
-  padding: 0 15px;
-  flex-grow: 1;
-  width: 100%;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  hyphens: auto;
 `;
 
 const ButtonContainer = styled.div`
@@ -240,6 +210,12 @@ const Awards: React.FC = () => {
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const isMobileView = window.innerWidth <= 1100;
 
+  // Generate array of award images (1.png to 23.png)
+  const awards = Array.from({ length: 23 }, (_, i) => ({
+    id: i + 1,
+    image: `/images/awards/${i + 1}.png`,
+  }));
+
   useEffect(() => {
     if (!cardsRef.current) return;
     
@@ -277,7 +253,6 @@ const Awards: React.FC = () => {
       // Mobile animation
       timeline.set(cards, { zIndex: 1 });
       
-      // First, set initial positions for all cards
       cards.forEach((card, i) => {
         const position = (i - index + awards.length) % awards.length;
         if (direction) {
@@ -300,52 +275,27 @@ const Awards: React.FC = () => {
             });
           }
         }
-      });
 
-      // Then animate all cards to their new positions
-      cards.forEach((card, i) => {
-        const position = (i - index + awards.length) % awards.length;
-        
         if (position === 0) {
-          // Animate the active card
           timeline.to(card, {
             xPercent: 0,
             opacity: 1,
             scale: 1,
             rotateY: 0,
-            zIndex: 2,
-            duration: 0.4,
-            ease: "power2.out"
+            zIndex: 2
           }, direction ? 0.1 : 0);
         } else {
-          // Animate other cards
           timeline.to(card, {
             xPercent: position * 100,
             opacity: Math.abs(position) === 1 ? 0.5 : 0,
             scale: 0.8,
             rotateY: 0,
-            zIndex: 1,
-            duration: 0.4
+            zIndex: 1
           }, direction ? 0.1 : 0);
-        }
-
-        // Handle the card that's moving out
-        if (direction) {
-          const outgoingPosition = direction === 'left' ? -1 : 1;
-          if ((position + (direction === 'left' ? 1 : -1) + awards.length) % awards.length === 0) {
-            timeline.to(card, {
-              xPercent: direction === 'left' ? -100 : 100,
-              opacity: 0,
-              scale: 0.8,
-              rotateY: direction === 'left' ? -15 : 15,
-              duration: 0.4,
-              ease: "power2.in"
-            }, 0);
-          }
         }
       });
     } else {
-      // Desktop animation (unchanged)
+      // Desktop animation
       timeline.set(cards, { zIndex: -1 }, 0);
       cards.forEach((card, i) => {
         const position = (i - index + awards.length) % awards.length;
@@ -377,15 +327,14 @@ const Awards: React.FC = () => {
             }, 0.5);
           }
         } else {
-          const isLeft = position < 0;
           timeline.set(card, {
             opacity: 0,
             immediateRender: true
           }, 0);
           timeline.to(card, {
-            xPercent: isLeft ? -400 : 400,
+            xPercent: position < 0 ? -400 : 400,
             scale: 0.5,
-            rotateY: isLeft ? -45 : 45,
+            rotateY: position < 0 ? -45 : 45,
             zIndex: -1,
             immediateRender: false
           }, 0);
@@ -433,77 +382,10 @@ const Awards: React.FC = () => {
     updateCardsVisibility(newIndex, 'left');
   };
 
-  const awards = [
-    {
-      title: "Silver Jubilee Contribution",
-      description: "25 Years of Dedication and Service to HDFC Bank"
-    },
-    {
-      title: "Certificate of Appreciation",
-      description: "Recognizing Excellence in Q1 FY 2022-2023 - Axis Finance"
-    },
-    {
-      title: "Certificate of Appreciation",
-      description: "Exceptional Contribution to Personal Loan Services in 2023 - Bandhan Bank"
-    },
-    {
-      title: "Valued Partnership Recognition",
-      description: "Significant Contribution in the Credit Card Category - Standard Chartered"
-    },
-    {
-      title: "Exemplary Support Award",
-      description: "Outstanding Contribution to Personal Loan Business in FY 23-24 - IndusInd Bank"
-    },
-    {
-      title: "Growth Contribution Token",
-      description: "In Recognition of Key Role in Incred's Success"
-    },
-    {
-      title: "Highest Disbursement Achievement",
-      description: "300 Crores in Personal Loans Disbursed from Chennai DSA Vertical - HDFC Bank"
-    },
-    {
-      title: "Contribution Recognition",
-      description: "Appreciation for Outstanding Support in Personal Loans - Yes Bank"
-    },
-    {
-      title: "Unwavering Support Award",
-      description: "In Acknowledgment of Contributions in FY 2023-24 - IDFC Bank"
-    },
-    {
-      title: "Excellence in Loan Services",
-      description: "Awarded for Outstanding Performance in Ask Loans - ICICI Bank"
-    },
-    {
-      title: "Certificate of Excellence",
-      description: "Heroes of South for Contribution to Home Loan Business in Q1 2024, Awarded by HDFC Bank"
-    },
-    {
-      title: "Gratitude Certificate",
-      description: "Recognizing Steadfast Support to Incred Finance in FY 2023-24"
-    },
-    {
-      title: "Certificate of Appreciation",
-      description: "Recognizing Excellence in GST Practices from Government of India, Ministry of Finance"
-    },
-    {
-      title: "Outstanding Performance Award",
-      description: "Recognizing Exceptional Results in FY 2023-24 - Tata Capital"
-    },
-    {
-      title: "Gratitude Certificate",
-      description: "In Appreciation of Valuable Contribution to SME Business in FY 2023-24 for Ask Loans- Bajaj Finance"
-    },
-    {
-      title: "Strategic Partnership Recognition",
-      description: "Acknowledging Key Partnership and Collaboration with Chola"
-    }
-  ];
-
   return (
     <AwardsSection>
       <Container>
-        <Title>Our Achievements</Title>
+        <Title>Appreciation & Excellence</Title>
         <CarouselContainer>
           <CarouselWrapper>
             <ul 
@@ -513,14 +395,16 @@ const Awards: React.FC = () => {
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
             >
-              {awards.map((award, index) => (
-                <li key={index}>
+              {awards.map((award) => (
+                <li key={award.id}>
                   <AwardCard>
                     <ImageContainer>
-                      <img src={goldenLaurel} alt="Award Trophy" />
+                      <img 
+                        src={award.image} 
+                        alt={`Award ${award.id}`}
+                        loading="lazy"
+                      />
                     </ImageContainer>
-                    <AwardTitle>{award.title}</AwardTitle>
-                    <AwardDescription>{award.description}</AwardDescription>
                   </AwardCard>
                 </li>
               ))}
