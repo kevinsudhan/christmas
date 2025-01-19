@@ -17,6 +17,8 @@ import lawComplianceImg from '../../assets/images/hero/law compliance.jpg';
 import { motion } from 'framer-motion';
 import { supabase } from '@/supabaseClient';
 import { AuthGuard } from '../../components/AuthGuard/AuthGuard';
+import { useUser } from '../../contexts/UserContext';
+import { useNavigate } from 'react-router-dom';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -1008,15 +1010,32 @@ interface FormValues {
   location: string;
 }
 
-
 const Insurance: React.FC = () => {
   const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { user } = useUser();
+  const navigate = useNavigate();
 
   const handleSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
     try {
+      if (!user) {
+        throw new Error('Please log in to submit an insurance application.');
+      }
+
+      // Get the customer_id for the current user
+      const { data: customerData, error: customerError } = await supabase
+        .from('customers')
+        .select('customer_id')
+        .eq('id', user.id)
+        .single();
+
+      if (customerError || !customerData?.customer_id) {
+        throw new Error('Could not retrieve customer information. Please ensure you are logged in.');
+      }
+
       const payload = {
+        customer_id: customerData.customer_id,
         firstname: values.firstName,
         middlename: values.middleName || null,
         lastname: values.lastName,
@@ -1027,28 +1046,25 @@ const Insurance: React.FC = () => {
         nettakehome: Number(values.netTakeHome),
         bankingdetails: values.bankingDetails,
         location: values.location,
-        producttype: 'Insurance'
+        producttype: 'Insurance',
+        status: 'pending'
       };
-  
-      console.log('Submitting payload:', payload);
-  
-      const { data, error } = await supabase
+
+      const { error } = await supabase
         .from('applications')
-        .insert([payload])
-        .select();
-  
+        .insert([payload]);
+
       if (error) {
-        console.error('Supabase error:', error);
         throw error;
       }
-  
+
       notification.success({
         message: 'Application Submitted',
-        description: 'Your insurance application has been successfully submitted.'
+        description: 'Your insurance application has been successfully submitted. We will review it shortly.'
       });
-  
+
       form.resetFields();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Submission error:', error);
       notification.error({
         message: 'Submission Failed',

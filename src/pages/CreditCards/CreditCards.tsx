@@ -7,7 +7,7 @@ import creditCardImg from '../../assets/images/services/credit-card.jpg';
 import creditCardHeroImg from '../../assets/images/hero/creditcard.png';
 import { supabase } from '@/supabaseClient';
 import { AuthGuard } from '../../components/AuthGuard/AuthGuard';
-
+import { useUser } from '../../contexts/UserContext';
 
 import axisCard from '../../assets/images/cards/AXIS.png';
 import hdfcCard from '../../assets/images/cards/HDFC.png';
@@ -817,6 +817,7 @@ const CreditCards: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeFilter, setActiveFilter] = useState('top');
   const [currentIndex, setCurrentIndex] = useState(0);
+  const { user } = useUser();
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -857,7 +858,23 @@ const CreditCards: React.FC = () => {
   const handleSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
     try {
+      if (!user) {
+        throw new Error('Please log in to submit an application.');
+      }
+
+      // Get the customer_id for the current user
+      const { data: customerData, error: customerError } = await supabase
+        .from('customers')
+        .select('customer_id')
+        .eq('id', user.id)
+        .single();
+
+      if (customerError || !customerData?.customer_id) {
+        throw new Error('Could not retrieve customer information. Please ensure you are logged in.');
+      }
+
       const payload = {
+        customer_id: customerData.customer_id,
         firstname: values.firstName,
         middlename: values.middleName || null,
         lastname: values.lastName,
@@ -868,7 +885,8 @@ const CreditCards: React.FC = () => {
         nettakehome: Number(values.netTakeHome),
         bankingdetails: values.bankingDetails,
         location: values.location,
-        producttype: 'Credit Cards'
+        producttype: 'Credit Cards',
+        status: 'pending'
       };
   
       console.log('Submitting payload:', payload);
@@ -885,11 +903,11 @@ const CreditCards: React.FC = () => {
   
       notification.success({
         message: 'Application Submitted',
-        description: 'Your credit card application has been successfully submitted.'
+        description: 'Your credit card application has been successfully submitted. We will review it shortly.'
       });
   
       form.resetFields();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Submission error:', error);
       notification.error({
         message: 'Submission Failed',

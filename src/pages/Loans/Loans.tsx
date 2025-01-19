@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input, notification, Button, Select, Typography, Row, Col, Card } from 'antd';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   UserOutlined,
   MailOutlined,
@@ -20,6 +20,7 @@ import {
   EnvironmentOutlined
 } from '@ant-design/icons';
 import { AuthGuard } from '../../components/AuthGuard/AuthGuard';
+import { useUser } from '../../contexts/UserContext';
 
 import { colors, typography, spacing, effects, breakpoints } from '../../styles/theme';
 import Footer from '../../components/Footer/Footer';
@@ -565,7 +566,8 @@ const SubmitButton = styled(Button)`
 const Loans: React.FC = () => {
   const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const location = useLocation();
+  const { user } = useUser();
+  const navigate = useNavigate();
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -590,7 +592,7 @@ const Loans: React.FC = () => {
     }
   };
 
-  interface FormValues {
+  interface LoanFormValues {
     firstName: string;
     middleName?: string;
     lastName: string;
@@ -602,10 +604,27 @@ const Loans: React.FC = () => {
     bankingDetails: string;
     location: string;
   }
-  const handleSubmit = async (values: FormValues) => {
+
+  const handleSubmit = async (values: LoanFormValues) => {
     setIsSubmitting(true);
     try {
+      if (!user) {
+        throw new Error('Please log in to submit a loan application.');
+      }
+
+      // Get the customer_id for the current user
+      const { data: customerData, error: customerError } = await supabase
+        .from('customers')
+        .select('customer_id')
+        .eq('id', user.id)
+        .single();
+
+      if (customerError || !customerData?.customer_id) {
+        throw new Error('Could not retrieve customer information. Please ensure you are logged in.');
+      }
+
       const payload = {
+        customer_id: customerData.customer_id,
         firstname: values.firstName,
         middlename: values.middleName || null,
         lastname: values.lastName,
@@ -616,28 +635,25 @@ const Loans: React.FC = () => {
         nettakehome: Number(values.netTakeHome),
         bankingdetails: values.bankingDetails,
         location: values.location,
-        producttype: 'Loans'
+        producttype: 'Loans',
+        status: 'pending'
       };
-  
-      console.log('Submitting payload:', payload);
-  
-      const { data, error } = await supabase
+
+      const { error } = await supabase
         .from('applications')
-        .insert([payload])
-        .select();
-  
+        .insert([payload]);
+
       if (error) {
-        console.error('Supabase error:', error);
         throw error;
       }
-  
+
       notification.success({
         message: 'Application Submitted',
-        description: 'Your loan application has been successfully submitted.'
+        description: 'Your loan application has been successfully submitted. We will review it shortly.'
       });
-  
+
       form.resetFields();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Submission error:', error);
       notification.error({
         message: 'Submission Failed',
@@ -708,6 +724,7 @@ const Loans: React.FC = () => {
           </FormLeftSection>
 
           <FormContainer>
+          <motion.div variants={containerVariants} initial="hidden" animate="visible">
           <StyledForm
   form={form}
   layout="vertical"
@@ -864,6 +881,7 @@ const Loans: React.FC = () => {
     </Form.Item>
   </motion.div>
 </StyledForm>
+</motion.div>
           </FormContainer>
         </ApplicationContainer>
       </ApplicationSection>
