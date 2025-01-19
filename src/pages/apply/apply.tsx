@@ -5,7 +5,8 @@ import { UserOutlined, LockOutlined, MailOutlined, MobileOutlined, BankOutlined,
 import { motion } from 'framer-motion';
 import loginBg from '../../assets/login-bg.jpg';
 import { GlassCard, ShimmerButton, PulseCircle, FloatingElement } from '../../components/Animations/AnimatedComponents';
-import { supabase } from '@/supabaseClient';
+import { submitApplication } from '@/services/applicationService';
+import { useNavigate } from 'react-router-dom';
 
 const shimmer = keyframes`
   0% {
@@ -509,6 +510,7 @@ interface FormValues {
 const Apply: React.FC = () => {
   const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -538,7 +540,7 @@ const Apply: React.FC = () => {
     try {
       console.log('Form Values:', values);
       
-      // Create the payload with lowercase column names to match the database
+      // Create the payload with exact column names to match the database
       const payload = {
         firstname: values.firstName,
         middlename: values.middleName || null,
@@ -552,24 +554,11 @@ const Apply: React.FC = () => {
         producttype: values.productType || 'Credit Cards'
       };
       
-      console.log('Payload being sent to Supabase:', payload);
+      console.log('Payload being sent:', payload);
 
-      const { data, error } = await supabase
-        .from('applications')
-        .insert([payload])
-        .select();
+      const data = await submitApplication(payload);
 
-      console.log('Complete Supabase Response:', { data, error });
-
-      if (error) {
-        console.error('Detailed Error:', {
-          message: error.message,
-          details: error.details,
-          hint: error.hint,
-          code: error.code
-        });
-        throw error;
-      }
+      console.log('Submission Response:', data);
 
       notification.success({
         message: 'Application Submitted',
@@ -577,12 +566,25 @@ const Apply: React.FC = () => {
       });
 
       form.resetFields();
-    } catch (error) {
-      console.error('Full error object:', error);
-      notification.error({
-        message: 'Submission Failed',
-        description: error.message || 'There was an error submitting your application. Please try again.'
-      });
+      // Optionally redirect to a success page
+      navigate('/application-success');
+    } catch (error: any) {
+      console.error('Submission error:', error);
+      
+      // Check if it's an authentication error
+      if (error.message.includes('must be logged in')) {
+        notification.error({
+          message: 'Authentication Required',
+          description: 'Please log in to submit an application.'
+        });
+        // Optionally redirect to login page
+        navigate('/login', { state: { returnUrl: '/apply' } });
+      } else {
+        notification.error({
+          message: 'Submission Failed',
+          description: error.message || 'There was an error submitting your application. Please try again.'
+        });
+      }
     } finally {
       setIsSubmitting(false);
     }
