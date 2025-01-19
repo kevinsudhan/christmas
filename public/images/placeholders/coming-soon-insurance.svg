@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#F5F7FA"/>
+  
+  <!-- Coming Soon Text -->
+  <text x="200" y="130" font-family="Arial" font-size="32" font-weight="bold" fill="#0066CC" text-anchor="middle">
+    Coming Soon
+  </text>
+  
+  <!-- Insurance Icon -->
+  <path d="M200 80 L240 120 L200 160 L160 120 Z" fill="#0066CC" opacity="0.2"/>
+  <path d="M180 140 L220 140 L220 180 L180 180 Z" fill="#0066CC" opacity="0.2"/>
+  
+  <!-- Subtitle -->
+  <text x="200" y="200" font-family="Arial" font-size="16" fill="#666666" text-anchor="middle">
+    New Insurance Partners
+  </text>
+</svg>

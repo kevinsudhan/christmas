@@ -8,7 +8,8 @@ import Footer from '../../components/Footer/Footer';
 
 // Bank logos from public directory
 const bankLogos = {
-  star : "/images/partners/star-insurance.png"
+  star : "/images/partners/star-insurance.png" ,
+  comingSoon: "/images/placeholders/coming-soon-insurance.svg"
 };
 
 interface Loan {
@@ -58,79 +59,59 @@ const { Title, Text } = Typography;
 const personalLoans: Loan[] = [
   {
     id: 1,
-    name: "Star Health Insurance",
-    bankName: "Star Health",
-    bankLogo: bankLogos.star,
-    interestRate: "₹599/month",
-    processingFee: "Nil",
-    maxAmount: "₹1 Crore",
-    minAmount: "₹2 Lakhs",
-    tenure: "1 Year",
-    rating: 4.5,
-    suitedFor: ["Families", "Individuals", "Senior Citizens", "Critical Illness"],
-    benefit: "Zero waiting period for COVID-19 coverage and 24/7 cashless hospitalization",
+    name: "Coming Soon...",
+    bankName: "Partners Coming Soon",
+    bankLogo:  bankLogos.comingSoon, // You can add a placeholder logo if needed
+    interestRate: "TBD",
+    processingFee: "TBD",
+    maxAmount: "TBD",
+    minAmount: "TBD",
+    tenure: "TBD",
+    rating: 0,
+    suitedFor: ["All Types of General Insurance"],
+    benefit: "We are currently in the process of partnering with leading General Insurance providers to bring you the best coverage options.",
     benefitIcon: SafetyCertificateOutlined
   }
 ];
 
 const loanDetails: LoanDetailsMap = {
-  "Star Health Insurance": {
-  features: [
-    "Comprehensive coverage up to ₹1 Crore",
-    "No medical check-up required up to 45 years",
-    "15,000+ network hospitals for cashless treatment",
-    "Coverage for 30+ critical illnesses",
-    "Day care procedures covered",
-    "Alternative treatments (AYUSH) covered",
-    "Pre and post hospitalization expenses covered"
-  ],
-  benefits: [
-    "Lifetime renewability option",
-    "Tax benefits under Section 80D",
-    "No claim bonus up to 100% of sum insured",
-    "Free annual health check-up",
-    "Automatic recharge of sum insured",
-    "24/7 customer support",
-    "Mobile app for easy claim tracking"
-  ],
-  fees: {
-    processing: "No processing fee",
-    prepayment: "Not applicable",
-    latePenalty: "Grace period of 30 days for renewal"
-  },
-  eligibility: {
-    salaried: [
-      "Age: 18-65 years",
-      "No medical test up to 45 years",
-      "Valid ID and address proof"
+  "Coming Soon": {
+    features: [
+      "Comprehensive General Insurance solutions coming soon",
+      "Partnerships with leading insurance providers in progress",
+      "Multiple coverage options will be available",
+      "Competitive premiums and benefits",
+      "Easy application process",
+      "Quick claim settlements",
+      "24/7 customer support"
     ],
-    selfEmployed: [
-      "Age: 18-65 years",
-      "No medical test up to 45 years",
-      "Valid ID and address proof"
-    ]
-  },
-  documents: {
-    salaried: [
-      "Age proof",
-      "Identity proof",
-      "Address proof",
-      "Passport size photographs",
-      "Previous policy documents (if any)"
+    benefits: [
+      "Wide range of coverage options",
+      "Competitive premiums",
+      "Hassle-free claims",
+      "Expert guidance",
+      "Digital-first experience",
+      "Transparent processes",
+      "Dedicated support"
     ],
-    selfEmployed: [
-      "Age proof",
-      "Identity proof",
-      "Address proof",
-      "Passport size photographs",
-      "Previous policy documents (if any)"
-    ]
-  },
-  maxAmount: "₹1 Crore",
-  minAmount: "₹2 Lakhs",
-  tenure: "1 Year",
-  interestRate: "₹599/month"
-} 
+    fees: {
+      processing: "To be announced",
+      prepayment: "To be announced",
+      latePenalty: "To be announced"
+    },
+    eligibility: {
+      salaried: ["Details will be available soon"],
+      selfEmployed: ["Details will be available soon"]
+    },
+    documents: {
+      salaried: ["Documentation requirements will be announced"],
+      selfEmployed: ["Documentation requirements will be announced"]
+    },
+    maxAmount: "To be announced",
+    minAmount: "To be announced",
+    tenure: "To be announced",
+    interestRate: "To be announced"
+  }
 };
 
 const PageContainer = styled.div`
