@@ -616,9 +616,6 @@ const Navbar: React.FC = () => {
       <Menu.Item key="profile">
         <Link to="/profile">Profile</Link>
       </Menu.Item>
-      <Menu.Item key="settings">
-        <Link to="/settings">Settings</Link>
-      </Menu.Item>
       <Menu.Divider />
       <Menu.Item key="signout" onClick={handleSignOut}>
         Sign Out

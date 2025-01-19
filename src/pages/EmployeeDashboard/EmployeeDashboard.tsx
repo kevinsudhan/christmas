@@ -1,38 +1,43 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../../supabaseClient';
+import { useLoanStats } from '../../hooks/useLoanStats';
+import { useInsuranceStats } from '../../hooks/useInsuranceStats';
+import { useCreditCardStats } from '../../hooks/useCreditCardStats';
 
 const PageContainer = styled.div`
-  min-height: 100vh;
+  height: 100vh;
   background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
 `;
 
 const DashboardContainer = styled.div`
-  padding: 80px 20px;
+  padding: 20px;
   max-width: 1600px;
-  margin: 0 auto;
+  margin: auto;
   width: 100%;
-  flex: 1;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   
   @media (max-width: 768px) {
-    padding: 60px 16px;
+    padding: 16px;
   }
 `;
 
 const DashboardHeader = styled.div`
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 40px;
   padding: 0 20px;
 `;
 
 const HeaderTitle = styled.h1`
   color: #1a365d;
   font-size: 2.5rem;
-  margin-top: 100px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   font-weight: 700;
   
   @media (max-width: 768px) {
@@ -52,7 +57,7 @@ const CardsGrid = styled.div`
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
   padding: 20px;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   overflow-x: auto;
   
   @media (max-width: 1400px) {
@@ -74,7 +79,7 @@ const Card = styled.div`
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 10px 20px rgba(0, 0, 0, 0.04);
   transition: all 0.3s ease;
   height: auto;
-  min-height: 450px;
+  min-height: 400px;
   min-width: 280px;
   display: flex;
   flex-direction: column;
@@ -89,16 +94,16 @@ const Card = styled.div`
   
   @media (max-width: 768px) {
     padding: 15px;
-    min-height: 420px;
+    min-height: 380px;
   }
 `;
 
 const CardImage = styled.img`
   width: 100%;
-  height: 160px;
+  height: 140px;
   object-fit: cover;
   border-radius: 12px;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 `;
 
@@ -112,14 +117,14 @@ const CardTitle = styled.h3`
 
 const CardDescription = styled.p`
   color: #718096;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   line-height: 1.6;
-  height: 70px;
+  height: 60px;
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
 `;
 
 const CardStats = styled.div`
@@ -127,7 +132,7 @@ const CardStats = styled.div`
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
   margin-top: auto;
-  padding-top: 20px;
+  padding-top: 16px;
   border-top: 1px solid #e2e8f0;
   overflow-x: auto;
 
@@ -142,7 +147,7 @@ const CardStats = styled.div`
 
 const Stat = styled.div`
   text-align: center;
-  padding: 8px 5px;
+  padding: 6px 4px;
   background: #f7fafc;
   border-radius: 8px;
   transition: all 0.2s ease;
@@ -162,7 +167,7 @@ const StatNumber = styled.div`
 
 const StatLabel = styled.div`
   color: #718096;
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -179,85 +184,9 @@ interface ApplicationCounts {
 
 const EmployeeDashboard: React.FC = () => {
   const navigate = useNavigate();
-  const [loanStats, setLoanStats] = useState<ApplicationCounts>({ 
-    total: 0, 
-    completed: 0, 
-    pending: 0, 
-    acknowledged: 0, 
-    processing: 0 
-  });
-  const [insuranceStats, setInsuranceStats] = useState<ApplicationCounts>({ 
-    total: 0, 
-    completed: 0, 
-    pending: 0, 
-    acknowledged: 0, 
-    processing: 0 
-  });
-  const [creditCardStats, setCreditCardStats] = useState<ApplicationCounts>({ 
-    total: 0, 
-    completed: 0, 
-    pending: 0, 
-    acknowledged: 0, 
-    processing: 0 
-  });
-
-  useEffect(() => {
-    fetchStats();
-  }, []);
-
-  const fetchStats = async () => {
-    try {
-      // Fetch loan statistics
-      const { data: loanData } = await supabase
-        .from('applications')
-        .select('status')
-        .eq('product_type', 'Loans');
-
-      if (loanData) {
-        setLoanStats({
-          total: loanData.length,
-          completed: loanData.filter(app => app.status === 'completed').length,
-          pending: loanData.filter(app => app.status === 'pending').length,
-          acknowledged: loanData.filter(app => app.status === 'acknowledged').length,
-          processing: loanData.filter(app => app.status === 'processing').length
-        });
-      }
-
-      // Fetch insurance statistics
-      const { data: insuranceData } = await supabase
-        .from('applications')
-        .select('status')
-        .eq('product_type', 'Insurance');
-
-      if (insuranceData) {
-        setInsuranceStats({
-          total: insuranceData.length,
-          completed: insuranceData.filter(app => app.status === 'completed').length,
-          pending: insuranceData.filter(app => app.status === 'pending').length,
-          acknowledged: insuranceData.filter(app => app.status === 'acknowledged').length,
-          processing: insuranceData.filter(app => app.status === 'processing').length
-        });
-      }
-
-      // Fetch credit card statistics
-      const { data: creditCardData } = await supabase
-        .from('applications')
-        .select('status')
-        .eq('product_type', 'Credit Cards');
-
-      if (creditCardData) {
-        setCreditCardStats({
-          total: creditCardData.length,
-          completed: creditCardData.filter(app => app.status === 'completed').length,
-          pending: creditCardData.filter(app => app.status === 'pending').length,
-          acknowledged: creditCardData.filter(app => app.status === 'acknowledged').length,
-          processing: creditCardData.filter(app => app.status === 'processing').length
-        });
-      }
-    } catch (error) {
-      console.error('Error fetching statistics:', error);
-    }
-  };
+  const loanStats = useLoanStats();
+  const insuranceStats = useInsuranceStats();
+  const creditCardStats = useCreditCardStats();
 
   return (
     <PageContainer>
