@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Form, Input, Select, Button, Tag, Typography, notification } from 'antd';
-import { CreditCardOutlined, CheckCircleFilled, StarFilled, UserOutlined, MailOutlined, MobileOutlined, BankOutlined, DollarOutlined, HomeOutlined } from '@ant-design/icons';
+import { CreditCardOutlined, CheckCircleFilled, StarFilled, UserOutlined, MailOutlined, MobileOutlined, BankOutlined, DollarOutlined, HomeOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import { motion } from 'framer-motion';
 import creditCardImg from '../../assets/images/services/credit-card.jpg';
 import creditCardHeroImg from '../../assets/images/hero/creditcard.png';
@@ -851,6 +851,7 @@ const CreditCards: React.FC = () => {
     monthlySalary: number;
     netTakeHome: number;
     bankingDetails: string;
+    location: string;
   }
 
   const handleSubmit = async (values: FormValues) => {
@@ -866,6 +867,7 @@ const CreditCards: React.FC = () => {
         monthlysalary: Number(values.monthlySalary),
         nettakehome: Number(values.netTakeHome),
         bankingdetails: values.bankingDetails,
+        location: values.location,
         producttype: 'Credit Cards'
       };
   
@@ -1098,6 +1100,19 @@ const CreditCards: React.FC = () => {
       rules={[{ required: true, message: 'Current Company is required' }]}
     >
       <StyledInput prefix={<HomeOutlined />} placeholder="Enter Company Name" />
+    </Form.Item>
+  </motion.div>
+
+  <motion.div variants={itemVariants}>
+    <Form.Item
+      name="location"
+      label="Location"
+      rules={[{ required: true, message: 'Location is required' }]}
+    >
+      <StyledInput 
+        prefix={<EnvironmentOutlined />} 
+        placeholder="Enter your city or state" 
+      />
     </Form.Item>
   </motion.div>
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { Card, Row, Col, Typography, Carousel, Form, Input, Select, Button, notification } from 'antd';
-import { StarFilled, CheckCircleFilled, CreditCardOutlined, SafetyOutlined, SmileOutlined, BookOutlined, BankOutlined, UserOutlined, MobileOutlined, MailOutlined, DollarOutlined, HomeOutlined } from '@ant-design/icons';
+import { StarFilled, CheckCircleFilled, CreditCardOutlined, SafetyOutlined, SmileOutlined, BookOutlined, BankOutlined, UserOutlined, MobileOutlined, MailOutlined, DollarOutlined, HomeOutlined, EnvironmentOutlined } from '@ant-design/icons';
 
 import { typography, colors, effects, spacing, breakpoints } from '../../styles/theme';
 import insuranceHeroImg from '../../assets/images/hero/Sitemap Whiteboard in Green Purple Basic Style (13).png';
@@ -1005,6 +1005,7 @@ interface FormValues {
   monthlySalary: number;
   netTakeHome: number;
   bankingDetails: string;
+  location: string;
 }
 
 
@@ -1025,7 +1026,8 @@ const Insurance: React.FC = () => {
         monthlysalary: Number(values.monthlySalary),
         nettakehome: Number(values.netTakeHome),
         bankingdetails: values.bankingDetails,
-        producttype: 'Credit Cards'
+        location: values.location,
+        producttype: 'Insurance'
       };
   
       console.log('Submitting payload:', payload);
@@ -1042,7 +1044,7 @@ const Insurance: React.FC = () => {
   
       notification.success({
         message: 'Application Submitted',
-        description: 'Your credit card application has been successfully submitted.'
+        description: 'Your insurance application has been successfully submitted.'
       });
   
       form.resetFields();
@@ -1198,7 +1200,7 @@ const Insurance: React.FC = () => {
   requiredMark={false}
 >
   <div className="form-header">
-    <h3>Credit Card Application</h3>
+    <h3>Insurance Application</h3>
     <p>Fill in your details below</p>
   </div>
 
@@ -1270,6 +1272,19 @@ const Insurance: React.FC = () => {
       rules={[{ required: true, message: 'Current Company is required' }]}
     >
       <StyledInput prefix={<HomeOutlined />} placeholder="Enter Company Name" />
+    </Form.Item>
+  </motion.div>
+
+  <motion.div variants={itemVariants}>
+    <Form.Item
+      name="location"
+      label="Location"
+      rules={[{ required: true, message: 'Location is required' }]}
+    >
+      <StyledInput 
+        prefix={<EnvironmentOutlined />} 
+        placeholder="Enter your city or state" 
+      />
     </Form.Item>
   </motion.div>
 

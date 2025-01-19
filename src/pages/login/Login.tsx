@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { Input, Form, notification, Button, Tabs } from 'antd';
-import { UserOutlined, LockOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
+import { Input, Form, notification, Button, Tabs, Segmented } from 'antd';
+import { UserOutlined, LockOutlined, MailOutlined, PhoneOutlined, IdcardOutlined } from '@ant-design/icons';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
 import { generateCustomerId } from '../../utils/customerIdGenerator';
 import loginBg from '../../assets/login-bg.jpg';
+import { useUser } from '../../contexts/UserContext';
 
 const { TabPane } = Tabs;
 
@@ -19,6 +20,8 @@ interface SignupFormValues extends LoginFormValues {
   fullName: string;
   phone: string;
 }
+
+type UserRole = 'customer' | 'employee';
 
 const shimmer = keyframes`
   0% {
@@ -444,12 +447,73 @@ const TabsContainer = styled.div`
   }
 `;
 
+const RoleSelector = styled.div`
+  margin-bottom: 2rem;
+  text-align: center;
+
+  .ant-segmented {
+    background: #ffffff;
+    padding: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    
+    .ant-segmented-item {
+      color: #666;
+      transition: all 0.3s ease;
+      height: 40px;
+      line-height: 40px;
+      padding: 0 24px;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      &:hover {
+        color: #0077b6;
+      }
+
+      &-selected {
+        color: #0077b6;
+        font-weight: 600;
+        background: rgba(0, 119, 182, 0.1);
+      }
+
+      .anticon {
+        font-size: 16px;
+        margin-right: 8px;
+      }
+
+      &-label {
+        margin-left: 4px;
+        display: inline-block;
+      }
+    }
+  }
+
+  h3 {
+    color: #1a365d;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+`;
+
 const Login: React.FC = () => {
   const [loginForm] = Form.useForm();
   const [signupForm] = Form.useForm();
   const [isLoading, setIsLoading] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
+  const [userRole, setUserRole] = useState<UserRole>('customer');
   const navigate = useNavigate();
+  const location = useLocation();
+  const { signIn, signUp } = useUser();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('signup') === 'true') {
+      setShowSignup(true);
+    }
+  }, [location]);
 
   const handleLoginSuccess = () => {
     const redirectPath = sessionStorage.getItem('redirectAfterLogin') || '/';
@@ -457,19 +521,14 @@ const Login: React.FC = () => {
     navigate(redirectPath);
   };
 
-  const handleLogin = async (values: any) => {
+  const handleLogin = async (values: LoginFormValues) => {
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: values.email,
-        password: values.password,
-      });
-
-      if (error) throw error;
-
+      await signIn(values.email, values.password);
+      
       notification.success({
         message: 'Login Successful',
-        description: 'Welcome back!',
+        description: `Welcome back${userRole === 'employee' ? ' EBS Employee' : ''}!`,
       });
 
       handleLoginSuccess();
@@ -485,68 +544,54 @@ const Login: React.FC = () => {
   };
 
   const handleSignup = async (values: SignupFormValues) => {
+    if (userRole === 'employee') {
+      notification.error({
+        message: 'Not Allowed',
+        description: 'Employee accounts can only be created by administrators.',
+      });
+      return;
+    }
+
     setIsLoading(true);
     try {
-      // Create auth user
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: values.email,
-        password: values.password,
-        options: {
-          data: {
-            full_name: values.fullName,
-            phone: values.phone,
-          },
-        },
-      });
-
-      if (authError) throw authError;
-      if (!authData.user) throw new Error('Failed to create user account');
-
-      // Get the customer profile that was created by the trigger
-      const { data: customerData, error: customerError } = await supabase
-        .from('customers')
-        .select('customer_id')
-        .eq('id', authData.user.id)
-        .single();
-
-      if (customerError) {
-        console.error('Error fetching customer data:', customerError);
-      }
+      const customerId = await signUp(
+        values.email,
+        values.password,
+        values.fullName,
+        values.phone
+      );
 
       notification.success({
-        message: 'Account Created Successfully',
-        description: customerData?.customer_id 
-          ? `Welcome! Your Customer ID is: ${customerData.customer_id}`
-          : 'Welcome! Your account has been created successfully.',
-        duration: 5,
+        message: 'Registration Successful',
+        description: `Welcome to EBS! Your Customer ID is: ${customerId}. Please check your email to verify your account.`,
+        duration: 10, // Show for 10 seconds
       });
 
-      // Navigate to home page after successful signup
-      navigate('/');
-
+      setShowSignup(false);
     } catch (error: any) {
       console.error('Signup error:', error);
       notification.error({
-        message: 'Signup Failed',
+        message: 'Registration Failed',
         description: error.message,
       });
-      // Cleanup on failure
-      try {
-        await supabase.auth.signOut();
-      } catch (signOutError) {
-        console.error('Cleanup error:', signOutError);
-      }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleRoleChange = (value: UserRole) => {
+    setUserRole(value);
+    if (value === 'employee') {
+      setShowSignup(false);
     }
   };
 
   return (
     <LoginContainer>
       <LeftSection
-        initial={{ x: -100, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ type: "spring", stiffness: 50, damping: 20 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
       >
         <GridLines />
         <ParticleContainer>
@@ -572,31 +617,177 @@ const Login: React.FC = () => {
         {/* ... Existing decorative elements ... */}
       </LeftSection>
 
-      <RightSection
-        initial={{ x: 100, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ type: "spring", stiffness: 50, damping: 20 }}
-      >
-        <RightGridLines />
-        <ParticleContainer>
-          {/* ... Existing particle animations ... */}
-        </ParticleContainer>
-
+      <RightSection>
         <ContentWrapper>
-          <TabsContainer>
-            <Tabs 
-              defaultActiveKey="login" 
-              activeKey={showSignup ? "signup" : "login"}
-              onChange={(key) => setShowSignup(key === "signup")}
-              centered
-            >
-              <TabPane tab="Login" key="login">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <RoleSelector>
+              <h3>Sign in as</h3>
+              <Segmented
+                value={userRole}
+                onChange={handleRoleChange}
+                options={[
+                  {
+                    label: 'Customer',
+                    value: 'customer',
+                    icon: <UserOutlined />
+                  },
+                  {
+                    label: 'Employee',
+                    value: 'employee',
+                    icon: <IdcardOutlined />
+                  }
+                ]}
+              />
+            </RoleSelector>
+
+            <TabsContainer>
+              {userRole === 'customer' ? (
+                <Tabs
+                  activeKey={showSignup ? "2" : "1"}
+                  onChange={(key) => setShowSignup(key === "2")}
+                >
+                  <TabPane tab="Login" key="1">
+                    <Form
+                      form={loginForm}
+                      name="login"
+                      onFinish={handleLogin}
+                      layout="vertical"
+                    >
+                      <Form.Item
+                        name="email"
+                        rules={[
+                          { required: true, message: 'Please enter your email' },
+                          { type: 'email', message: 'Please enter a valid email' }
+                        ]}
+                      >
+                        <StyledInput
+                          prefix={<MailOutlined />}
+                          placeholder="Email"
+                        />
+                      </Form.Item>
+
+                      <Form.Item
+                        name="password"
+                        rules={[{ required: true, message: 'Please enter your password' }]}
+                      >
+                        <StyledPasswordInput
+                          prefix={<LockOutlined />}
+                          placeholder="Password"
+                        />
+                      </Form.Item>
+
+                      <LoginButton
+                        type="primary"
+                        htmlType="submit"
+                        loading={isLoading}
+                        block
+                      >
+                        Log In
+                      </LoginButton>
+                    </Form>
+                  </TabPane>
+
+                  <TabPane tab="Sign Up" key="2">
+                    <Form
+                      form={signupForm}
+                      name="signup"
+                      onFinish={handleSignup}
+                      layout="vertical"
+                    >
+                      <Form.Item
+                        name="fullName"
+                        rules={[{ required: true, message: 'Please enter your full name' }]}
+                      >
+                        <StyledInput
+                          prefix={<UserOutlined />}
+                          placeholder="Full Name"
+                        />
+                      </Form.Item>
+
+                      <Form.Item
+                        name="email"
+                        rules={[
+                          { required: true, message: 'Please enter your email' },
+                          { type: 'email', message: 'Please enter a valid email' }
+                        ]}
+                      >
+                        <StyledInput
+                          prefix={<MailOutlined />}
+                          placeholder="Email"
+                        />
+                      </Form.Item>
+
+                      <Form.Item
+                        name="phone"
+                        rules={[{ required: true, message: 'Please enter your phone number' }]}
+                      >
+                        <StyledInput
+                          prefix={<PhoneOutlined />}
+                          placeholder="Phone Number"
+                        />
+                      </Form.Item>
+
+                      <Form.Item
+                        name="password"
+                        rules={[
+                          { required: true, message: 'Please enter your password' },
+                          { min: 6, message: 'Password must be at least 6 characters' }
+                        ]}
+                      >
+                        <StyledPasswordInput
+                          prefix={<LockOutlined />}
+                          placeholder="Password"
+                        />
+                      </Form.Item>
+
+                      <Form.Item
+                        name="confirmPassword"
+                        dependencies={['password']}
+                        rules={[
+                          { required: true, message: 'Please confirm your password' },
+                          ({ getFieldValue }) => ({
+                            validator(_, value) {
+                              if (!value || getFieldValue('password') === value) {
+                                return Promise.resolve();
+                              }
+                              return Promise.reject('Passwords do not match');
+                            },
+                          }),
+                        ]}
+                      >
+                        <StyledPasswordInput
+                          prefix={<LockOutlined />}
+                          placeholder="Confirm Password"
+                        />
+                      </Form.Item>
+
+                      <LoginButton
+                        type="primary"
+                        htmlType="submit"
+                        loading={isLoading}
+                        block
+                      >
+                        Create Account
+                      </LoginButton>
+                    </Form>
+                  </TabPane>
+                </Tabs>
+              ) : (
                 <Form
                   form={loginForm}
                   name="login"
                   onFinish={handleLogin}
                   layout="vertical"
                 >
+                  <div className="form-header">
+                    <h3>Employee Login</h3>
+                    <p>Access your EBS employee account</p>
+                  </div>
+
                   <Form.Item
                     name="email"
                     rules={[
@@ -629,94 +820,9 @@ const Login: React.FC = () => {
                     Log In
                   </LoginButton>
                 </Form>
-              </TabPane>
-
-              <TabPane tab="Sign Up" key="signup">
-                <Form
-                  form={signupForm}
-                  name="signup"
-                  onFinish={handleSignup}
-                  layout="vertical"
-                >
-                  <Form.Item
-                    name="fullName"
-                    rules={[{ required: true, message: 'Please enter your full name' }]}
-                  >
-                    <StyledInput
-                      prefix={<UserOutlined />}
-                      placeholder="Full Name"
-                    />
-                  </Form.Item>
-
-                  <Form.Item
-                    name="email"
-                    rules={[
-                      { required: true, message: 'Please enter your email' },
-                      { type: 'email', message: 'Please enter a valid email' }
-                    ]}
-                  >
-                    <StyledInput
-                      prefix={<MailOutlined />}
-                      placeholder="Email"
-                    />
-                  </Form.Item>
-
-                  <Form.Item
-                    name="phone"
-                    rules={[{ required: true, message: 'Please enter your phone number' }]}
-                  >
-                    <StyledInput
-                      prefix={<PhoneOutlined />}
-                      placeholder="Phone Number"
-                    />
-                  </Form.Item>
-
-                  <Form.Item
-                    name="password"
-                    rules={[
-                      { required: true, message: 'Please enter your password' },
-                      { min: 6, message: 'Password must be at least 6 characters' }
-                    ]}
-                  >
-                    <StyledPasswordInput
-                      prefix={<LockOutlined />}
-                      placeholder="Password"
-                    />
-                  </Form.Item>
-
-                  <Form.Item
-                    name="confirmPassword"
-                    dependencies={['password']}
-                    rules={[
-                      { required: true, message: 'Please confirm your password' },
-                      ({ getFieldValue }) => ({
-                        validator(_, value) {
-                          if (!value || getFieldValue('password') === value) {
-                            return Promise.resolve();
-                          }
-                          return Promise.reject('Passwords do not match');
-                        },
-                      }),
-                    ]}
-                  >
-                    <StyledPasswordInput
-                      prefix={<LockOutlined />}
-                      placeholder="Confirm Password"
-                    />
-                  </Form.Item>
-
-                  <LoginButton
-                    type="primary"
-                    htmlType="submit"
-                    loading={isLoading}
-                    block
-                  >
-                    Create Account
-                  </LoginButton>
-                </Form>
-              </TabPane>
-            </Tabs>
-          </TabsContainer>
+              )}
+            </TabsContainer>
+          </motion.div>
         </ContentWrapper>
 
         {/* ... Existing decorative elements ... */}

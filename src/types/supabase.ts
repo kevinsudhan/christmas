@@ -15,6 +15,7 @@ export interface Database {
           nettakehome: number;
           bankingdetails: string;
           producttype: string;
+          location: string;
           status: 'pending' | 'completed' | 'acknowledged' | 'processing';
           created_at: string;
           updated_at: string;

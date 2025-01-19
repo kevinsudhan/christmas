@@ -16,7 +16,8 @@ import {
   CalculatorOutlined,
   ShopOutlined,
   SwapOutlined,
-  GoldOutlined
+  GoldOutlined,
+  EnvironmentOutlined
 } from '@ant-design/icons';
 import { AuthGuard } from '../../components/AuthGuard/AuthGuard';
 
@@ -599,6 +600,7 @@ const Loans: React.FC = () => {
     monthlySalary: number;
     netTakeHome: number;
     bankingDetails: string;
+    location: string;
   }
   const handleSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
@@ -613,7 +615,8 @@ const Loans: React.FC = () => {
         monthlysalary: Number(values.monthlySalary),
         nettakehome: Number(values.netTakeHome),
         bankingdetails: values.bankingDetails,
-        producttype: 'Credit Cards'
+        location: values.location,
+        producttype: 'Loans'
       };
   
       console.log('Submitting payload:', payload);
@@ -630,7 +633,7 @@ const Loans: React.FC = () => {
   
       notification.success({
         message: 'Application Submitted',
-        description: 'Your credit card application has been successfully submitted.'
+        description: 'Your loan application has been successfully submitted.'
       });
   
       form.resetFields();
@@ -712,7 +715,7 @@ const Loans: React.FC = () => {
   requiredMark={false}
 >
   <div className="form-header">
-    <h3>Credit Card Application</h3>
+    <h3>Loan Application</h3>
     <p>Fill in your details below</p>
   </div>
 
@@ -784,6 +787,19 @@ const Loans: React.FC = () => {
       rules={[{ required: true, message: 'Current Company is required' }]}
     >
       <StyledInput prefix={<HomeOutlined />} placeholder="Enter Company Name" />
+    </Form.Item>
+  </motion.div>
+
+  <motion.div variants={itemVariants}>
+    <Form.Item
+      name="location"
+      label="Location"
+      rules={[{ required: true, message: 'Location is required' }]}
+    >
+      <StyledInput 
+        prefix={<EnvironmentOutlined />} 
+        placeholder="Enter your city or state" 
+      />
     </Form.Item>
   </motion.div>
 
@@ -859,4 +875,3 @@ const Loans: React.FC = () => {
 };
 
 export default Loans;
-

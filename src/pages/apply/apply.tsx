@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Input, Form, notification, Select, message } from 'antd';
-import { UserOutlined, LockOutlined, MailOutlined, MobileOutlined, BankOutlined, DollarOutlined, HomeOutlined, AppstoreOutlined } from '@ant-design/icons';
+import { UserOutlined, LockOutlined, MailOutlined, MobileOutlined, BankOutlined, DollarOutlined, HomeOutlined, AppstoreOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import { motion } from 'framer-motion';
 import loginBg from '../../assets/login-bg.jpg';
 import { GlassCard, ShimmerButton, PulseCircle, FloatingElement } from '../../components/Animations/AnimatedComponents';
@@ -504,6 +504,7 @@ interface FormValues {
   monthlySalary: number;
   netTakeHome: number;
   bankingDetails: string;
+  location: string;
   productType: 'Loans' | 'Insurance' | 'Credit Cards';
 }
 
@@ -551,6 +552,7 @@ const Apply: React.FC = () => {
         monthlysalary: Number(values.monthlySalary),
         nettakehome: Number(values.netTakeHome),
         bankingdetails: values.bankingDetails,
+        location: values.location,
         producttype: values.productType || 'Credit Cards'
       };
       
@@ -687,6 +689,17 @@ const Apply: React.FC = () => {
                 rules={[{ required: true, message: 'Current Company is required' }]}
               >
                 <Input prefix={<HomeOutlined />} placeholder="Enter Company Name" />
+              </Form.Item>
+
+              <Form.Item
+                name="location"
+                label="Location"
+                rules={[{ required: true, message: 'Location is required' }]}
+              >
+                <Input 
+                  prefix={<EnvironmentOutlined />} 
+                  placeholder="Enter your city or state" 
+                />
               </Form.Item>
 
               <Form.Item

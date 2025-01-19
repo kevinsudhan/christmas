@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, Button, Dropdown } from 'antd';
+import { Menu, Button, Dropdown, Avatar, Divider } from 'antd';
 import type { MenuProps } from 'antd';
 import styled from 'styled-components';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { DownOutlined, CloseOutlined } from '@ant-design/icons';
+import { DownOutlined, CloseOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons';
 import ebsLogo from './EBS logo.png';
 import { supabase } from '@/lib/supabase';
-import { UserOutlined } from '@ant-design/icons';
+import { useUser } from '@/contexts/UserContext';
 
 interface UserProfile {
   id: string;
@@ -385,13 +385,81 @@ const RotatingIcon = styled(DownOutlined)<{ $isOpen?: boolean }>`
   transform: rotate(${props => props.$isOpen ? '180deg' : '0'});
 `;
 
+const UserAvatar = styled(Avatar)`
+  cursor: pointer;
+  background: #0077b6;
+  
+  &:hover {
+    opacity: 0.9;
+  }
+`;
+
+const UserPreview = styled.div`
+  padding: 12px 16px;
+  margin-bottom: 4px;
+
+  .name {
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 2px;
+  }
+
+  .id {
+    color: #1890ff;
+    font-size: 13px;
+    margin-bottom: 2px;
+  }
+
+  .email {
+    color: #666;
+    font-size: 13px;
+  }
+`;
+
+const MenuItem = styled.div`
+  padding: 8px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #f5f5f5;
+    color: #1890ff;
+  }
+
+  .anticon {
+    font-size: 16px;
+  }
+`;
+
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openSubMenus, setOpenSubMenus] = useState<string[]>([]);
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { user, loading, signOut } = useUser();
+  const [userProfile, setUserProfile] = useState<{ customer_id: string; full_name: string; email: string } | null>(null);
+
+  useEffect(() => {
+    async function fetchUserProfile() {
+      if (user) {
+        const { data, error } = await supabase
+          .from('customers')
+          .select('customer_id, full_name, email')
+          .eq('id', user.id)
+          .single();
+
+        if (!error && data) {
+          setUserProfile(data);
+        }
+      }
+    }
+
+    fetchUserProfile();
+  }, [user]);
 
   const handleHomeClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -419,60 +487,14 @@ const Navbar: React.FC = () => {
     );
   };
 
-  useEffect(() => {
-    async function fetchUserProfile() {
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        
-        if (user) {
-          const { data: profile, error } = await supabase
-            .from('customers')
-            .select('id, full_name, email')
-            .eq('id', user.id)
-            .single();
-  
-          if (error) throw error;
-          setUserProfile(profile);
-        } else {
-          setUserProfile(null);
-        }
-      } catch (error) {
-        console.error('Error fetching user profile:', error);
-        setUserProfile(null);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    fetchUserProfile();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event) => {
-      if (event === 'SIGNED_IN') {
-        fetchUserProfile();
-      } else if (event === 'SIGNED_OUT') {
-        setUserProfile(null);
-      }
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
-  
-
   const handleSignOut = async () => {
     try {
-      await supabase.auth.signOut();
+      await signOut();
       navigate('/');
     } catch (error) {
       console.error('Error signing out:', error);
     }
   };
-  // Close mobile menu and reset submenus when route changes
-  useEffect(() => {
-    setIsMobileMenuOpen(false);
-    setOpenSubMenus([]);
-  }, [location.pathname]);
 
   const cardItems: MenuProps['items'] = [
     {
@@ -611,18 +633,36 @@ const Navbar: React.FC = () => {
     </DropdownMenu>
   );
 
-  const userMenu = (
-    <DropdownMenu>
-      <Menu.Item key="profile">
-        <Link to="/profile">Profile</Link>
-      </Menu.Item>
-      <Menu.Divider />
-      <Menu.Item key="signout" onClick={handleSignOut}>
-        Sign Out
-      </Menu.Item>
-    </DropdownMenu>
-  );
-
+  const userMenuItems: MenuProps['items'] = [
+    {
+      key: 'profile-info',
+      label: userProfile && (
+        <UserPreview>
+          <div className="name">{userProfile.full_name}</div>
+          <div className="id">{userProfile.customer_id}</div>
+          <div className="email">{userProfile.email}</div>
+        </UserPreview>
+      ),
+    },
+    {
+      key: 'view-profile',
+      label: (
+        <MenuItem onClick={() => navigate('/profile')}>
+          <UserOutlined />
+          View Profile
+        </MenuItem>
+      ),
+    },
+    {
+      key: 'signout',
+      label: (
+        <MenuItem onClick={handleSignOut}>
+          <LogoutOutlined />
+          Sign Out
+        </MenuItem>
+      ),
+    },
+  ];
 
   return (
     <StyledHeader>
@@ -647,28 +687,28 @@ const Navbar: React.FC = () => {
           <Dropdown overlay={insuranceMenu} trigger={['hover']} placement="bottom">
             <NavLink to="/insurance" $active={location.pathname.includes('insurance')}>Insurance <DownOutlined style={{ fontSize: 8 }} /></NavLink>
           </Dropdown>
+          <NavLink to="/about-us" $active={location.pathname.includes('about-us')}>About Us</NavLink>
         </NavLinks>
         <ActionButtons>
-  {!isLoading && (
-    <>
-      {userProfile ? (
-        <Dropdown overlay={userMenu} trigger={['click']} placement="bottomRight">
-          <Button>
-            <UserOutlined />
-            <span style={{ marginLeft: '8px' }}>{userProfile.full_name}</span>
-          </Button>
-        </Dropdown>
-      ) : (
-        <Link to="/login">
-          <LoginButton>Login</LoginButton>
-        </Link>
-      )}
-      <Link to="/about-us">
-        <AboutUsButton>About Us</AboutUsButton>
-      </Link>
-    </>
-  )}
-</ActionButtons>
+          {!loading && (
+            <>
+              {user ? (
+                <Dropdown menu={{ items: userMenuItems }} placement="bottomRight" trigger={['click']}>
+                  <UserAvatar icon={<UserOutlined />} />
+                </Dropdown>
+              ) : (
+                <>
+                  <Link to="/login">
+                    <Button type="text">Login</Button>
+                  </Link>
+                  <Link to="/login?signup=true">
+                    <Button type="primary">Create Account</Button>
+                  </Link>
+                </>
+              )}
+            </>
+          )}
+        </ActionButtons>
 
         <MobileMenuButton 
           onClick={toggleMobileMenu}
@@ -841,31 +881,40 @@ const Navbar: React.FC = () => {
                 </MobileNavLink>
               </MobileSubMenu>
             </MobileMenuSection>
+
+            <MobileMenuSection>
+              <MobileNavLink 
+                to="/about-us"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                About Us
+              </MobileNavLink>
+            </MobileMenuSection>
           </MobileNavLinks>
           <MobileActionButtons>
-  {!isLoading && (
-    <>
-      {userProfile ? (
-        <>
-          <Button onClick={handleSignOut} style={{ width: '100%' }}>
-            <UserOutlined />
-            <span style={{ marginLeft: '8px' }}>Sign Out</span>
-          </Button>
-          <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)}>
-            <Button style={{ width: '100%' }}>Profile</Button>
-          </Link>
-        </>
-      ) : (
-        <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
-          <LoginButton style={{ width: '100%' }}>Login</LoginButton>
-        </Link>
-      )}
-      <Link to="/about-us" onClick={() => setIsMobileMenuOpen(false)}>
-        <AboutUsButton style={{ width: '100%' }}>About Us</AboutUsButton>
-      </Link>
-    </>
-  )}
-</MobileActionButtons>
+            {!loading && (
+              <>
+                {user ? (
+                  <>
+                    <Button onClick={handleSignOut} style={{ width: '100%' }}>
+                      <UserOutlined />
+                      <span style={{ marginLeft: '8px' }}>Sign Out</span>
+                    </Button>
+                    <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)}>
+                      <Button style={{ width: '100%' }}>Profile</Button>
+                    </Link>
+                  </>
+                ) : (
+                  <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
+                    <LoginButton style={{ width: '100%' }}>Login</LoginButton>
+                  </Link>
+                )}
+                <Link to="/about-us" onClick={() => setIsMobileMenuOpen(false)}>
+                  <AboutUsButton style={{ width: '100%' }}>About Us</AboutUsButton>
+                </Link>
+              </>
+            )}
+          </MobileActionButtons>
         </MobileMenu>
       </NavbarContainer>
     </StyledHeader>

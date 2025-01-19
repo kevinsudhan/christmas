@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { Card, Button, Spin, Typography, Space, Divider, message, Avatar } from 'antd';
-import { CopyOutlined, UserOutlined, MailOutlined, CalendarOutlined, IdcardOutlined } from '@ant-design/icons';
+import { Card, Button, Spin, Typography, Space, Divider, message, Avatar, Tooltip } from 'antd';
+import { CopyOutlined, UserOutlined, MailOutlined, CalendarOutlined, IdcardOutlined, PhoneOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 
 const { Title, Text } = Typography;
@@ -99,14 +99,16 @@ const InfoRow = styled.div`
   padding: 16px;
   border-radius: 8px;
   transition: background-color 0.2s;
-  
+  margin-bottom: 8px;
+  background: #fafafa;
+
   &:hover {
-    background-color: #fafafa;
+    background: #f0f0f0;
   }
 
   .anticon {
+    font-size: 18px;
     color: #1890ff;
-    font-size: 20px;
     margin-right: 16px;
   }
 `;
@@ -118,47 +120,39 @@ const Label = styled(Text)`
 
 const Value = styled(Text)`
   color: #1a1a1a;
-  font-size: 16px;
   flex: 1;
+  margin: 0 16px;
 `;
 
 const CopyButton = styled(Button)`
+  padding: 4px 8px;
   border: none;
-  background: white;
-  padding: 0;
-  height: 32px;
-  width: 32px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #8c8c8c;
-  transition: all 0.2s ease;
-  border-radius: 6px;
-  position: relative;
-  top: -2px;
-  margin-left: 8px;
-  line-height: 1;
-
+  background: transparent;
+  
   &:hover {
-    color: #262626;
-    background: white;
-    border: 1px solid #262626;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: #1890ff;
+    background: #e6f7ff;
   }
 
   .anticon {
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     margin: 0;
-    padding: 0;
   }
+`;
 
-  .ant-btn-icon {
-    margin: 0;
-    padding: 0;
+const CustomerIdBadge = styled.div`
+opacity:0;
+  background: #e6f7ff;
+  border: 1px solid #91d5ff;
+  border-radius: 4px;
+  padding: 4px 12px;
+  display: inline-flex;
+  align-items: center;
+  margin-top: 8px;
+  
+  .anticon {
+    color: #1890ff;
+    margin-right: 8px;
+    font-size: 14px;
   }
 `;
 
@@ -167,6 +161,7 @@ interface UserProfile {
   customer_id: string;
   full_name: string;
   email: string;
+  phone: string;
   created_at: string;
 }
 
@@ -253,7 +248,11 @@ export default function Profile() {
           <ProfileAvatar icon={<UserOutlined />} />
           <div style={{ textAlign: 'center' }}>
             <Title level={3} style={{ margin: 0, marginBottom: 4 }}>{profile.full_name}</Title>
-            <Text type="secondary">Customer</Text>
+            
+            <CustomerIdBadge>
+              <IdcardOutlined />
+              <Text>{profile.customer_id}</Text>
+            </CustomerIdBadge>
           </div>
         </ProfileHeader>
         
@@ -263,10 +262,12 @@ export default function Profile() {
               <IdcardOutlined />
               <Label>Customer ID</Label>
               <Value>{profile.customer_id}</Value>
-              <CopyButton 
-                icon={<CopyOutlined />}
-                onClick={() => copyToClipboard(profile.customer_id)}
-              />
+              <Tooltip title="Copy Customer ID">
+                <CopyButton 
+                  icon={<CopyOutlined />}
+                  onClick={() => copyToClipboard(profile.customer_id)}
+                />
+              </Tooltip>
             </InfoRow>
 
             <InfoRow>
@@ -279,6 +280,12 @@ export default function Profile() {
               <MailOutlined />
               <Label>Email</Label>
               <Value>{profile.email}</Value>
+            </InfoRow>
+
+            <InfoRow>
+              <PhoneOutlined />
+              <Label>Phone</Label>
+              <Value>{profile.phone || 'Not provided'}</Value>
             </InfoRow>
 
             <InfoRow>
