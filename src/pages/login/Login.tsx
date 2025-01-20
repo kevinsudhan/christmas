@@ -543,6 +543,38 @@ const Login: React.FC = () => {
     }
   };
 
+  const handleEmployeeLogin = async (values: LoginFormValues) => {
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.rpc('authenticate_employee', {
+        p_email: values.email,
+        p_password: values.password
+      });
+
+      if (error) throw error;
+      if (!data) throw new Error("Invalid credentials");
+
+      // Store employee session
+      localStorage.setItem('employeeId', data);
+      
+      notification.success({
+        message: "Employee Login Successful",
+        description: "Welcome to the employee dashboard!",
+      });
+
+      // Navigate to the exact path of the employee dashboard
+      navigate("/EmployeeDashboard/EmployeeDashboard", { replace: true });
+    } catch (error: any) {
+      console.error('Login error:', error);
+      notification.error({
+        message: "Login Failed",
+        description: error.message,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleSignup = async (values: SignupFormValues) => {
     if (userRole === 'employee') {
       notification.error({
@@ -780,7 +812,7 @@ const Login: React.FC = () => {
                 <Form
                   form={loginForm}
                   name="login"
-                  onFinish={handleLogin}
+                  onFinish={handleEmployeeLogin}
                   layout="vertical"
                 >
                   <div className="form-header">

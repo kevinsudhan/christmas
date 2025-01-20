@@ -199,7 +199,7 @@ const EmployeeDashboard: React.FC = () => {
         </DashboardHeader>
 
         <CardsGrid>
-          <Card onClick={() => navigate('/employee/loans')}>
+          <Card onClick={() => navigate('/EmployeeDashboard/EmployeeLoans')}>
             <CardImage 
               src="https://images.unsplash.com/photo-1579621970795-87facc2f976d?auto=format&fit=crop&q=80"
               alt="Loans"
@@ -232,7 +232,7 @@ const EmployeeDashboard: React.FC = () => {
             </CardStats>
           </Card>
 
-          <Card onClick={() => navigate('/employee/insurance')}>
+          <Card onClick={() => navigate('/EmployeeDashboard/EmployeeInsurance')}>
             <CardImage 
               src="https://images.unsplash.com/photo-1556742393-d75f468bfcb0?auto=format&fit=crop&q=80"
               alt="Insurance"
@@ -265,7 +265,7 @@ const EmployeeDashboard: React.FC = () => {
             </CardStats>
           </Card>
 
-          <Card onClick={() => navigate('/employee/credit-cards')}>
+          <Card onClick={() => navigate('/EmployeeDashboard/EmployeeCreditCards')}>
             <CardImage 
               src="https://images.unsplash.com/photo-1542744094-24638eff58bb?auto=format&fit=crop&q=80"
               alt="Credit Cards"
@@ -298,7 +298,7 @@ const EmployeeDashboard: React.FC = () => {
             </CardStats>
           </Card>
 
-          <Card onClick={() => navigate('/employee/database')}>
+          <Card onClick={() => navigate('/EmployeeDashboard/EmployeeDM')}>
             <CardImage 
               src="/images/database-44.svg"
               alt="Customer Database"

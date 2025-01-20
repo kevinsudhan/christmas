@@ -36,7 +36,7 @@ const BackButton: React.FC = () => {
   const navigate = useNavigate();
 
   const handleBack = () => {
-    navigate('/employee-dashboard');
+    navigate('/EmployeeDashboard/EmployeeDashboard');
   };
 
   return (

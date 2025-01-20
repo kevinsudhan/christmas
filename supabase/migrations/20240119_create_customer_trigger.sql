@@ -4,7 +4,9 @@ DROP TRIGGER IF EXISTS update_customers_updated_at ON public.customers CASCADE;
 DROP FUNCTION IF EXISTS public.handle_new_customer() CASCADE;
 DROP FUNCTION IF EXISTS public.generate_customer_id() CASCADE;
 DROP FUNCTION IF EXISTS public.update_updated_at_column() CASCADE;
+DROP FUNCTION IF EXISTS public.authenticate_employee(text,text) CASCADE;
 DROP TABLE IF EXISTS public.customers CASCADE;
+DROP TABLE IF EXISTS public.employees CASCADE;
 DROP SEQUENCE IF EXISTS customer_id_seq CASCADE;
 
 -- Create sequence
@@ -92,3 +94,48 @@ CREATE TRIGGER on_auth_user_created
 GRANT USAGE ON SEQUENCE customer_id_seq TO service_role;
 GRANT ALL ON public.customers TO service_role;
 GRANT ALL ON public.customers TO authenticated;
+
+-- Create employees table
+CREATE TABLE IF NOT EXISTS public.employees (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    email TEXT UNIQUE NOT NULL,
+    password_hash TEXT NOT NULL,
+    role TEXT NOT NULL DEFAULT 'employee',
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Enable RLS
+ALTER TABLE public.employees ENABLE ROW LEVEL SECURITY;
+
+-- Create policy for employee authentication
+CREATE POLICY "Allow public access for authentication" ON public.employees
+    FOR SELECT USING (true);
+
+-- Create extension for password hashing if not exists
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+-- Function to authenticate employee
+CREATE OR REPLACE FUNCTION public.authenticate_employee(p_email TEXT, p_password TEXT)
+RETURNS UUID AS $$
+DECLARE
+    v_employee_id UUID;
+BEGIN
+    SELECT id INTO v_employee_id
+    FROM public.employees
+    WHERE email = p_email
+    AND password_hash = crypt(p_password, password_hash);
+    
+    RETURN v_employee_id;
+EXCEPTION WHEN OTHERS THEN
+    RAISE LOG 'Error in authenticate_employee: %', SQLERRM;
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Insert default employee (password will be hashed)
+INSERT INTO public.employees (email, password_hash)
+VALUES (
+    'employee@ebs.com',
+    crypt('securepassword', gen_salt('bf'))
+) ON CONFLICT (email) DO NOTHING;

@@ -136,11 +136,11 @@ const App: React.FC = () => {
               
               {/* Employee Dashboard Routes */}
               <Route path="/employee-login" element={<EmployeeLogin />} />
-              <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
-              <Route path="/employee/loans" element={<EmployeeLoans />} />
-              <Route path="/employee/insurance" element={<EmployeeInsurance />} />
-              <Route path="/employee/credit-cards" element={<EmployeeCreditCards />} />
-              <Route path="/employee/database" element={<EmployeeDM />} />
+              <Route path="/EmployeeDashboard/EmployeeDashboard" element={<EmployeeDashboard />} />
+              <Route path="/EmployeeDashboard/EmployeeLoans" element={<EmployeeLoans />} />
+              <Route path="/EmployeeDashboard/EmployeeInsurance" element={<EmployeeInsurance />} />
+              <Route path="/EmployeeDashboard/EmployeeCreditCards" element={<EmployeeCreditCards />} />
+              <Route path="/EmployeeDashboard/EmployeeDM" element={<EmployeeDM />} />
             </Routes>
           </MainContent>
         </AppContainer>

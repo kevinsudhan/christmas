@@ -126,7 +126,7 @@ const EmployeeLoans: React.FC = () => {
   };
 
   const handleBack = () => {
-    navigate('/employee-dashboard');
+    navigate('/EmployeeDashboard/EmployeeDashboard');
   };
 
   const columns: ColumnsType<Application> = [
