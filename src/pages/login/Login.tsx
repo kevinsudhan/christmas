@@ -506,7 +506,7 @@ const Login: React.FC = () => {
   const [userRole, setUserRole] = useState<UserRole>('customer');
   const navigate = useNavigate();
   const location = useLocation();
-  const { signIn, signUp } = useUser();
+  const { signIn, signUp, setIsEmployee, signOut } = useUser();
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -554,8 +554,9 @@ const Login: React.FC = () => {
       if (error) throw error;
       if (!data) throw new Error("Invalid credentials");
 
-      // Store employee session
+      // Store employee session and set employee state
       localStorage.setItem('employeeId', data);
+      setIsEmployee(true);
       
       notification.success({
         message: "Employee Login Successful",
@@ -566,12 +567,24 @@ const Login: React.FC = () => {
       navigate("/EmployeeDashboard/EmployeeDashboard", { replace: true });
     } catch (error: any) {
       console.error('Login error:', error);
+      setIsEmployee(false);
       notification.error({
         message: "Login Failed",
         description: error.message,
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      setIsEmployee(false);
+      localStorage.removeItem('employeeId');
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
     }
   };
 

@@ -137,6 +137,26 @@ const ActionButtons = styled.div`
   }
 `;
 
+const ProfileSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+`;
+
+const AvatarButton = styled(Button)`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  border: none;
+  background: none;
+  cursor: pointer;
+
+  &:hover {
+    background: #f8f9fa;
+  }
+`;
+
 const AboutUsButton = styled(Button)`
   background: #000;
   color: white;
@@ -167,6 +187,21 @@ const LoginButton = styled(Button)`
     background: white !important;
     color: #333 !important;
     border-color: #bbb !important;
+  }
+`;
+
+const CreateAccountButton = styled(Button)`
+  background: #0077b6;
+  color: white;
+  border: none;
+  height: 38px;
+  padding: 0 24px;
+  border-radius: 6px;
+  font-weight: 500;
+
+  &:hover {
+    background: #006ba6 !important;
+    color: white !important;
   }
 `;
 
@@ -440,12 +475,12 @@ const Navbar: React.FC = () => {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openSubMenus, setOpenSubMenus] = useState<string[]>([]);
-  const { user, loading, signOut } = useUser();
+  const { user, loading, signOut, isEmployee } = useUser();
   const [userProfile, setUserProfile] = useState<{ customer_id: string; full_name: string; email: string } | null>(null);
 
   useEffect(() => {
     async function fetchUserProfile() {
-      if (user) {
+      if (user && !isEmployee) {
         const { data, error } = await supabase
           .from('customers')
           .select('customer_id, full_name, email')
@@ -459,7 +494,7 @@ const Navbar: React.FC = () => {
     }
 
     fetchUserProfile();
-  }, [user]);
+  }, [user, isEmployee]);
 
   const handleHomeClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -633,35 +668,20 @@ const Navbar: React.FC = () => {
     </DropdownMenu>
   );
 
-  const userMenuItems: MenuProps['items'] = [
+  const profileMenuItems = [
+    // Only show Profile option for customers
+    ...(!isEmployee ? [{
+      key: '1', 
+      label: 'Profile',
+      icon: <UserOutlined />,
+      onClick: () => navigate('/profile')
+    }] : []),
     {
-      key: 'profile-info',
-      label: userProfile && (
-        <UserPreview>
-          <div className="name">{userProfile.full_name}</div>
-          <div className="id">{userProfile.customer_id}</div>
-          <div className="email">{userProfile.email}</div>
-        </UserPreview>
-      ),
-    },
-    {
-      key: 'view-profile',
-      label: (
-        <MenuItem onClick={() => navigate('/profile')}>
-          <UserOutlined />
-          View Profile
-        </MenuItem>
-      ),
-    },
-    {
-      key: 'signout',
-      label: (
-        <MenuItem onClick={handleSignOut}>
-          <LogoutOutlined />
-          Sign Out
-        </MenuItem>
-      ),
-    },
+      key: '2',
+      label: 'Sign Out',
+      icon: <LogoutOutlined />,
+      onClick: handleSignOut
+    }
   ];
 
   return (
@@ -692,17 +712,23 @@ const Navbar: React.FC = () => {
         <ActionButtons>
           {!loading && (
             <>
-              {user ? (
-                <Dropdown menu={{ items: userMenuItems }} placement="bottomRight" trigger={['click']}>
-                  <UserAvatar icon={<UserOutlined />} />
-                </Dropdown>
+              {user || isEmployee ? (
+                <ProfileSection>
+                  <Dropdown menu={{ items: profileMenuItems }} placement="bottomRight">
+                    <AvatarButton>
+                      <Avatar icon={<UserOutlined />} />
+                      <span>{isEmployee ? 'Employee' : userProfile?.full_name || 'User'}</span>
+                      <DownOutlined />
+                    </AvatarButton>
+                  </Dropdown>
+                </ProfileSection>
               ) : (
                 <>
                   <Link to="/login">
-                    <Button type="text">Login</Button>
+                    <LoginButton>Login</LoginButton>
                   </Link>
                   <Link to="/login?signup=true">
-                    <Button type="primary">Create Account</Button>
+                    <CreateAccountButton>Create Account</CreateAccountButton>
                   </Link>
                 </>
               )}
@@ -894,13 +920,16 @@ const Navbar: React.FC = () => {
           <MobileActionButtons>
             {!loading && (
               <>
-                {user ? (
+                {user || isEmployee ? (
                   <>
                     <Button onClick={handleSignOut} style={{ width: '100%' }}>
                       <UserOutlined />
                       <span style={{ marginLeft: '8px' }}>Sign Out</span>
                     </Button>
-                    <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Link 
+                      to={isEmployee ? '/EmployeeDashboard/EmployeeDashboard' : '/profile'} 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
                       <Button style={{ width: '100%' }}>Profile</Button>
                     </Link>
                   </>

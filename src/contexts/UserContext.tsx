@@ -8,6 +8,8 @@ interface UserContextType {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, fullName: string, phone: string) => Promise<string>;
   signOut: () => Promise<void>;
+  isEmployee: boolean;
+  setIsEmployee: (value: boolean) => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -15,13 +17,22 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export function UserProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isEmployee, setIsEmployee] = useState(false);
 
   useEffect(() => {
-    // Check active session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    // Check active session and employee status
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
       setUser(session?.user ?? null);
+      
+      // Check if employee session exists
+      const employeeId = localStorage.getItem('employeeId');
+      setIsEmployee(!!employeeId);
+      
       setLoading(false);
-    });
+    };
+    
+    checkSession();
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -95,14 +106,21 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      throw error;
-    }
+    await supabase.auth.signOut();
+    localStorage.removeItem('employeeId'); // Clear employee session
+    setIsEmployee(false);
   };
 
   return (
-    <UserContext.Provider value={{ user, loading, signIn, signUp, signOut }}>
+    <UserContext.Provider value={{ 
+      user, 
+      loading, 
+      signIn, 
+      signUp, 
+      signOut,
+      isEmployee,
+      setIsEmployee 
+    }}>
       {children}
     </UserContext.Provider>
   );
