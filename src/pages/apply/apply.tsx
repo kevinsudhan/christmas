@@ -569,7 +569,7 @@ const Apply: React.FC = () => {
 
       form.resetFields();
       // Optionally redirect to a success page
-      navigate('/application-success');
+      navigate('/');
     } catch (error: any) {
       console.error('Submission error:', error);
       

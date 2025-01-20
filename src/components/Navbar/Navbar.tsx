@@ -140,17 +140,29 @@ const ActionButtons = styled.div`
 const ProfileSection = styled.div`
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 8px;
 `;
 
 const AvatarButton = styled(Button)`
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 0 16px;
+  gap: 6px;
+  padding: 4px 12px;
+  height: 32px;
   border: none;
   background: none;
   cursor: pointer;
+
+  .ant-avatar {
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    font-size: 14px;
+  }
+
+  span {
+    font-size: 14px;
+  }
 
   &:hover {
     background: #f8f9fa;
@@ -716,9 +728,9 @@ const Navbar: React.FC = () => {
                 <ProfileSection>
                   <Dropdown menu={{ items: profileMenuItems }} placement="bottomRight">
                     <AvatarButton>
-                      <Avatar icon={<UserOutlined />} />
+                      <Avatar size="small" icon={<UserOutlined />} />
                       <span>{isEmployee ? 'Employee' : userProfile?.full_name || 'User'}</span>
-                      <DownOutlined />
+                      <DownOutlined style={{ fontSize: '12px' }} />
                     </AvatarButton>
                   </Dropdown>
                 </ProfileSection>
