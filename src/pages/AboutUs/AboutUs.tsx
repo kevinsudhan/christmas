@@ -455,12 +455,14 @@ const LeadershipSection = styled(motion.section)`
 const LeadershipGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 3rem;
-  margin-top: 3rem;
+  gap: 4rem;
+  margin: 4rem auto;
+  max-width: 1200px;
+  padding: 0 2rem;
   
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 3rem;
   }
 `;
 
@@ -473,6 +475,9 @@ const LeaderCard = styled(motion.div)`
   height: 100%;
   display: flex;
   flex-direction: column;
+  max-width: 550px;
+  margin: 0 auto;
+  width: 100%;
 
   &:hover {
     transform: translateY(-5px);
@@ -507,33 +512,51 @@ const LeaderImageSection = styled.div`
 `;
 
 const LeaderInfo = styled.div`
-  padding: 2rem;
+  padding: 2.5rem;
   text-align: center;
   background: white;
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
+  max-width: 90%;
+  margin: 0 auto;
 
   h3 {
     color: #1a365d;
     font-size: 1.75rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
     font-weight: 600;
   }
 
   h4 {
     color: #4a5568;
     font-size: 1.1rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
     font-weight: 500;
+    position: relative;
+    
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: -1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 50px;
+      height: 2px;
+      background: #e2e8f0;
+    }
   }
 
   p {
     color: #718096;
     font-size: 1rem;
-    line-height: 1.6;
-    margin-bottom: 1.5rem;
+    line-height: 1.8;
+    margin: 0 auto;
+    max-width: 95%;
+    text-align: justify;
+    hyphens: auto;
+    word-spacing: -0.05em;
   }
 `;
 
