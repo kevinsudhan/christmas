@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useLoanStats } from '../../hooks/useLoanStats';
 import { useInsuranceStats } from '../../hooks/useInsuranceStats';
 import { useCreditCardStats } from '../../hooks/useCreditCardStats';
+import { useCustomerStats } from '../../hooks/useCustomerStats';
 
 const PageContainer = styled.div`
   height: 100vh;
@@ -127,9 +128,9 @@ const CardDescription = styled.p`
   margin-bottom: 12px;
 `;
 
-const CardStats = styled.div`
+const CardStats = styled.div<{ itemCount?: number }>`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: ${props => props.itemCount === 2 ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)'};
   gap: 8px;
   margin-top: auto;
   padding-top: 16px;
@@ -187,6 +188,7 @@ const EmployeeDashboard: React.FC = () => {
   const loanStats = useLoanStats();
   const insuranceStats = useInsuranceStats();
   const creditCardStats = useCreditCardStats();
+  const customerStats = useCustomerStats();
 
   return (
     <PageContainer>
@@ -308,26 +310,14 @@ const EmployeeDashboard: React.FC = () => {
             <CardDescription>
               Access and manage comprehensive customer records, track interactions, and analyze customer data for better service delivery and decision-making.
             </CardDescription>
-            <CardStats>
+            <CardStats itemCount={2} style={{ justifyContent: 'center', maxWidth: '60%', margin: '16px auto 0' }}>
               <Stat>
-                <StatNumber>--</StatNumber>
+                <StatNumber>{customerStats.total}</StatNumber>
                 <StatLabel>Total</StatLabel>
               </Stat>
               <Stat>
-                <StatNumber>--</StatNumber>
-                <StatLabel>Active</StatLabel>
-              </Stat>
-              <Stat>
-                <StatNumber>--</StatNumber>
+                <StatNumber>{customerStats.new}</StatNumber>
                 <StatLabel>New</StatLabel>
-              </Stat>
-              <Stat>
-                <StatNumber>--</StatNumber>
-                <StatLabel>Acknowledged</StatLabel>
-              </Stat>
-              <Stat>
-                <StatNumber>--</StatNumber>
-                <StatLabel>Processing</StatLabel>
               </Stat>
             </CardStats>
           </Card>

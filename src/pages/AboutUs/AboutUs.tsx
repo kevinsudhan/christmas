@@ -312,13 +312,13 @@ const FloatingIcon = styled(motion.div)`
 `;
 
 const FounderSection = styled.section`
-  padding: 4rem 2rem;  // Reduced from 8rem to 4rem
+  padding: 4rem 2rem;  
   background: #ffffff;
   position: relative;
 `;
 
 const FounderCard = styled(motion.div)`
-  max-width: 1000px;  // Reduced from 1200px
+  max-width: 1000px;  
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -336,7 +336,7 @@ const FounderCard = styled(motion.div)`
 const ImageSection = styled.div`
   position: relative;
   height: 100%;
-  min-height: 500px;  // Reduced from 600px
+  min-height: 500px;  
   background: #1a365d;
   overflow: hidden;
 
@@ -376,7 +376,7 @@ const ImageOverlay = styled.div`
 `;
 
 const FounderContentSection = styled.div`
-  padding: 2.5rem;  // Reduced from 3rem
+  padding: 2.5rem;  
   background: white;
   display: flex;
   flex-direction: column;
@@ -384,16 +384,16 @@ const FounderContentSection = styled.div`
 `;
 
 const Quote = styled.div`
-  font-size: 1.3rem;  // Reduced from 1.5rem
+  font-size: 1.3rem;  
   color: #1a365d;
   font-style: italic;
-  margin-bottom: 1.5rem;  // Reduced from 2rem
+  margin-bottom: 1.5rem;  
   position: relative;
   line-height: 1.6;
 `;
 
 const BioText = styled(motion.p)`
-  font-size: 1rem;  // Reduced from 1.1rem
+  font-size: 1rem;  
   line-height: 1.7;
   color: #4a5568;
   margin-bottom: 1.5rem;
@@ -441,6 +441,115 @@ const AchievementCard = styled(motion.div)`
     color: #4a5568;
     text-transform: uppercase;
     letter-spacing: 1px;
+  }
+`;
+
+const LeadershipSection = styled(motion.section)`
+  padding: 4rem 2rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+  border-radius: 30px;
+  margin: 4rem 0;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+`;
+
+const LeadershipGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 3rem;
+  margin-top: 3rem;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+`;
+
+const LeaderCard = styled(motion.div)`
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    transform: translateY(-5px);
+  }
+`;
+
+const LeaderImageSection = styled.div`
+  position: relative;
+  height: 400px;
+  overflow: hidden;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+    background: linear-gradient(to bottom, #ffffff 0%, #f8fafc 100%);
+    padding: 20px;
+  }
+
+  &:hover img {
+    transform: scale(1.02);
+  }
+
+  @media (max-width: 768px) {
+    height: 300px;
+  }
+`;
+
+const LeaderInfo = styled.div`
+  padding: 2rem;
+  text-align: center;
+  background: white;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  h3 {
+    color: #1a365d;
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  h4 {
+    color: #4a5568;
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+  }
+
+  p {
+    color: #718096;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+`;
+
+const LeaderSocialLinks = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+
+  a {
+    color: #4a5568;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #1a365d;
+    }
   }
 `;
 
@@ -823,84 +932,137 @@ const AboutUs: React.FC = () => {
       
 
         {/* Founder Section */}
-<FounderSection>
-  <FounderCard
-    initial={{ opacity: 0, y: 50 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.8 }}
-    viewport={{ once: true }}
-  >
-    <ImageSection>
-      <img src="/images/sivakumr.jpeg" alt="A A Sivakumar - Founder & CEO" />
-      <ImageOverlay>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
+        <FounderSection>
+          <FounderCard
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <ImageSection>
+              <img src="/images/sivakumr.jpeg" alt="A A Sivakumar - Managing Director" />
+              <ImageOverlay>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.5 }}
+                  viewport={{ once: true }}
+                >
+                  <h2>A A Sivakumar</h2>
+                  <h3>Managing Director</h3>
+                </motion.div>
+              </ImageOverlay>
+            </ImageSection>
+
+            <FounderContentSection>
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.5 }}
+                viewport={{ once: true }}
+              >
+                <Quote>
+                  "Transforming India's Retail Banking landscape through innovation and excellence"
+                </Quote>
+
+                <BioText
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.7, duration: 0.5 }}
+                  viewport={{ once: true }}
+                >
+                  A. A. Sivakumar, a distinguished postgraduate in Business Management from Madras University, brings over three decades of rich expertise in the retail banking and insurance sectors. Throughout his illustrious career, he has held pivotal roles in renowned institutions such as Bank of America, ANZ Grindlays Bank, Standard Chartered Bank, and Aviva Life Insurance Company. His journey has been defined by transformative leadership, innovative solutions, and a relentless pursuit of excellence.
+                </BioText>
+
+                <BioText
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.8, duration: 0.5 }}
+                  viewport={{ once: true }}
+                >
+                  As a visionary leader, Sivakumar has played an instrumental role in revolutionizing the retail banking channel partner business in India. He has fostered a culture that prioritizes integrity, customer-centricity, and operational excellence, driving significant business growth and enhancing the customer experience. His strategic insights and ability to navigate complex business landscapes have solidified his reputation as a trailblazer in the industry.
+                </BioText>
+
+                <AchievementGrid>
+                  <AchievementCard
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    <div className="achievement-number">30+</div>
+                    <div className="achievement-label">Years of Experience</div>
+                  </AchievementCard>
+                  <AchievementCard
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    <div className="achievement-number">100+</div>
+                    <div className="achievement-label">Branches Nationwide</div>
+                  </AchievementCard>
+                  <AchievementCard
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    <div className="achievement-number">₹500M+</div>
+                    <div className="achievement-label">Annual Turnover</div>
+                  </AchievementCard>
+                </AchievementGrid>
+              </motion.div>
+            </FounderContentSection>
+          </FounderCard>
+        </FounderSection>
+
+        {/* Leadership Team Section */}
+        <LeadershipSection
+          initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
           viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
         >
-          <h2>A A Sivakumar</h2>
-          <h3>Founder & CEO</h3>
-        </motion.div>
-      </ImageOverlay>
-    </ImageSection>
+          <Title level={2} style={{ textAlign: 'center', marginBottom: '1rem' }}>
+            Leadership Team
+          </Title>
+          <Paragraph style={{ textAlign: 'center', maxWidth: '800px', margin: '0 auto 3rem' }}>
+            Meet our exceptional leaders who drive innovation and excellence across our organization
+          </Paragraph>
 
-    <FounderContentSection>
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ delay: 0.5, duration: 0.5 }}
-        viewport={{ once: true }}
-      >
-        <Quote>
-          "Transforming India's Retail Banking landscape through innovation and excellence"
-        </Quote>
+          <LeadershipGrid>
+            <LeaderCard
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <LeaderImageSection>
+                <img src="/images/sunil.jpeg" alt="Sunil - Senior Banking Professional" />
+              </LeaderImageSection>
+              <LeaderInfo>
+                <h3>Sunil</h3>
+                <h4>Senior Banking Professional</h4>
+                <p>
+                  A seasoned banking professional with extensive experience at prestigious institutions including Bank of America, ABN AMRO, ANZ Grindlays, and Standard Chartered Bank. Expert in liability sales, wealth management, life insurance, and health insurance. Former Sales Manager at Max NewYork Life Insurance, bringing comprehensive financial services expertise to our team.
+                </p>
+              </LeaderInfo>
+            </LeaderCard>
 
-        <BioText
-          initial={{ opacity: 0, x: 20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.7, duration: 0.5 }}
-          viewport={{ once: true }}
-        >
-          A. A. Sivakumar, a distinguished postgraduate in Business Management from Madras University, brings over three decades of rich expertise in the retail banking and insurance sectors. Throughout his illustrious career, he has held pivotal roles in renowned institutions such as Bank of America, ANZ Grindlays Bank, Standard Chartered Bank, and Aviva Life Insurance Company. His journey has been defined by transformative leadership, innovative solutions, and a relentless pursuit of excellence.
-        </BioText>
-
-        <BioText
-          initial={{ opacity: 0, x: 20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.8, duration: 0.5 }}
-          viewport={{ once: true }}
-        >
-          As a visionary leader, Sivakumar has played an instrumental role in revolutionizing the retail banking channel partner business in India. He has fostered a culture that prioritizes integrity, customer-centricity, and operational excellence, driving significant business growth and enhancing the customer experience. His strategic insights and ability to navigate complex business landscapes have solidified his reputation as a trailblazer in the industry.
-        </BioText>
-
-        <AchievementGrid>
-          <AchievementCard
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            <div className="achievement-number">30+</div>
-            <div className="achievement-label">Years of Experience</div>
-          </AchievementCard>
-          <AchievementCard
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            <div className="achievement-number">100+</div>
-            <div className="achievement-label">Branches Nationwide</div>
-          </AchievementCard>
-          <AchievementCard
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            <div className="achievement-number">₹500M+</div>
-            <div className="achievement-label">Annual Turnover</div>
-          </AchievementCard>
-        </AchievementGrid>
-      </motion.div>
-    </FounderContentSection>
-  </FounderCard>
-</FounderSection>
+            <LeaderCard
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
+              <LeaderImageSection>
+                <img src="/images/senthil.jpeg" alt="S. Senthil Kumar - Head of Sales Operations" />
+              </LeaderImageSection>
+              <LeaderInfo>
+                <h3>S. Senthil Kumar</h3>
+                <h4>Head of Sales Operations</h4>
+                <p>
+                  With over 32 years of industry experience, Senthil Kumar is a distinguished leader in sales and business development. Currently serving at Fullerton India Credit Company Ltd, he has consistently achieved sales excellence and built high-performing teams. His expertise spans personal loans, retail assets, and channel partner management, with notable achievements at HDFC Bank and ICICI Bank.
+                </p>
+              </LeaderInfo>
+            </LeaderCard>
+          </LeadershipGrid>
+        </LeadershipSection>
 
         {/* Branch Network Section */}
         <BranchNetwork />
