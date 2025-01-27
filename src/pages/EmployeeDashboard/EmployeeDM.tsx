@@ -102,13 +102,36 @@ const EmployeeDM: React.FC = () => {
 
   const save = async (record: GroupedCustomer) => {
     try {
-      const { error } = await supabase
+      // First check if a record exists
+      const { data: existingRecord } = await supabase
         .from('customer_points')
-        .upsert({
-          customer_id: record.customer_id,
-          service_amount: record.service_amount,
-          points: record.points,
-        });
+        .select('customer_id')
+        .eq('customer_id', record.customer_id)
+        .single();
+
+      let error;
+      
+      if (existingRecord) {
+        // Update existing record
+        const { error: updateError } = await supabase
+          .from('customer_points')
+          .update({
+            service_amount: record.service_amount,
+            points: record.points,
+          })
+          .eq('customer_id', record.customer_id);
+        error = updateError;
+      } else {
+        // Insert new record
+        const { error: insertError } = await supabase
+          .from('customer_points')
+          .insert({
+            customer_id: record.customer_id,
+            service_amount: record.service_amount,
+            points: record.points,
+          });
+        error = insertError;
+      }
 
       if (error) throw error;
 

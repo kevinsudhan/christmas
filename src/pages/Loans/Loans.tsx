@@ -665,7 +665,7 @@ const Loans: React.FC = () => {
   };
 
   return (
-    <AuthGuard>
+    
     <PageContainer>
       <HeroSection>
         <div className="shape-1" />
@@ -888,7 +888,7 @@ const Loans: React.FC = () => {
 
       <Footer />
     </PageContainer>
-    </AuthGuard>
+    
   );
 };
 

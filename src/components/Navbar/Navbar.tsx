@@ -681,15 +681,22 @@ const Navbar: React.FC = () => {
   );
 
   const profileMenuItems = [
-    // Only show Profile option for customers
+    // Add Dashboard option for employees
+    ...(isEmployee ? [{
+      key: '1',
+      label: 'Dashboard',
+      icon: <UserOutlined />,
+      onClick: () => navigate('/EmployeeDashboard/EmployeeDashboard')
+    }] : []),
+    // Profile option for customers
     ...(!isEmployee ? [{
-      key: '1', 
+      key: '2', 
       label: 'Profile',
       icon: <UserOutlined />,
       onClick: () => navigate('/profile')
     }] : []),
     {
-      key: '2',
+      key: '3',
       label: 'Sign Out',
       icon: <LogoutOutlined />,
       onClick: handleSignOut

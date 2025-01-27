@@ -1127,7 +1127,7 @@ const Insurance: React.FC = () => {
   };
 
   return (
-    <AuthGuard>
+   
     <PageContainer>
       <HeroSection>
         <div className="shape-1"></div>
@@ -1435,7 +1435,7 @@ const Insurance: React.FC = () => {
 
       <Footer />
     </PageContainer>
-    </AuthGuard>
+
   );
 };
 

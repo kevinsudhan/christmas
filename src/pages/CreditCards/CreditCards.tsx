@@ -956,7 +956,7 @@ const CreditCards: React.FC = () => {
   };
 
   return (
-    <AuthGuard><PageContainer>
+    <PageContainer>
       <HeroSection>
         <div className="shape-1"></div>
         <div className="shape-2"></div>
@@ -1211,7 +1211,7 @@ const CreditCards: React.FC = () => {
       </ContentSection>
       <Footer />
     </PageContainer>
-    </AuthGuard>
+    
     
   );
 };
